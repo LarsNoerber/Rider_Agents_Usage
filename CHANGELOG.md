@@ -2,6 +2,8 @@
 
 ## 1.2.0 — 2026-10-22
 
+- Fix opening the JetBrains overview/configuration after the refresh-status update: initialize the Swing
+  accessibility context through its getter before assigning the status label name.
 - Restore JetBrains AI quota readings for current AI Assistant versions, which wrap credit values in `Available` /
   `Reached` quota states and refill data in `Known`.
 

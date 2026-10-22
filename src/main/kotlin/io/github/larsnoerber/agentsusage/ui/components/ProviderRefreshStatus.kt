@@ -16,15 +16,17 @@ internal class ProviderRefreshStatus(private val provider: String) : JBLabel(), 
     init {
         foreground = secondaryTextColor()
         font = font.deriveFont((font.size2D - 1).coerceAtLeast(10f))
-        UsageRefreshStatuses.addListener(listener)
         render()
+        UsageRefreshStatuses.addListener(listener)
     }
 
     private fun render() {
         val status = UsageRefreshStatuses.get(provider)
         text = refreshStatusText(status) + if (status.lastSuccess > 0) " | Last success ${formatCompactTime(status.lastSuccess / 1000)}" else ""
         toolTipText = usageTooltip("Refresh status", refreshStatusLines(status))
-        accessibleContext.accessibleName = text
+        // In a JLabel subclass Kotlin can resolve accessibleContext to the protected, still-null field.
+        // Call the getter explicitly so Swing creates the context before assigning its name.
+        getAccessibleContext()?.accessibleName = text
     }
 
     override fun dispose() {

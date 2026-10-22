@@ -193,9 +193,10 @@ The reader owns the active process and its timeout; disposal also stops child pr
 ### JetBrains AI
 
 `providers/jetbrainsai/JetBrainsAiUsageReader` reads the loaded AI Assistant quota service.
-Credit conversion comes from AI Assistant itself. The reader isolates subscription metadata lookup, mangled Kotlin
-getters, and module class-loader compatibility. API failures become an unavailable balance rather than an invented
-quota.
+It handles both direct quota values and the current `Available`/`Reached` wrappers around `JbaiQuota`, as well as
+the `Known` refill wrapper. Credit conversion comes from AI Assistant itself. The reader isolates subscription
+metadata lookup, mangled Kotlin getters, and module class-loader compatibility. API failures become an unavailable
+balance rather than an invented quota.
 
 `JetBrainsAiSubscriptionReader` prefers the activation manager's selected license: AI Access exposes the product
 display name through `JcpLicense.reported`, while legacy activation exposes `AipLicense.productType` and trial/pack
@@ -254,7 +255,9 @@ local monthly tokens and their authentication mode; Pro/Max quota percentages ar
 Provider protocols and storage formats are checked against the installed official packages. The provider-detail
 layout uses the supplied screenshot and independently implemented Swing charts.
 
-Chart history collects snapshots while provider panels exist and retains only numeric observations for 24 hours.
+Chart history is collected in background provider services, independently of provider panels, and retains only
+numeric observations for 24 hours. Refresh state reports successful local reads; it cannot verify completion of an
+internal IDE provider's asynchronous network update.
 Clicking a provider's subscription badge toggles its details and starts a countdown repaint timer when shown;
 hiding/disposal stops it. Live IDE checks should cover
 narrow/light/dark layouts, absent quotas, reset boundaries, 1/6/24-hour charts, visibility toggles, and repeated

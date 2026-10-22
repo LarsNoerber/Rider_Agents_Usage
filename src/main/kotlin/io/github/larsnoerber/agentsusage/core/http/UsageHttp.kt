@@ -6,6 +6,10 @@ import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
+import java.io.IOException
+import java.nio.ByteBuffer
+import java.util.concurrent.CompletionStage
+import java.util.concurrent.Flow
 import java.time.Duration
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
@@ -32,7 +36,7 @@ internal class UsageHttp : AutoCloseable {
         headers.forEach { (key, value) -> request.header(key, value) }
         if (post) request.header("Content-Type", "application/json").POST(HttpRequest.BodyPublishers.ofString("{}"))
         else request.GET()
-        val future = client.sendAsync(request.build(), HttpResponse.BodyHandlers.ofString())
+        val future = client.sendAsync(request.build()) { LimitedJsonBody() }
         active.set(future)
         try {
             if (closed.get()) { future.cancel(true); error("Usage reader disposed") }
@@ -54,6 +58,39 @@ internal class UsageHttp : AutoCloseable {
         closed.set(true)
         active.getAndSet(null)?.cancel(true)
         client.shutdownNow()
+    }
+}
+
+/** Enforce the limit while receiving bytes, including chunked responses without Content-Length. */
+private class LimitedJsonBody : HttpResponse.BodySubscriber<String> {
+    private val delegate = HttpResponse.BodySubscribers.ofString(Charsets.UTF_8)
+    private lateinit var subscription: Flow.Subscription
+    private var received = 0L
+    private var done = false
+
+    override fun getBody(): CompletionStage<String> = delegate.body
+
+    override fun onSubscribe(subscription: Flow.Subscription) {
+        this.subscription = subscription
+        delegate.onSubscribe(subscription)
+    }
+
+    override fun onNext(items: List<ByteBuffer>) {
+        if (done) return
+        received += items.sumOf { it.remaining().toLong() }
+        if (received > 2 * 1024 * 1024) {
+            done = true
+            subscription.cancel()
+            delegate.onError(IOException("Quota response exceeds the 2 MiB limit"))
+        } else delegate.onNext(items)
+    }
+
+    override fun onError(error: Throwable) {
+        if (!done) { done = true; delegate.onError(error) }
+    }
+
+    override fun onComplete() {
+        if (!done) { done = true; delegate.onComplete() }
     }
 }
 

@@ -1,5 +1,7 @@
 package io.github.larsnoerber.agentsusage.providers.cursor
 
+import io.github.larsnoerber.agentsusage.core.refresh.UsageProblem
+
 data class CursorUsage(
     val percentUsed: Int? = null,
     val autoPercentUsed: Int? = null,
@@ -11,5 +13,6 @@ data class CursorUsage(
     val plan: String? = null,
     val quotaScope: String = "Included plan",
     val updatedAt: Long = 0,
-    val error: String? = null
+    val error: String? = null,
+    val problem: UsageProblem = UsageProblem.UNAVAILABLE
 )

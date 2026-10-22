@@ -1,14 +1,15 @@
 # AgentMeter Marketplace materials
 
-## JetBrains Marketplace — first stable release 1.1.0
+## JetBrains Marketplace — version 1.2.0
 
 AgentMeter monitors OpenAI Codex, JetBrains AI, GitHub Copilot, Claude and Cursor in Rider.
-Version 1.1.0 is the first stable release prepared for this listing. Earlier GitHub versions are development previews.
+Version 1.2.0 improves refresh reliability, background history and resource use. Version 1.1.0 was the first stable release.
 The existing plugin ID remains `io.github.larsnoerber.agentsusage` for upgrade compatibility.
 
 The listing description is in `src/main/resources/META-INF/plugin.xml`. It introduces the current features,
 requirements and privacy behavior without development changelog or migration text.
-The description uses the release-tagged overview image; later source changes cannot alter this release's preview.
+The 1.2.0 description includes the overview and a separate status bar excerpt from GitHub's main branch.
+These source-hosted previews follow later artwork updates; the local media ZIP contains this build's image copies.
 
 ### Gallery images
 
@@ -24,6 +25,11 @@ No account data or credentials are read when rendering these images.
 | [Configuration](images/agents-usage-config.png)          | Choose providers, Weekly and Games (illustrated fresh installation)     |
 | [Weekly and Games](images/agents-usage-weekly-games.png) | Optional weekly boss battles and Tic-Tac-Toe (illustrated example)      |
 
+The overview includes an illustrated status bar excerpt beneath the provider cards. The additional
+`images/agents-usage-statusbar-excerpt.png` (1080 x 100) and editable SVG are included in the media bundle as a
+separate cropped composition. Fictional balances and the illustrated-example notice remain visible. The five
+full gallery images retain their 1280 x 800 dimensions.
+
 Regenerate with `python tools/render_marketplace_preview.py` (Pillow and Windows Segoe UI required).
 The existing Quota Portal logo is `images/agents-usage-logo.png`; the plugin's SVG logo stays in `META-INF`.
 
@@ -31,13 +37,13 @@ The existing Quota Portal logo is `images/agents-usage-logo.png`; the plugin's S
 
 Create the media bundle with `python tools/package_jetbrains_marketplace.py` after building the Rider plugin.
 
-The GitHub release provides `agentmeter-1.1.0.zip` for plugin upload and `agentmeter-marketplace-1.1.0.zip`
-with the five gallery PNGs, logo, HTML description, release notes and upload instructions.
+The local build provides `agentmeter-1.2.0.zip` for plugin upload and `agentmeter-marketplace-1.2.0.zip`
+with the five gallery PNGs, status bar excerpt, logo, HTML description, release notes and upload instructions.
 
 1. Upload the Rider plugin ZIP to JetBrains Marketplace with name **AgentMeter**.
 2. Use the packaged `plugin.xml` description (or the matching `description.html` in the media bundle).
 3. Upload the five PNGs under **Media**, retaining the illustrated-example captions.
-4. Use **First stable release** as the release summary; the release notes introduce the available features.
+4. Use the packaged 1.2.0 release notes for the refresh, history and resource-use improvements.
 
 Creating the ZIP and GitHub release does not submit the listing to JetBrains Marketplace.
 The 1280 × 800 image format

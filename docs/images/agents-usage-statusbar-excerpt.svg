@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="100" viewBox="0 0 1080 100">
+<title>AgentMeter status bar excerpt</title>
+<desc>Illustrated example; fictional quota balances. This is an illustration with example balances, not a live account screenshot.</desc>
+<rect x="0" y="0" width="1080" height="58" rx="6" fill="#2B2D30"/>
+<text x="24" y="15.0" fill="#DFE1E5" font-family="Segoe UI, sans-serif" font-size="24" font-weight="400" dominant-baseline="text-before-edge" text-anchor="start">OpenAi | D=</text>
+<text x="155.5" y="15.0" fill="#64CD87" font-family="Segoe UI, sans-serif" font-size="24" font-weight="400" dominant-baseline="text-before-edge" text-anchor="start">78%</text>
+<text x="201.0" y="15.0" fill="#DFE1E5" font-family="Segoe UI, sans-serif" font-size="24" font-weight="400" dominant-baseline="text-before-edge" text-anchor="start"> - W=</text>
+<text x="262.5" y="15.0" fill="#FFB94B" font-family="Segoe UI, sans-serif" font-size="24" font-weight="400" dominant-baseline="text-before-edge" text-anchor="start">42%</text>
+<text x="334.0" y="15.0" fill="#DFE1E5" font-family="Segoe UI, sans-serif" font-size="24" font-weight="400" dominant-baseline="text-before-edge" text-anchor="start">JetBrainAi | </text>
+<text x="457.0" y="15.0" fill="#64CD87" font-family="Segoe UI, sans-serif" font-size="24" font-weight="400" dominant-baseline="text-before-edge" text-anchor="start">70%</text>
+<text x="528.5" y="15.0" fill="#DFE1E5" font-family="Segoe UI, sans-serif" font-size="24" font-weight="400" dominant-baseline="text-before-edge" text-anchor="start">Copilot | </text>
+<text x="624.0" y="15.0" fill="#64CD87" font-family="Segoe UI, sans-serif" font-size="24" font-weight="400" dominant-baseline="text-before-edge" text-anchor="start">38%</text>
+<text x="24" y="72" fill="#A6A9B1" font-family="Segoe UI, sans-serif" font-size="17" font-weight="400" dominant-baseline="text-before-edge" text-anchor="start">Illustrated status bar excerpt · Example balances, not a live account screenshot</text>
+</svg>

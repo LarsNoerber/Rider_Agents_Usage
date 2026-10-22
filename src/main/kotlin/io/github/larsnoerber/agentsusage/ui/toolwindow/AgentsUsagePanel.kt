@@ -75,6 +75,7 @@ internal class AgentsUsagePanel : JPanel(BorderLayout()), Disposable {
     private var visibleAgentSelection: List<Boolean>? = null
     private var disposed = false
     private val visibilityListener: () -> Unit = { if (!disposed) updateVisibleAgents() }
+    private val toolbar = UsageToolbar(UsageRefreshCoordinator::refreshAll, ::showSettings)
     private val settings = RefreshSettingsPanel { showPage(OVERVIEW) }
 
     init {
@@ -83,7 +84,7 @@ internal class AgentsUsagePanel : JPanel(BorderLayout()), Disposable {
         overview.add(JPanel(BorderLayout()).apply {
             isOpaque = false
             add(JBLabel("AgentMeter").apply { font = font.deriveFont(Font.BOLD) }, BorderLayout.WEST)
-            add(UsageToolbar(UsageRefreshCoordinator::refreshAll, ::showSettings), BorderLayout.EAST)
+            add(toolbar, BorderLayout.EAST)
         }, BorderLayout.NORTH)
         agentOverview.add(agentUsageToggle, BorderLayout.NORTH)
         agentOverview.add(sections, BorderLayout.CENTER)
@@ -210,6 +211,7 @@ internal class AgentsUsagePanel : JPanel(BorderLayout()), Disposable {
 
     override fun dispose() {
         disposed = true
+        toolbar.dispose()
         UsageRefreshCoordinator.removeVisibilityListener(visibilityListener)
         codex?.dispose()
         jetBrainsAi?.dispose()

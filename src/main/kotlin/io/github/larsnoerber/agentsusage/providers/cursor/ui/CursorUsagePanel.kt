@@ -7,6 +7,7 @@ import io.github.larsnoerber.agentsusage.core.format.formatResetTime
 import io.github.larsnoerber.agentsusage.providers.cursor.CursorUsage
 import io.github.larsnoerber.agentsusage.providers.cursor.CursorUsageService
 import io.github.larsnoerber.agentsusage.ui.components.*
+import io.github.larsnoerber.agentsusage.ui.components.ProviderRefreshStatus
 import java.awt.BorderLayout
 import java.awt.GridLayout
 import javax.swing.JPanel
@@ -19,6 +20,7 @@ internal class CursorUsagePanel : JPanel(BorderLayout(0, 4)), Disposable {
     private val details = ProviderUsageDetails("cursor")
     private val summary = UsageSummary(details, header)
     private val status = JBLabel().apply { foreground = secondaryTextColor() }
+    private val refreshStatus = ProviderRefreshStatus("cursor")
     private val service = CursorUsageService.getInstance()
     private val listener: (CursorUsage) -> Unit = ::render
 
@@ -26,7 +28,7 @@ internal class CursorUsagePanel : JPanel(BorderLayout(0, 4)), Disposable {
         isOpaque = false
         add(header, BorderLayout.NORTH)
         add(JPanel(GridLayout(0, 1, 0, 4)).apply { isOpaque = false; add(plan); add(auto); add(api) }, BorderLayout.CENTER)
-        add(JPanel(BorderLayout(0, 3)).apply { isOpaque = false; add(summary, BorderLayout.NORTH); add(status, BorderLayout.SOUTH) }, BorderLayout.SOUTH)
+        add(JPanel(BorderLayout(0, 3)).apply { isOpaque = false; add(summary, BorderLayout.NORTH); add(JPanel(BorderLayout(0, 3)).apply { isOpaque = false; add(status, BorderLayout.NORTH); add(refreshStatus, BorderLayout.SOUTH) }, BorderLayout.SOUTH) }, BorderLayout.SOUTH)
         service.addListener(listener)
         render(service.current)
     }
@@ -49,13 +51,13 @@ internal class CursorUsagePanel : JPanel(BorderLayout(0, 4)), Disposable {
             usage.percentUsed?.let { UsageDetailMetric("plan", usage.quotaScope, it.toDouble(), usage.resetsAt) },
             usage.autoPercentUsed?.let { UsageDetailMetric("auto", "Auto", it.toDouble(), usage.resetsAt) },
             usage.apiPercentUsed?.let { UsageDetailMetric("api", "API", it.toDouble(), usage.resetsAt) }
-        ), record = usage.updatedAt > 0 && usage.error == null, observedAt = usage.updatedAt)
+        ))
         status.text = usage.error?.let(::compactUsageMessage).orEmpty()
         status.isVisible = usage.error != null
         status.toolTipText = header.toolTipText
         revalidate(); repaint()
     }
 
-    override fun dispose() { service.removeListener(listener); summary.dispose() }
+    override fun dispose() { service.removeListener(listener); summary.dispose(); refreshStatus.dispose() }
     private fun money(value: Double?): String = value?.let { "$%.2f".format(java.util.Locale.US, it) } ?: "—"
 }

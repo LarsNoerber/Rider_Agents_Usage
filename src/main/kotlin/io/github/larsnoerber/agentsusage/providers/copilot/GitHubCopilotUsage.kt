@@ -1,5 +1,7 @@
 package io.github.larsnoerber.agentsusage.providers.copilot
 
+import io.github.larsnoerber.agentsusage.core.refresh.UsageProblem
+
 import kotlin.math.roundToInt
 
 data class CopilotQuota(
@@ -47,5 +49,6 @@ data class GitHubCopilotUsage(
     val plan: String? = null,
     val resetsAt: Long? = null,
     val reportedAt: Long? = null,
-    val error: String? = null
+    val error: String? = null,
+    val problem: UsageProblem = UsageProblem.UNAVAILABLE
 )

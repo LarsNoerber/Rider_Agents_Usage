@@ -1,5 +1,7 @@
 package io.github.larsnoerber.agentsusage.providers.codex
 
+import io.github.larsnoerber.agentsusage.core.refresh.UsageProblem
+
 data class CodexUsage(
     val fiveHourLeft: Int? = null,
     val fiveHourReset: String? = null,
@@ -10,5 +12,6 @@ data class CodexUsage(
     val credits: Int? = null,
     val updatedAt: Long = System.currentTimeMillis(),
     val error: String? = null,
-    val plan: String? = null
+    val plan: String? = null,
+    val problem: UsageProblem = UsageProblem.UNAVAILABLE
 )

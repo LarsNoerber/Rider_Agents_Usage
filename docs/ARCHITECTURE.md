@@ -587,3 +587,30 @@ masked session-key input.
 `Core/UsageQuota.DisplayValue` carries reported non-percentage values such as OpenRouter dollar spend or an explicit
 No limit key cap. Overview rows, widget text/rings and click details render these without a fabricated quota bar.
 Connect and Save settings both consume a pending masked OpenRouter key through the coordinator.
+
+## JetBrains/Rider refresh and measurements (1.2.0)
+
+All five provider services use `core/refresh/UsagePolling`. The application coordinator invalidates a shared
+selection generation under the publication lock when provider choices change. Background results and queued EDT
+notifications must belong to the current generation. In-flight provider requests remain bounded by their readers;
+obsolete results are discarded, and a pending refresh runs after an existing read finishes. Codex uses the same
+scheduler with no intermediate local reads. Optional provider services still require an installed source.
+
+`core/refresh/UsageRefreshStatus` holds runtime-only loading, last successful read, original observation time and
+typed known authentication/compatibility failures. Services retain last measured quota values during failures;
+these values do not establish authentication. `ProviderRefreshStatus`, the overview toolbar and status-widget
+tooltips subscribe to this metadata on the EDT and remove their listeners on disposal. Percentage text retains
+its quota color. A successful local IDE-state read does not prove that the provider completed a remote refresh.
+
+Provider services record numeric chart history after generation validation on the background thread, independent
+of provider-panel construction. UI details only render the history. Persisted history identifiers and its 24-hour
+retention are unchanged. No errors, provider identities, account details or authentication enter this history.
+
+Claude scans directories at most once per 30 seconds and inspects known files at most once per 15 seconds. It
+retains only per-message numeric usage/model metadata in memory, seeks to the last complete newline on append,
+and replaces repeated streamed-message totals. Partial trailing lines are reread on the next append. Truncation,
+changed file identities and non-growing rewrites trigger a full file read. An in-place rewrite followed by growth
+without a changed file identity cannot be distinguished from an append; the reader assumes append-only session
+logs. Lines over 4 MiB are skipped. Unreadable files preserve previously read totals with an incomplete notice.
+HTTP quota responses are limited to 2 MiB by a subscriber that cancels reception at the limit, including chunked
+responses; the existing HTTPS, no-redirect, timeout and rate-limit rules are preserved.

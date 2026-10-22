@@ -18,7 +18,7 @@ description = descriptor.findtext("description").strip()
 changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
 notes = changelog.split(f"## {version}", 1)[1].split("\n## ", 1)[0]
 notes = notes.split("\n", 1)[1].strip()
-release_notes = f"# {name} {version}\n\nFirst stable release prepared for JetBrains Marketplace.\n\n{notes}\n"
+release_notes = f"# {name} {version}\n\nJetBrains/Rider refresh and reliability improvements.\n\n{notes}\n"
 gallery = [
     ("agents-usage-overview", "Five providers in one usage overview"),
     ("agents-usage-details", "Click a subscription badge for details and charts"),
@@ -31,7 +31,8 @@ instructions = (
     f"Plugin name: {name}\nPlugin ID: {descriptor.findtext('id')}\n"
     f"Plugin archive: agentmeter-{version}.zip (separate release asset)\n\n"
     "Use description.html as the listing description and release-notes.md as the release notes.\n"
-    "Upload the PNGs under Media. All images are 1280 x 800 illustrated examples, not live screenshots.\n"
+    "Upload the PNGs under Media. Gallery images are 1280 x 800 illustrated examples, not live screenshots.\n"
+    "The additional status bar excerpt is 1080 x 100; it is also included in the overview image.\n"
     "Keep the example label in gallery captions. Account data depends on installed providers and plans.\n\n"
     "Suggested captions:\n\n"
     + "\n".join(f"- {filename}.png: {caption} (illustrated example)" for filename, caption in gallery)
@@ -47,6 +48,9 @@ with ZipFile(archive, "w", ZIP_DEFLATED, compresslevel=9) as bundle:
     for filename, _ in gallery:
         for suffix in (".png", ".svg"):
             bundle.write(ROOT / "docs/images" / (filename + suffix), "images/" + filename + suffix)
+    for suffix in (".png", ".svg"):
+        bundle.write(ROOT / "docs/images" / ("agents-usage-statusbar-excerpt" + suffix),
+                     "images/agents-usage-statusbar-excerpt" + suffix)
     bundle.write(ROOT / "docs/images/agents-usage-logo.png", "images/agents-usage-logo.png")
 (destination / f"agentmeter-{version}-release-notes.md").write_text(release_notes, encoding="utf-8")
 print(f"Marketplace bundle: {archive}")

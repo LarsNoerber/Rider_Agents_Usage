@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.2.0 — 2026-10-22
+
+- Restore JetBrains AI quota readings for current AI Assistant versions, which wrap credit values in `Available` /
+  `Reached` quota states and refill data in `Known`.
+
+- Improve JetBrains/Rider refresh handling: discard obsolete selections, show refresh progress and last successful
+  readings, and retain clearly marked stale values across provider failures. Distinguish known sign-in and API
+  compatibility problems without treating cached measurements as authentication.
+- Collect numeric chart history in provider services, including when only status widgets are used.
+- Read appended Claude session logs incrementally, with bounded lines, less frequent directory scans and handling
+  for partial writes, truncation and file replacement.
+- Limit JetBrains quota HTTP responses to 2 MiB while receiving the response.
+- Add an illustrated status bar excerpt to the JetBrains Marketplace overview and as separate media in the upload bundle.
+
+
 ## Unreleased
 
 - Prepare Chrome Web Store submission guidance and a local Chrome package/artwork build with a padded 128px icon,

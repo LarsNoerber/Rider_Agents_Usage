@@ -1,5 +1,7 @@
 package io.github.larsnoerber.agentsusage.providers.cursor
 
+import io.github.larsnoerber.agentsusage.core.refresh.UsageProblem
+
 import com.google.gson.JsonParser
 import io.github.larsnoerber.agentsusage.core.http.UsageHttp
 import io.github.larsnoerber.agentsusage.core.http.UsageHttpFailure
@@ -33,16 +35,16 @@ internal class CursorUsageReader : AutoCloseable {
         return try {
         val agentAuth = agentAuthPath()
         val token = (if (Files.isRegularFile(agentAuth)) LocalUsageFiles.json(agentAuth).stringValue("accessToken") else null)
-            ?: return CursorUsage(error = "Sign in to the Cursor ACP agent to read usage.")
+            ?: return CursorUsage(problem = UsageProblem.AUTHENTICATION, error = "Sign in to the Cursor ACP agent to read usage.")
         val parts = token.split('.')
-        if (parts.size != 3) return CursorUsage(error = "Cursor session is unavailable. Sign in again in Cursor.")
+        if (parts.size != 3) return CursorUsage(problem = UsageProblem.AUTHENTICATION, error = "Cursor session is unavailable. Sign in again in Cursor.")
         val payload = JsonParser.parseString(String(Base64.getUrlDecoder().decode(parts[1]), Charsets.UTF_8)).asJsonObject
         val user = payload.stringValue("sub")?.substringAfterLast('|')
             ?.takeIf { it.matches(Regex("[A-Za-z0-9._-]+")) }
             ?: return CursorUsage(error = "Cursor session format is unavailable.")
         val expires = payload.numberValue("exp")
         if (expires == null || expires <= Instant.now().epochSecond + 60)
-            return CursorUsage(error = "Cursor session expired. Sign in again to the Cursor ACP agent.")
+            return CursorUsage(problem = UsageProblem.AUTHENTICATION, error = "Cursor session expired. Sign in again to the Cursor ACP agent.")
         val response = try {
             http.get("https://cursor.com/api/usage-summary", mapOf(
                 "Cookie" to "WorkosCursorSessionToken=$user%3A%3A$token", "Origin" to "https://cursor.com",
@@ -83,7 +85,8 @@ internal class CursorUsageReader : AutoCloseable {
             error = if (percent == null) "Cursor did not report a finite quota for this plan." else null
         )
     } catch (failure: UsageHttpFailure) {
-        CursorUsage(error = when (failure.status) {
+        CursorUsage(problem = if (failure.status == 401 || failure.status == 403) UsageProblem.AUTHENTICATION else UsageProblem.UNAVAILABLE,
+            error = when (failure.status) {
             401, 403 -> "Cursor rejected the session. Sign in again in Cursor."
             429 -> "Cursor usage is rate limited. Try again later."
             else -> "Cursor quota request failed (HTTP ${failure.status})."

@@ -1,5 +1,7 @@
 package io.github.larsnoerber.agentsusage.providers.claudecode
 
+import io.github.larsnoerber.agentsusage.core.refresh.UsageProblem
+
 import com.google.gson.JsonParser
 import com.intellij.util.concurrency.AppExecutorUtil
 import io.github.larsnoerber.agentsusage.core.agents.AcpAgentInstallation
@@ -42,7 +44,7 @@ internal class ClaudeAuthStatusReader : AutoCloseable {
                         quotaError = "Signed in with an API key; Claude Pro/Max subscription quotas do not apply to this login.")
                     loggedIn -> unavailable.copy(plan = status.stringValue("subscriptionType"),
                         quotaError = "Claude is signed in, but subscription quota credentials are not readable in the local store.")
-                    else -> ClaudeCodeUsage(quotaError = "Sign in to the Claude ACP agent or Claude Code to load usage.")
+                    else -> ClaudeCodeUsage(problem = UsageProblem.AUTHENTICATION, quotaError = "Sign in to the Claude ACP agent or Claude Code to load usage.")
                 }
             } finally {
                 timeout.cancel(false)

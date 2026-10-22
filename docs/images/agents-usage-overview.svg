@@ -87,5 +87,14 @@
 <text x="676" y="601" fill="#A6A9B1" font-family="Segoe UI, sans-serif" font-size="19" font-weight="400" dominant-baseline="text-before-edge" text-anchor="start">Choose visible providers in configuration.</text>
 <text x="676" y="634" fill="#A6A9B1" font-family="Segoe UI, sans-serif" font-size="19" font-weight="400" dominant-baseline="text-before-edge" text-anchor="start">Click a plan badge for details and charts.</text>
 <text x="676" y="667" fill="#C397FA" font-family="Segoe UI, sans-serif" font-size="18" font-weight="400" dominant-baseline="text-before-edge" text-anchor="start">Weekly and Games are optional.</text>
-<text x="100" y="755" fill="#A6A9B1" font-family="Segoe UI, sans-serif" font-size="17" font-weight="400" dominant-baseline="text-before-edge" text-anchor="start">Example balances · Illustrated preview, not a live account screenshot</text>
+<rect x="100" y="710" width="1080" height="34" rx="6" fill="#2B2D30"/>
+<text x="124" y="715.0" fill="#DFE1E5" font-family="Segoe UI, sans-serif" font-size="20" font-weight="400" dominant-baseline="text-before-edge" text-anchor="start">OpenAi | D=</text>
+<text x="234.5" y="715.0" fill="#64CD87" font-family="Segoe UI, sans-serif" font-size="20" font-weight="400" dominant-baseline="text-before-edge" text-anchor="start">78%</text>
+<text x="273.0" y="715.0" fill="#DFE1E5" font-family="Segoe UI, sans-serif" font-size="20" font-weight="400" dominant-baseline="text-before-edge" text-anchor="start"> - W=</text>
+<text x="324.0" y="715.0" fill="#FFB94B" font-family="Segoe UI, sans-serif" font-size="20" font-weight="400" dominant-baseline="text-before-edge" text-anchor="start">42%</text>
+<text x="388.5" y="715.0" fill="#DFE1E5" font-family="Segoe UI, sans-serif" font-size="20" font-weight="400" dominant-baseline="text-before-edge" text-anchor="start">JetBrainAi | </text>
+<text x="492.0" y="715.0" fill="#64CD87" font-family="Segoe UI, sans-serif" font-size="20" font-weight="400" dominant-baseline="text-before-edge" text-anchor="start">70%</text>
+<text x="556.5" y="715.0" fill="#DFE1E5" font-family="Segoe UI, sans-serif" font-size="20" font-weight="400" dominant-baseline="text-before-edge" text-anchor="start">Copilot | </text>
+<text x="637.0" y="715.0" fill="#64CD87" font-family="Segoe UI, sans-serif" font-size="20" font-weight="400" dominant-baseline="text-before-edge" text-anchor="start">38%</text>
+<text x="100" y="755" fill="#A6A9B1" font-family="Segoe UI, sans-serif" font-size="17" font-weight="400" dominant-baseline="text-before-edge" text-anchor="start">Example balances · Includes status bar excerpt · Illustrated preview</text>
 </svg>

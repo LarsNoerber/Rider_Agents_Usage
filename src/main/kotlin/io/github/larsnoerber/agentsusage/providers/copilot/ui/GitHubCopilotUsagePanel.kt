@@ -16,6 +16,7 @@ import io.github.larsnoerber.agentsusage.ui.components.UsageSummary
 import io.github.larsnoerber.agentsusage.ui.components.ProviderUsageDetails
 import io.github.larsnoerber.agentsusage.ui.components.UsageDetailMetric
 import io.github.larsnoerber.agentsusage.ui.components.compactUsageMessage
+import io.github.larsnoerber.agentsusage.ui.components.ProviderRefreshStatus
 import java.awt.BorderLayout
 import java.awt.GridLayout
 import javax.swing.JPanel
@@ -27,6 +28,7 @@ internal class GitHubCopilotUsagePanel : JPanel(BorderLayout(0, 4)), Disposable 
     private val status = JBLabel().apply { foreground = JBColor.GRAY }
     private val details = ProviderUsageDetails("copilot")
     private val summary = UsageSummary(details, header)
+    private val refreshStatus = ProviderRefreshStatus("copilot")
     private val service = GitHubCopilotUsageService.getInstance()
     private val listener: (GitHubCopilotUsage) -> Unit = ::render
 
@@ -37,7 +39,7 @@ internal class GitHubCopilotUsagePanel : JPanel(BorderLayout(0, 4)), Disposable 
         add(JPanel(BorderLayout(0, 3)).apply {
             isOpaque = false
             add(summary, BorderLayout.NORTH)
-            add(status, BorderLayout.SOUTH)
+            add(JPanel(BorderLayout(0, 3)).apply { isOpaque = false; add(status, BorderLayout.NORTH); add(refreshStatus, BorderLayout.SOUTH) }, BorderLayout.SOUTH)
         }, BorderLayout.SOUTH)
         service.addListener(listener)
         render(service.current)
@@ -48,7 +50,7 @@ internal class GitHubCopilotUsagePanel : JPanel(BorderLayout(0, 4)), Disposable 
         details.render(quotas.mapNotNull { quota ->
             quota.percentUsed?.let { UsageDetailMetric(
                 quota.title.lowercase().replace(Regex("[^a-z0-9]"), "-"), quota.title, it.toDouble(), usage.resetsAt) }
-        }, record = usage.error == null)
+        })
         val titles = quotas.map { it.title }.ifEmpty { listOf("Usage") }
         // Available categories depend on the Copilot plan and billing model.
         if (usageCards.keys.toList() != titles) {
@@ -89,7 +91,7 @@ internal class GitHubCopilotUsagePanel : JPanel(BorderLayout(0, 4)), Disposable 
         repaint()
     }
 
-    override fun dispose() { service.removeListener(listener); summary.dispose() }
+    override fun dispose() { service.removeListener(listener); summary.dispose(); refreshStatus.dispose() }
 }
 
 private class CopilotUsageCard(title: String) : UsageCard(title) {

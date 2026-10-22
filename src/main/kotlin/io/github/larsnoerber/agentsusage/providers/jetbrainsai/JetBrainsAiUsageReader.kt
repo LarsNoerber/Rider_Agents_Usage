@@ -1,5 +1,7 @@
 package io.github.larsnoerber.agentsusage.providers.jetbrainsai
 
+import io.github.larsnoerber.agentsusage.core.refresh.UsageProblem
+
 import com.intellij.openapi.application.ApplicationManager
 import io.github.larsnoerber.agentsusage.core.reflection.PluginApi
 import io.github.larsnoerber.agentsusage.core.reflection.loadedPlugin
@@ -22,17 +24,22 @@ internal class JetBrainsAiUsageReader {
         if (requestUpdate) getter(manager, "requestUpdateEverything")
         val info = flowValue(getter(manager, "getQuotaInfo") ?: error("JetBrains AI quota is unavailable"))
             ?: return JetBrainsAiUsage(plan = plan, planUnavailableReason = planUnavailableReason,
-                error = "Waiting for JetBrains AI quota. Sign in to AI Assistant.")
-        val refill = getter(manager, "getNextRefill")?.let(::flowValue)
+                problem = UsageProblem.AUTHENTICATION, error = "Waiting for JetBrains AI quota. Sign in to AI Assistant.")
+        val refillInfo = getter(manager, "getNextRefill")?.let(::flowValue)
+        // Recent AI Assistant versions wrap the refill payload in QuotaRefillInfo.Known.
+        val refill = refillInfo?.takeIf { it.javaClass.simpleName == "Known" }
+            ?.let { getter(it, "getRefill", required = false) } ?: refillInfo
         val reset = refill?.let { getter(it, "getNext", required = false) }?.toString()
             ?.let { runCatching { Instant.parse(it).epochSecond }.getOrNull() }
         return when (info.javaClass.simpleName) {
             "Unlimited" -> JetBrainsAiUsage(unlimited = true, plan = plan, planUnavailableReason = planUnavailableReason)
             "Available", "Reached" -> {
+                // QuotaManager2 now publishes status wrappers; the credit values live in their JbaiQuota payload.
+                val quotaInfo = getter(info, "getQuota", required = false) ?: info
                 // `current` is consumed quota; `available` in the details is the remaining balance.
-                val maximum = amount(info, "getMaximum") ?: error("JetBrains AI quota format is unsupported")
+                val maximum = amount(quotaInfo, "getMaximum") ?: error("JetBrains AI quota format is unsupported")
                 val used = if (info.javaClass.simpleName == "Reached") maximum else
-                    amount(info, "getCurrent") ?: error("JetBrains AI quota format is unsupported")
+                    amount(quotaInfo, "getCurrent") ?: error("JetBrains AI quota format is unsupported")
                 val unitsPerCredit = managerClass.classLoader.loadClass("$QUOTA_PACKAGE.CreditsKt")
                     .getMethod("getUNITS_IN_CREDIT").invoke(null) as BigDecimal
                 fun quota(remaining: BigDecimal, total: BigDecimal) = JetBrainsAiQuota(
@@ -40,7 +47,7 @@ internal class JetBrainsAiUsageReader {
                     total.max(BigDecimal.ZERO).divide(unitsPerCredit)
                 )
                 fun details(name: String): JetBrainsAiQuota? {
-                    val detail = getter(info, name, required = false) ?: return null
+                    val detail = getter(quotaInfo, name, required = false) ?: return null
                     val total = amount(detail, "getMaximum") ?: return null
                     val remaining = amount(detail, "getAvailable")
                         ?: amount(detail, "getCurrent")?.let { total.subtract(it) } ?: return null
@@ -58,7 +65,7 @@ internal class JetBrainsAiUsageReader {
             "Error" -> JetBrainsAiUsage(plan = plan, planUnavailableReason = planUnavailableReason,
                 error = "JetBrains AI could not refresh the credit balance. Check AI Assistant.")
             else -> JetBrainsAiUsage(plan = plan, planUnavailableReason = planUnavailableReason,
-                error = "Waiting for JetBrains AI quota. Sign in to AI Assistant.")
+                problem = UsageProblem.AUTHENTICATION, error = "Waiting for JetBrains AI quota. Sign in to AI Assistant.")
         }
     }
 

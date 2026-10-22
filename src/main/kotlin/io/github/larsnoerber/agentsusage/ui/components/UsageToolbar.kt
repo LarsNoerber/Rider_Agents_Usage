@@ -1,5 +1,10 @@
 package io.github.larsnoerber.agentsusage.ui.components
 
+import com.intellij.openapi.Disposable
+import io.github.larsnoerber.agentsusage.application.UsageRefreshCoordinator
+import io.github.larsnoerber.agentsusage.core.refresh.UsageRefreshStatuses
+import io.github.larsnoerber.agentsusage.core.format.formatCompactTime
+import javax.swing.JProgressBar
 import com.intellij.ui.JBColor
 import com.intellij.ui.components.JBLabel
 import com.intellij.util.ui.JBUI
@@ -13,12 +18,52 @@ import javax.swing.JPanel
 internal class UsageToolbar(
     private val onRefresh: () -> Unit,
     private val onSettings: () -> Unit
-) : JPanel(FlowLayout(FlowLayout.RIGHT, 3, 0)) {
+) : JPanel(FlowLayout(FlowLayout.RIGHT, 3, 0)), Disposable {
+    private var disposed = false
+    private val refresh = refreshButton()
+    private val progress = JProgressBar().apply {
+        isIndeterminate = true
+        preferredSize = JBUI.size(32, 8)
+        isVisible = false
+        accessibleContext.accessibleName = "Refreshing selected providers"
+    }
+    private val status = JBLabel().apply {
+        foreground = secondaryTextColor()
+        font = font.deriveFont((font.size2D - 2).coerceAtLeast(9f))
+    }
+    private val listener: () -> Unit = { if (!disposed) renderStatus() }
+
     init {
         isOpaque = false
-        add(refreshButton())
+        add(status)
+        add(progress)
+        add(refresh)
         add(toolbarDivider())
         add(settingsButton())
+        UsageRefreshStatuses.addListener(listener)
+        UsageRefreshCoordinator.addVisibilityListener(listener)
+        renderStatus()
+    }
+
+    private fun renderStatus() {
+        val states = UsageRefreshCoordinator.selectedProviderIds().map { UsageRefreshStatuses.get(it) }
+        val loading = states.any { it.loading }
+        progress.isVisible = loading
+        refresh.isEnabled = !loading
+        val lastSuccess = states.map { it.lastSuccess }.filter { it > 0 }.minOrNull()
+        status.text = if (loading) "Refreshing..." else lastSuccess?.let { "Last success ${formatCompactTime(it / 1000)}" }.orEmpty()
+        status.toolTipText = usageTooltip("Selected providers", UsageRefreshCoordinator.selectedProviderIds().flatMap { id ->
+            listOf(id) + refreshStatusLines(UsageRefreshStatuses.get(id))
+        })
+        revalidate()
+        repaint()
+    }
+
+    override fun dispose() {
+        disposed = true
+        UsageRefreshStatuses.removeListener(listener)
+        UsageRefreshCoordinator.removeVisibilityListener(listener)
+        progress.isIndeterminate = false
     }
 
     private fun refreshButton(): JButton = JButton("↻").apply {

@@ -177,13 +177,13 @@ def detail_card(x, name, plan, accent, bars, summary, details):
         label(x + 18 + text_width(key + ":") + 7, y, value, size=18, bold=True)
 
 
-def status_bar(y, groups):
-    rectangle(100, y, 1080, 68, PANEL, radius=6)
-    x = 124
+def status_bar(y, groups, size=28, height=68, x=100, width=1080):
+    rectangle(x, y, width, height, PANEL, radius=6)
+    x += 24
     for parts in groups:
         for value, color in parts:
-            label(x, y + 17, value, size=28, color=color)
-            x += text_width(value, size=28)
+            label(x, y + (height - size) / 2 - 2, value, size=size, color=color)
+            x += text_width(value, size=size)
         x += 26
 
 
@@ -234,6 +234,10 @@ def compact_card(x, y, entry, width=528):
     label(x + 20, y + 125, summary, size=17, color=MUTED)
 
 
+openai_parts = [("OpenAi | D=", TEXT), ("78%", GREEN), (" - W=", TEXT), ("42%", AMBER)]
+jetbrains_parts = [("JetBrainAi | ", TEXT), ("70%", GREEN)]
+copilot_parts = [("Copilot | ", TEXT), ("38%", GREEN)]
+
 canvas("Five providers. One usage overview.")
 for index, entry in enumerate(PROVIDERS):
     compact_card(100 if index < 3 else 652, 194 + (index if index < 3 else index - 3) * 172, entry)
@@ -242,7 +246,8 @@ label(676, 558, "Make it your own", size=24, bold=True)
 label(676, 601, "Choose visible providers in configuration.", size=19, color=MUTED)
 label(676, 634, "Click a plan badge for details and charts.", size=19, color=MUTED)
 label(676, 667, "Weekly and Games are optional.", size=18, color="#C397FA")
-footer()
+status_bar(710, [openai_parts, jetbrains_parts, copilot_parts], size=20, height=34)
+footer("Example balances \u00b7 Includes status bar excerpt \u00b7 Illustrated preview")
 save_preview("agents-usage-overview")
 
 canvas("Click a subscription badge to show or hide details")
@@ -270,9 +275,6 @@ footer()
 save_preview("agents-usage-details")
 
 canvas("Quota colors, right in your status bar")
-openai_parts = [("OpenAi | D=", TEXT), ("78%", GREEN), (" - W=", TEXT), ("42%", AMBER)]
-jetbrains_parts = [("JetBrainAi | ", TEXT), ("70%", GREEN)]
-copilot_parts = [("Copilot | ", TEXT), ("38%", GREEN)]
 label(100, 213, "Your selected providers stay together", size=25, bold=True)
 status_bar(257, [openai_parts, jetbrains_parts, copilot_parts])
 label(100, 364, "OpenAI and JetBrains AI show remaining quota.", size=24, color=MUTED)
@@ -342,3 +344,9 @@ for column, row_index in [(2,0), (0,1)]:
 label(828, 650, "Wins 3    Draws 2    Losses 1", size=20, color=MUTED)
 footer("Illustrated example · Enable Weekly and Games in configuration · Both off by default")
 save_preview("agents-usage-weekly-games")
+
+# A tight, separately uploadable excerpt shares exactly the gallery status rendering.
+start_preview(1080, 100, "AgentMeter status bar excerpt", "Illustrated example; fictional quota balances.")
+status_bar(0, [openai_parts, jetbrains_parts, copilot_parts], size=24, height=58, x=0)
+label(24, 72, "Illustrated status bar excerpt \u00b7 Example balances, not a live account screenshot", size=17, color=MUTED)
+save_preview("agents-usage-statusbar-excerpt")

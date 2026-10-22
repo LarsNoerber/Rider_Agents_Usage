@@ -15,7 +15,7 @@ class CursorStatusBarWidgetFactory : StatusBarWidgetFactory {
     override fun isAvailable(project: Project): Boolean =
         AgentsUsageSettings.getInstance().state.showCursor && CursorUsageService.isAvailable()
     override fun createWidget(project: Project): StatusBarWidget =
-        UsageStatusBarWidget(project, getId(), CursorUsageService.getInstance(), ::presentation)
+        UsageStatusBarWidget(project, getId(), "cursor", CursorUsageService.getInstance(), ::presentation)
     override fun disposeWidget(widget: StatusBarWidget) = widget.dispose()
 }
 

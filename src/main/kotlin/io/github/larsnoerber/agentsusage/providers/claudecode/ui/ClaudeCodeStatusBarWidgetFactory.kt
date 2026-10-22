@@ -15,7 +15,7 @@ class ClaudeCodeStatusBarWidgetFactory : StatusBarWidgetFactory {
     override fun isAvailable(project: Project): Boolean =
         AgentsUsageSettings.getInstance().state.showClaudeCode && ClaudeCodeUsageService.isInstalled()
     override fun createWidget(project: Project): StatusBarWidget =
-        UsageStatusBarWidget(project, getId(), ClaudeCodeUsageService.getInstance(), ::presentation)
+        UsageStatusBarWidget(project, getId(), "claude", ClaudeCodeUsageService.getInstance(), ::presentation)
     override fun disposeWidget(widget: StatusBarWidget) = widget.dispose()
 }
 

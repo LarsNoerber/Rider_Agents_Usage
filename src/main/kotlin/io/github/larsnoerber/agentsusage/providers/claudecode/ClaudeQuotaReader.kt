@@ -1,5 +1,7 @@
 package io.github.larsnoerber.agentsusage.providers.claudecode
 
+import io.github.larsnoerber.agentsusage.core.refresh.UsageProblem
+
 import io.github.larsnoerber.agentsusage.core.http.UsageHttp
 import io.github.larsnoerber.agentsusage.core.http.UsageHttpFailure
 import io.github.larsnoerber.agentsusage.core.storage.LocalUsageFiles
@@ -22,9 +24,9 @@ internal class ClaudeQuotaReader : AutoCloseable {
             val oauth = LocalUsageFiles.json(credentialsFile).objectValue("claudeAiOauth")
                 ?: return authStatus.read()
             val token = oauth.stringValue("accessToken")
-                ?: return ClaudeCodeUsage(quotaError = "Claude subscription sign-in unavailable.")
+                ?: return ClaudeCodeUsage(problem = UsageProblem.AUTHENTICATION, quotaError = "Claude subscription sign-in unavailable.")
             if (oauth.numberValue("expiresAt")?.let { it <= System.currentTimeMillis() } == true)
-                return ClaudeCodeUsage(quotaError = "Claude session expired. Open Claude Code to renew your sign-in.")
+                return ClaudeCodeUsage(problem = UsageProblem.AUTHENTICATION, quotaError = "Claude session expired. Open Claude Code to renew your sign-in.")
             val response = http.get("https://api.anthropic.com/api/oauth/usage", mapOf(
                 "Authorization" to "Bearer $token", "anthropic-beta" to "oauth-2025-04-20",
                 "User-Agent" to "claude-code/2.1.131", "Content-Type" to "application/json"))
@@ -39,7 +41,8 @@ internal class ClaudeQuotaReader : AutoCloseable {
                 updatedAt = System.currentTimeMillis(),
                 quotaError = if (quotas.isEmpty()) "Claude did not report subscription quotas." else null)
         } catch (failure: UsageHttpFailure) {
-            ClaudeCodeUsage(quotaError = when (failure.status) {
+            ClaudeCodeUsage(problem = if (failure.status == 401 || failure.status == 403) UsageProblem.AUTHENTICATION else UsageProblem.UNAVAILABLE,
+            quotaError = when (failure.status) {
                 401, 403 -> "Claude rejected the session. Sign in again with Claude Code."
                 429 -> "Claude usage is rate limited. Try again later."
                 else -> "Claude quota request failed (HTTP ${failure.status})."

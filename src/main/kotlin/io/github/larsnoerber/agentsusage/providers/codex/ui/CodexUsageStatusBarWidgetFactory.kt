@@ -20,7 +20,7 @@ class CodexUsageStatusBarWidgetFactory : StatusBarWidgetFactory {
     override fun isAvailable(project: Project): Boolean =
         AgentsUsageSettings.getInstance().state.showOpenAi && CodexUsageService.isAvailable()
     override fun createWidget(project: Project): StatusBarWidget =
-        UsageStatusBarWidget(project, getId(), CodexUsageService.getInstance(), ::codexPresentation)
+        UsageStatusBarWidget(project, getId(), "codex", CodexUsageService.getInstance(), ::codexPresentation)
     override fun disposeWidget(widget: StatusBarWidget) = widget.dispose()
 }
 

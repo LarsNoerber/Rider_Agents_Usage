@@ -12,6 +12,7 @@ import io.github.larsnoerber.agentsusage.ui.components.QuotaUsageCard
 import io.github.larsnoerber.agentsusage.ui.components.compactUsageMessage
 import io.github.larsnoerber.agentsusage.ui.components.usageTooltip
 import java.awt.GridLayout
+import io.github.larsnoerber.agentsusage.ui.components.ProviderRefreshStatus
 import java.awt.BorderLayout
 import javax.swing.JPanel
 
@@ -22,6 +23,7 @@ internal class ClaudeCodeUsagePanel : JPanel(BorderLayout(0, 4)), Disposable {
     private val cards = JPanel(GridLayout(0, 1, 0, 4)).apply { isOpaque = false }
     private val quotaCards = linkedMapOf<String, QuotaUsageCard>()
     private val status = JBLabel()
+    private val refreshStatus = ProviderRefreshStatus("claude")
     private val service = ClaudeCodeUsageService.getInstance()
     private val listener: (ClaudeCodeUsage) -> Unit = ::render
 
@@ -32,7 +34,7 @@ internal class ClaudeCodeUsagePanel : JPanel(BorderLayout(0, 4)), Disposable {
         add(JPanel(BorderLayout(0, 3)).apply {
             isOpaque = false
             add(summary, BorderLayout.NORTH)
-            add(status, BorderLayout.SOUTH)
+            add(JPanel(BorderLayout(0, 3)).apply { isOpaque = false; add(status, BorderLayout.NORTH); add(refreshStatus, BorderLayout.SOUTH) }, BorderLayout.SOUTH)
         }, BorderLayout.SOUTH)
         service.addListener(listener)
         render(service.current)
@@ -61,7 +63,7 @@ internal class ClaudeCodeUsagePanel : JPanel(BorderLayout(0, 4)), Disposable {
         details.render(usage.quotas.map { quota ->
             UsageDetailMetric(quota.title.lowercase(), quota.title, quota.percentUsed.toDouble(), quota.resetsAt,
                 if (quota.title == "Session") 5 * 3600L else 7 * 86400L)
-        }, record = usage.quotaError == null && usage.updatedAt > 0, observedAt = usage.updatedAt)
+        })
         summary.render("Claude Code this month", listOf(
             "Tokens" to if (usage.logsFound) usage.totalTokens.formatted() else "—",
             "Requests" to if (usage.logsFound) usage.requests.formatted() else "—",
@@ -86,7 +88,7 @@ internal class ClaudeCodeUsagePanel : JPanel(BorderLayout(0, 4)), Disposable {
         repaint()
     }
 
-    override fun dispose() { service.removeListener(listener); summary.dispose() }
+    override fun dispose() { service.removeListener(listener); summary.dispose(); refreshStatus.dispose() }
 
     private fun Long.formatted(): String = "%,d".format(this)
 }

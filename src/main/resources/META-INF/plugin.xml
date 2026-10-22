@@ -21,11 +21,17 @@
         <p>Optional Weekly and Games checkboxes enable local weekly insights, quota forecasts,
         a boss battle with visible provider hits, and Tic-Tac-Toe with saved scores. Both are disabled by default.</p>
         <h3>Usage preview</h3>
-        <p><img src="https://raw.githubusercontent.com/larsnoerber/Rider_Agents_Usage/v1.1.0/docs/images/agents-usage-overview.png"
+        <p><img src="https://raw.githubusercontent.com/larsnoerber/Rider_Agents_Usage/main/docs/images/agents-usage-overview.png"
                 alt="AgentMeter overview: illustrated example balances for five providers"
                 width="760" style="max-width:100%; height:auto;"/></p>
         <p>Illustrated preview with example balances, not a live account screenshot.
         Available data depends on the installed provider, login method and subscription plan.</p>
+        <h3>Status bar excerpt</h3>
+        <p><img src="https://raw.githubusercontent.com/larsnoerber/Rider_Agents_Usage/main/docs/images/agents-usage-statusbar-excerpt.png"
+                alt="Illustrated status bar: OpenAI and JetBrains AI remaining quota, Copilot consumed quota"
+                width="760" style="max-width:100%; height:auto;"/></p>
+        <p>Percentage text uses quota colors. Click a provider to open the usage overview.
+        Tooltips show measurement times, refresh state and stale-value notices.</p>
         <h3>Requirements and privacy</h3>
         <p>Rider 2026.1 or later. The current Codex CLI integration requires Windows and an installed,
         signed-in Codex CLI. Optional providers require their loaded IDE plugin or installed ACP package

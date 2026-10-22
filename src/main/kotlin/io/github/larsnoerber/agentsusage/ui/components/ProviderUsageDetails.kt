@@ -5,7 +5,6 @@ import com.intellij.ui.components.JBLabel
 import com.intellij.util.ui.JBUI
 import io.github.larsnoerber.agentsusage.core.format.formatCompactTime
 import io.github.larsnoerber.agentsusage.core.format.formatResetTime
-import io.github.larsnoerber.agentsusage.core.history.UsageHistory
 import java.awt.BasicStroke
 import java.awt.BorderLayout
 import java.awt.Color
@@ -33,7 +32,6 @@ internal data class UsageDetailMetric(
 /** Provider-independent bars/countdowns and a measured usage chart, toggled through the provider badge. */
 internal class ProviderUsageDetails(private val provider: String, private val percent: Boolean = true) :
     JPanel(BorderLayout(0, JBUI.scale(6))), Disposable {
-    private val history = UsageHistory.getInstance()
     private val rows = JPanel(GridBagLayout()).apply { isOpaque = false }
     private val legend = JPanel(FlowLayout(FlowLayout.LEFT, JBUI.scale(10), 0)).apply { isOpaque = false }
     private val chart = UsageHistoryChart(provider, percent)
@@ -69,10 +67,9 @@ internal class ProviderUsageDetails(private val provider: String, private val pe
         }
     }
 
-    fun render(values: List<UsageDetailMetric>, record: Boolean = true, observedAt: Long = System.currentTimeMillis()) {
+    fun render(values: List<UsageDetailMetric>) {
         if (disposed) return
         metrics = values.filter { it.value.isFinite() && it.value >= 0 }.take(4)
-        if (record) metrics.forEach { history.record("$provider.${it.id}", it.value, it.resetsAt, observedAt) }
         chart.metrics = metrics
         legend.removeAll()
         metrics.forEachIndexed { index, metric ->

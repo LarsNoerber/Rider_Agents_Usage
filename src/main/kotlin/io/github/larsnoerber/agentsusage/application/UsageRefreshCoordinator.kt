@@ -14,6 +14,7 @@ import io.github.larsnoerber.agentsusage.providers.copilot.ui.GitHubCopilotStatu
 import io.github.larsnoerber.agentsusage.providers.jetbrainsai.JetBrainsAiUsageService
 import io.github.larsnoerber.agentsusage.providers.jetbrainsai.ui.JetBrainsAiStatusBarWidgetFactory
 import io.github.larsnoerber.agentsusage.settings.AgentsUsageSettings
+import io.github.larsnoerber.agentsusage.core.refresh.UsageRefreshStatuses
 import java.util.concurrent.CopyOnWriteArrayList
 
 /** Coordinates user actions across providers; persistence itself does not start services. */
@@ -25,17 +26,19 @@ internal object UsageRefreshCoordinator {
 
     fun changeVisibleAgents(openAi: Boolean, jetBrainsAi: Boolean, copilot: Boolean, claudeCode: Boolean, cursor: Boolean) {
         val settings = AgentsUsageSettings.getInstance().state
-        val openAiWasEnabled = settings.showOpenAi
         val changed = settings.showOpenAi != openAi || settings.showJetBrainsAi != jetBrainsAi ||
             settings.showCopilot != copilot || settings.showClaudeCode != claudeCode ||
             settings.showCursor != cursor
-        settings.showOpenAi = openAi
-        settings.showJetBrainsAi = jetBrainsAi
-        settings.showCopilot = copilot
-        settings.showClaudeCode = claudeCode
-        settings.showCursor = cursor
+        synchronized(UsageRefreshStatuses.publicationLock) {
+            if (changed) UsageRefreshStatuses.invalidate()
+            settings.showOpenAi = openAi
+            settings.showJetBrainsAi = jetBrainsAi
+            settings.showCopilot = copilot
+            settings.showClaudeCode = claudeCode
+            settings.showCursor = cursor
+        }
         if (!changed) return
-        if (openAi && !openAiWasEnabled) CodexUsageService.getInstance().restartTimer()
+        if (openAi) CodexUsageService.getInstance().refresh()
         ApplicationManager.getApplication().invokeLater { visibilityListeners.forEach { it() } }
         refreshStatusWidgets()
         refreshOptionalProviders()
@@ -63,6 +66,17 @@ internal object UsageRefreshCoordinator {
         ApplicationManager.getApplication().invokeLater { visibilityListeners.forEach { it() } }
     }
 
+    fun selectedProviderIds(): List<String> {
+        val state = AgentsUsageSettings.getInstance().state
+        return buildList {
+            if (state.showOpenAi) add("codex")
+            if (state.showJetBrainsAi) add("jetbrainsai")
+            if (state.showCopilot) add("copilot")
+            if (state.showClaudeCode) add("claude")
+            if (state.showCursor) add("cursor")
+        }
+    }
+
     fun refreshAll() {
         if (AgentsUsageSettings.getInstance().state.showOpenAi) CodexUsageService.getInstance().refresh()
         refreshOptionalProviders()
@@ -80,6 +94,6 @@ internal object UsageRefreshCoordinator {
         if (settings.showJetBrainsAi && JetBrainsAiUsageService.isAvailable()) JetBrainsAiUsageService.getInstance().refresh()
         if (settings.showCopilot && GitHubCopilotUsageService.isAvailable()) GitHubCopilotUsageService.getInstance().refresh()
         if (settings.showClaudeCode && ClaudeCodeUsageService.isInstalled()) ClaudeCodeUsageService.getInstance().refresh()
-        if (settings.showCursor && CursorUsageService.isAvailable()) CursorUsageService.getInstance().refresh()
+        if (settings.showCursor && CursorUsageService.isInstalled()) CursorUsageService.getInstance().refresh()
     }
 }

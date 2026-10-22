@@ -42,12 +42,11 @@ intellijPlatform {
         }
         changeNotes = """
             <ul>
-              <li>AgentMeter 1.1.0: first stable release prepared for JetBrains Marketplace.</li>
-              <li>Monitor OpenAI Codex, JetBrains AI, GitHub Copilot, Claude and Cursor in one usage overview and the status bar.</li>
-              <li>View provider-reported quotas, subscription plans, reset countdowns and local usage charts. Click a subscription badge to show or hide details.</li>
-              <li>Choose installed providers and refresh intervals in configuration. New installations start with JetBrains AI only.</li>
-              <li>Enable optional weekly insights, quota-driven boss battles and Tic-Tac-Toe through the Weekly and Games checkboxes.</li>
-              <li>Use existing local provider sign-ins. No telemetry or credential storage in plugin settings.</li>
+              <li>AgentMeter 1.2.0: improve JetBrains/Rider refresh reliability and resource use.</li>
+              <li>Discard results from deselected providers and show refresh progress, last successful readings and explicit stale values.</li>
+              <li>Record numeric chart history in background services, including when only status widgets are used.</li>
+              <li>Read appended Claude session logs incrementally and bound quota HTTP responses to 2 MiB.</li>
+              <li>Distinguish known sign-in and provider API compatibility failures. Existing provider sign-ins remain in their official stores.</li>
             </ul>
         """.trimIndent()
     }

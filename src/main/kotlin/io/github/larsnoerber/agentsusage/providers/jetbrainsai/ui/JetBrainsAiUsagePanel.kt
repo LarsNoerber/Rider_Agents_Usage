@@ -18,6 +18,7 @@ import io.github.larsnoerber.agentsusage.ui.components.ProviderUsageDetails
 import io.github.larsnoerber.agentsusage.ui.components.UsageDetailMetric
 import io.github.larsnoerber.agentsusage.ui.components.compactUsageMessage
 import io.github.larsnoerber.agentsusage.ui.components.usageBarColor
+import io.github.larsnoerber.agentsusage.ui.components.ProviderRefreshStatus
 import java.awt.BorderLayout
 import java.awt.GridBagLayout
 import java.awt.GridBagConstraints
@@ -32,6 +33,7 @@ internal class JetBrainsAiUsagePanel : JPanel(BorderLayout(0, 4)), Disposable {
     private val status = JBLabel().apply { foreground = JBColor.GRAY }
     private val details = ProviderUsageDetails("jetbrainsai")
     private val summary = UsageSummary(details, header)
+    private val refreshStatus = ProviderRefreshStatus("jetbrainsai")
     private val service = JetBrainsAiUsageService.getInstance()
     private val listener: (JetBrainsAiUsage) -> Unit = ::render
 
@@ -53,7 +55,7 @@ internal class JetBrainsAiUsagePanel : JPanel(BorderLayout(0, 4)), Disposable {
         add(JPanel(BorderLayout(0, 3)).apply {
             isOpaque = false
             add(summary, BorderLayout.NORTH)
-            add(status, BorderLayout.SOUTH)
+            add(JPanel(BorderLayout(0, 3)).apply { isOpaque = false; add(status, BorderLayout.NORTH); add(refreshStatus, BorderLayout.SOUTH) }, BorderLayout.SOUTH)
         }, BorderLayout.SOUTH)
         service.addListener(listener)
         render(service.current)
@@ -66,7 +68,7 @@ internal class JetBrainsAiUsagePanel : JPanel(BorderLayout(0, 4)), Disposable {
                 add(UsageDetailMetric("subscription", "Subscription", (100 - it).toDouble(), usage.resetsAt))
             }
             usage.topUp?.percentLeft?.let { add(UsageDetailMetric("topup", "Top-up", (100 - it).toDouble())) }
-        }, record = usage.error == null && !usage.unlimited)
+        })
         subscription.render(
             usage.subscription ?: if (!hasDetails) usage.quota else null,
             if (hasDetails) "Subscription" else "Total credits"
@@ -113,7 +115,7 @@ internal class JetBrainsAiUsagePanel : JPanel(BorderLayout(0, 4)), Disposable {
         repaint()
     }
 
-    override fun dispose() { service.removeListener(listener); summary.dispose() }
+    override fun dispose() { service.removeListener(listener); summary.dispose(); refreshStatus.dispose() }
 }
 
 private class AiCreditCard(title: String) : UsageCard(title) {

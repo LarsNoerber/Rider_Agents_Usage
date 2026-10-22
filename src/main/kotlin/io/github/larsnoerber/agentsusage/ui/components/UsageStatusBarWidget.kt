@@ -1,9 +1,10 @@
 package io.github.larsnoerber.agentsusage.ui.components
 
+import io.github.larsnoerber.agentsusage.core.refresh.UsageRefreshStatuses
+import com.intellij.openapi.util.text.StringUtil
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.CustomStatusBarWidget
 import com.intellij.openapi.wm.StatusBar
-import com.intellij.ui.JBColor
 import com.intellij.ui.components.JBLabel
 import io.github.larsnoerber.agentsusage.core.UsageSource
 import io.github.larsnoerber.agentsusage.ui.toolwindow.showUsageOverview
@@ -28,6 +29,7 @@ internal data class StatusBarPresentation(
 internal class UsageStatusBarWidget<T>(
     private val project: Project,
     private val id: String,
+    private val provider: String,
     private val source: UsageSource<T>,
     private val presentation: (T) -> StatusBarPresentation
 ) : JPanel(FlowLayout(FlowLayout.LEFT, 0, 0)), CustomStatusBarWidget {
@@ -35,6 +37,7 @@ internal class UsageStatusBarWidget<T>(
     private var disposed = false
     private var installedStatusBar: StatusBar? = null
     private val listener: (T) -> Unit = { if (!disposed) render(it) }
+    private val refreshListener: () -> Unit = { if (!disposed) render(source.current) }
     private val mouseHandler = object : MouseAdapter() {
         override fun mouseClicked(event: MouseEvent) {
             if (SwingUtilities.isLeftMouseButton(event)) {
@@ -48,6 +51,7 @@ internal class UsageStatusBarWidget<T>(
         cursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)
         addMouseListener(mouseHandler)
         source.addListener(listener)
+        UsageRefreshStatuses.addListener(refreshListener)
         render(source.current)
     }
 
@@ -60,6 +64,9 @@ internal class UsageStatusBarWidget<T>(
 
     private fun render(usage: T) {
         val view = presentation(usage)
+        val refresh = UsageRefreshStatuses.get(provider)
+        val extra = refreshStatusLines(refresh).joinToString("<br>") { StringUtil.escapeXmlEntities(it) }
+        val tooltip = view.tooltip.replace("</html>", "<br><br>$extra</html>")
         if (labels.size != view.parts.size) {
             removeAll()
             labels.clear()
@@ -73,10 +80,10 @@ internal class UsageStatusBarWidget<T>(
         }
         labels.zip(view.parts).forEach { (label, part) ->
             label.text = part.text
-            label.foreground = if (view.dimmed) JBColor.GRAY else part.color
-            label.toolTipText = view.tooltip
+            label.foreground = part.color ?: foreground
+            label.toolTipText = tooltip
         }
-        toolTipText = view.tooltip
+        toolTipText = tooltip
         revalidate()
         repaint()
     }
@@ -85,6 +92,7 @@ internal class UsageStatusBarWidget<T>(
         if (disposed) return
         disposed = true
         source.removeListener(listener)
+        UsageRefreshStatuses.removeListener(refreshListener)
         installedStatusBar?.let(UsageStatusBarGroup::schedule)
         installedStatusBar = null
     }

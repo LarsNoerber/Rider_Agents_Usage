@@ -1,5 +1,7 @@
 package io.github.larsnoerber.agentsusage.providers.jetbrainsai
 
+import io.github.larsnoerber.agentsusage.core.refresh.UsageProblem
+
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -18,7 +20,8 @@ data class JetBrainsAiUsage(
     val unlimited: Boolean = false,
     val error: String? = null,
     val plan: String? = null,
-    val planUnavailableReason: String? = null
+    val planUnavailableReason: String? = null,
+    val problem: UsageProblem = UsageProblem.UNAVAILABLE
 )
 
 fun formatAiCredits(value: BigDecimal): String {

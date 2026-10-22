@@ -23,7 +23,7 @@ class JetBrainsAiStatusBarWidgetFactory : StatusBarWidgetFactory {
     override fun isAvailable(project: Project): Boolean =
         AgentsUsageSettings.getInstance().state.showJetBrainsAi && JetBrainsAiUsageService.isAvailable()
     override fun createWidget(project: Project): StatusBarWidget =
-        UsageStatusBarWidget(project, getId(), JetBrainsAiUsageService.getInstance(), ::jetBrainsPresentation)
+        UsageStatusBarWidget(project, getId(), "jetbrainsai", JetBrainsAiUsageService.getInstance(), ::jetBrainsPresentation)
     override fun disposeWidget(widget: StatusBarWidget) = widget.dispose()
 }
 

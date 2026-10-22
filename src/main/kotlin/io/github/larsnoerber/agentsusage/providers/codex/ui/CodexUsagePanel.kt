@@ -15,6 +15,7 @@ import io.github.larsnoerber.agentsusage.ui.components.UsageDetailMetric
 import io.github.larsnoerber.agentsusage.ui.components.compactUsageMessage
 import io.github.larsnoerber.agentsusage.ui.components.usageTooltip
 import io.github.larsnoerber.agentsusage.ui.components.warningColor
+import io.github.larsnoerber.agentsusage.ui.components.ProviderRefreshStatus
 import java.awt.BorderLayout
 import java.awt.FlowLayout
 import java.awt.GridLayout
@@ -32,6 +33,7 @@ internal class CodexUsagePanel(actions: JComponent? = null) : JPanel(BorderLayou
     private val notice = JPanel(FlowLayout(FlowLayout.LEFT, 5, 0))
     private val details = ProviderUsageDetails("codex")
     private val summary = UsageSummary(details, header)
+    private val refreshStatus = ProviderRefreshStatus("codex")
     private val service = CodexUsageService.getInstance()
     private var disposed = false
     private val listener: (CodexUsage) -> Unit = ::render
@@ -59,7 +61,7 @@ internal class CodexUsagePanel(actions: JComponent? = null) : JPanel(BorderLayou
         add(JPanel(BorderLayout(0, 3)).apply {
             isOpaque = false
             add(summary, BorderLayout.NORTH)
-            add(notice, BorderLayout.SOUTH)
+            add(JPanel(BorderLayout(0, 3)).apply { isOpaque = false; add(notice, BorderLayout.NORTH); add(refreshStatus, BorderLayout.SOUTH) }, BorderLayout.SOUTH)
         }, BorderLayout.SOUTH)
         service.addListener(listener)
         render(service.current)
@@ -76,7 +78,7 @@ internal class CodexUsagePanel(actions: JComponent? = null) : JPanel(BorderLayou
         details.render(listOfNotNull(
             usage.fiveHourLeft?.let { UsageDetailMetric("session", "Session", (100 - it).toDouble(), usage.fiveHourResetsAt, 5 * 3600L) },
             usage.weeklyLeft?.let { UsageDetailMetric("weekly", "Weekly", (100 - it).toDouble(), usage.weeklyResetsAt, 7 * 86400L) }
-        ), record = usage.error == null, observedAt = usage.updatedAt)
+        ))
         val info = usage.error ?: "Refreshes every ${AgentsUsageSettings.getInstance().refreshIntervalSeconds} sec · Credits ${usage.credits ?: "—"}"
         header.render(usage.plan, listOf(info))
         val hasUsage = usage.fiveHourLeft != null || usage.weeklyLeft != null
@@ -108,6 +110,6 @@ internal class CodexUsagePanel(actions: JComponent? = null) : JPanel(BorderLayou
         disposed = true
         timer.stop()
         service.removeListener(listener)
-        summary.dispose()
+        summary.dispose(); refreshStatus.dispose()
     }
 }

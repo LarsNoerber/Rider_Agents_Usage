@@ -23,7 +23,7 @@ class GitHubCopilotStatusBarWidgetFactory : StatusBarWidgetFactory {
     override fun isAvailable(project: Project): Boolean = AgentsUsageSettings.getInstance().state.showCopilot &&
         GitHubCopilotUsageService.isAvailable()
     override fun createWidget(project: Project): StatusBarWidget =
-        UsageStatusBarWidget(project, getId(), GitHubCopilotUsageService.getInstance(), ::copilotPresentation)
+        UsageStatusBarWidget(project, getId(), "copilot", GitHubCopilotUsageService.getInstance(), ::copilotPresentation)
     override fun disposeWidget(widget: StatusBarWidget) = widget.dispose()
 }
 

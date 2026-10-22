@@ -1,5 +1,7 @@
 package io.github.larsnoerber.agentsusage.providers.copilot
 
+import io.github.larsnoerber.agentsusage.core.refresh.UsageProblem
+
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.Disposable
 import io.github.larsnoerber.agentsusage.core.reflection.PluginApi
@@ -20,9 +22,9 @@ internal class GitHubCopilotUsageReader : Disposable {
             try {
                 readPlugin(requestUpdate)
             } catch (_: Exception) {
-                GitHubCopilotUsage(error = "The GitHub Copilot IDE quota service is unavailable.")
+                GitHubCopilotUsage(problem = UsageProblem.INCOMPATIBLE, error = "The GitHub Copilot IDE quota service is unavailable.")
             } catch (_: LinkageError) {
-                GitHubCopilotUsage(error = "This GitHub Copilot IDE version does not expose its quota service.")
+                GitHubCopilotUsage(problem = UsageProblem.INCOMPATIBLE, error = "This GitHub Copilot IDE version does not expose its quota service.")
             }
         } else null
         if (pluginUsage != null && pluginUsage.error == null) return pluginUsage
@@ -41,9 +43,9 @@ internal class GitHubCopilotUsageReader : Disposable {
         if (requestUpdate) getter(service, "refreshQuotaInBackground")
         val flow = getter(service, "getQuotaInfo") ?: error("GitHub Copilot quota state is unavailable")
         val state = api.flowValue(flow)
-            ?: return GitHubCopilotUsage(error = "Waiting for GitHub Copilot usage. Sign in to Copilot.")
+            ?: return GitHubCopilotUsage(problem = UsageProblem.AUTHENTICATION, error = "Waiting for GitHub Copilot usage. Sign in to Copilot.")
         val response = getter(state, "getQuotaResponse")
-            ?: return GitHubCopilotUsage(error = "Waiting for GitHub Copilot usage. Sign in to Copilot.")
+            ?: return GitHubCopilotUsage(problem = UsageProblem.AUTHENTICATION, error = "Waiting for GitHub Copilot usage. Sign in to Copilot.")
         val tokenBilling = getter(response, "getTokenBasedBillingEnabled", required = false) == true
         val plan = (getter(response, "getCopilotPlan", required = false) as? String)?.takeIf { it.isNotBlank() }
         val freePlan = plan.equals("free", ignoreCase = true)

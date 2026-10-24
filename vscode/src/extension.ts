@@ -4,6 +4,7 @@ import {CopilotUsageReader, CopilotUsage} from "./copilot";
 import {UsageView} from "./usageView";
 
 export function activate(context: vscode.ExtensionContext): void {
+    // Readers own provider access; the view and status items render the latest completed refresh.
     const codexReader = new CodexUsageReader();
     const copilotReader = new CopilotUsageReader();
     const view = new UsageView();
@@ -78,6 +79,7 @@ export function activate(context: vscode.ExtensionContext): void {
     };
 
     const refresh = (interactiveCopilot = false): Promise<void> => {
+        // Commands and polling share one batch so the Codex CLI is never launched twice at once.
         if (refreshInFlight) return refreshInFlight;
         refreshInFlight = (async () => {
             const config = vscode.workspace.getConfiguration("agentsUsage");
@@ -108,11 +110,13 @@ export function activate(context: vscode.ExtensionContext): void {
     };
 
     const configureTimer = (): void => {
+        // Replace the previous timer whenever the refresh interval changes.
         if (timer) clearInterval(timer);
         const seconds = vscode.workspace.getConfiguration("agentsUsage").get<number>("refreshIntervalSeconds", 60);
         timer = setInterval(() => void refresh(), seconds * 1000);
     };
 
+    // VS Code disposes UI registrations, event subscriptions, timers and readers together.
     context.subscriptions.push(
         webview,
         codexStatus,

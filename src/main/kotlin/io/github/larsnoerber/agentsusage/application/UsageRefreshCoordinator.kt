@@ -21,14 +21,20 @@ import java.util.concurrent.CopyOnWriteArrayList
 internal object UsageRefreshCoordinator {
     private val visibilityListeners = CopyOnWriteArrayList<() -> Unit>()
 
-    fun addVisibilityListener(listener: () -> Unit) { visibilityListeners.addIfAbsent(listener) }
-    fun removeVisibilityListener(listener: () -> Unit) { visibilityListeners -= listener }
+    fun addVisibilityListener(listener: () -> Unit) {
+        visibilityListeners.addIfAbsent(listener)
+    }
+
+    fun removeVisibilityListener(listener: () -> Unit) {
+        visibilityListeners -= listener
+    }
 
     fun changeVisibleAgents(openAi: Boolean, jetBrainsAi: Boolean, copilot: Boolean, claudeCode: Boolean, cursor: Boolean) {
         val settings = AgentsUsageSettings.getInstance().state
         val changed = settings.showOpenAi != openAi || settings.showJetBrainsAi != jetBrainsAi ||
             settings.showCopilot != copilot || settings.showClaudeCode != claudeCode ||
             settings.showCursor != cursor
+        // Invalidate in-flight reads atomically with the choices they were started for.
         synchronized(UsageRefreshStatuses.publicationLock) {
             if (changed) UsageRefreshStatuses.invalidate()
             settings.showOpenAi = openAi
@@ -90,6 +96,7 @@ internal object UsageRefreshCoordinator {
     }
 
     private fun refreshOptionalProviders() {
+        // Availability checks precede service creation so optional plugins remain optional.
         val settings = AgentsUsageSettings.getInstance().state
         if (settings.showJetBrainsAi && JetBrainsAiUsageService.isAvailable()) JetBrainsAiUsageService.getInstance().refresh()
         if (settings.showCopilot && GitHubCopilotUsageService.isAvailable()) GitHubCopilotUsageService.getInstance().refresh()

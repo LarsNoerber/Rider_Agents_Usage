@@ -41,6 +41,7 @@ internal sealed class UsageSnapshotStore
                 return snapshot;
             }
             if (!entries.TryGetValue(snapshot.ProviderId, out var saved) || saved.Quotas.Length == 0) return snapshot;
+            // Retain the live read's sign-in result and the saved measurement's original time.
             return snapshot with
             {
                 Quotas = saved.Quotas,
@@ -82,6 +83,7 @@ internal sealed class UsageSnapshotStore
         {
             Directory.CreateDirectory(Path.GetDirectoryName(path)!);
             File.WriteAllText(temporary, JsonSerializer.Serialize(entries));
+            // Readers must see either the previous complete JSON file or the next complete file.
             File.Move(temporary, path, true);
         }
         catch (Exception e) when (e is IOException or UnauthorizedAccessException) { }

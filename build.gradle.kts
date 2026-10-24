@@ -42,7 +42,7 @@ intellijPlatform {
         }
         changeNotes = """
             <ul>
-              <li>AgentMeter 1.2.0: improve JetBrains/Rider refresh reliability and resource use.</li>
+              <li>AgentMeter 1.2.1: synchronize all editions and improve source readability.</li>
               <li>Discard results from deselected providers and show refresh progress, last successful readings and explicit stale values.</li>
               <li>Record numeric chart history in background services, including when only status widgets are used.</li>
               <li>Read appended Claude session logs incrementally and bound quota HTTP responses to 2 MiB.</li>

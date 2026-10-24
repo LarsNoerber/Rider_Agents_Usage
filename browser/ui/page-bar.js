@@ -6,6 +6,7 @@
         return;
     }
     document.getElementById("agentmeter-page-bar")?.remove();
+    // Build one isolated overlay; provider state arrives through extension messages below.
     const host = document.createElement("div");
     host.id = "agentmeter-page-bar";
     host.style.setProperty("all", "initial", "important");
@@ -119,6 +120,7 @@
     }
 
     function render() {
+        // Dragging owns placement until release; background publications must not move the bar mid-drag.
         if (!state || disposed || position.dragging()) return;
         const chosen = state.overview?.find(item => item.providerId === chosenProvider);
         if (chosen) state = {...state, ...chosen};
@@ -237,6 +239,7 @@
         position.apply();
     }
 
+    // User actions request fixed worker commands; the overlay itself never reads provider pages.
     async function send(type) {
         const response = await chrome.runtime.sendMessage({type, providerId: chosenProvider || state?.providerId});
         if (response?.error) throw new Error(response.error);
@@ -309,6 +312,7 @@
             position.apply();
         }
     });
+    // Runtime publication and page lifecycle share the same singleton and cleanup path.
     const listener = (message, sender) => {
         if (sender.id !== chrome.runtime.id) return;
         if (message.type === "pageBarRemove") dispose();
@@ -319,6 +323,7 @@
     };
     const startTimer = () => {
         if (timer || disposed) return;
+        // Repaint countdowns locally; only a changed SPA URL requests an updated extension state.
         timer = setInterval(() => {
             if (location.href !== lastUrl) {
                 lastUrl = location.href;
@@ -326,6 +331,7 @@
             } else render();
         }, 15000);
     };
+    // BFCache can restore this document, so pagehide pauses the timer without destroying the bar.
     const pageHide = () => {
         clearInterval(timer);
         timer = null;

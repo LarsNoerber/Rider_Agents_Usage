@@ -10,6 +10,7 @@ export function normalizeBarAnchor(value) {
 
 export function normalizeSettings(value = {}) {
     if (!value || typeof value !== "object") value = {};
+    // An explicitly empty selection stays empty; only a missing/invalid selection uses defaults.
     const selected = Array.isArray(value.selected) ? ids.filter(id => value.selected.includes(id)) : [...ids];
     return {
         selected,
@@ -41,6 +42,7 @@ export async function writeSettings(value) {
 let writes = Promise.resolve();
 
 export function updateSettings(patch) {
+    // Read inside the write queue so rapid controls merge with the latest persisted choices.
     const writing = writes.catch(() => {
     }).then(async () => writeSettings({...await readSettings(), ...patch}));
     writes = writing;

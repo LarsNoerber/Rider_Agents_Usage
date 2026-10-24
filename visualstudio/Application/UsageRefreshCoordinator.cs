@@ -43,6 +43,7 @@ namespace AgentsUsage.VisualStudio.Application
         }
 
         private bool ShouldRead => !disposed && (visibleViews > 0 || options.ShowStatusBar) && (options.CodexEnabled || options.CopilotEnabled);
+
         private void ConfigureTimer()
         {
             timer.Stop();
@@ -62,12 +63,14 @@ namespace AgentsUsage.VisualStudio.Application
             Changed?.Invoke(this, EventArgs.Empty);
             _ = RefreshAsync();
         }
+
         private void OnTick(object sender, EventArgs args) { _ = RefreshAsync(); }
 
         public async Task RefreshAsync()
         {
             if (!ShouldRead || Refreshing) return;
             Refreshing = true;
+            // Capture choices before leaving the UI context; a later revision makes this batch obsolete.
             var revision = settingsRevision;
             var readCodex = options.CodexEnabled;
             var readCopilot = options.CopilotEnabled;
@@ -80,6 +83,7 @@ namespace AgentsUsage.VisualStudio.Application
                 var codexTask = readCodex ? Task.Run(() => codex.ReadAsync(path, reads.Token)) : Task.FromResult<CodexUsage>(null);
                 var copilotTask = readCopilot ? Task.Run(() => copilot.ReadAsync(reads.Token)) : Task.FromResult<CopilotUsage>(null);
                 await Task.WhenAll(codexTask, copilotTask);
+                // Cancellation may arrive after a reader completes but before its result is published.
                 if (disposed || revision != settingsRevision || reads.IsCancellationRequested) return;
                 Codex = await codexTask;
                 Copilot = await copilotTask;
@@ -93,6 +97,7 @@ namespace AgentsUsage.VisualStudio.Application
                 if (!disposed)
                 {
                     Changed?.Invoke(this, EventArgs.Empty);
+                    // Settings changed during the read: immediately replace the cancelled batch.
                     if (revision != settingsRevision && ShouldRead) _ = RefreshAsync();
                 }
                 else lifetime.Dispose();

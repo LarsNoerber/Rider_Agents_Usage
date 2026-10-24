@@ -142,30 +142,31 @@ internal sealed class GeminiWebQuotaReader : IDisposable
         catch (JsonException) { return Unavailable("Gemini Apps returned no usage data. Its private interface may have changed."); }
         using (document)
         {
-        var rpc = FindRpc(document.RootElement);
-        if (rpc.ValueKind == JsonValueKind.Undefined)
-            return Unavailable("Gemini Apps returned no usage data. Its private interface may have changed.");
-        if (HasAuthRejection(rpc))
-            return Unavailable("Gemini Apps rejected AgentMeter's local cookie request. The Gemini app may still be signed in. Open Gemini Apps to check the account, then refresh.");
-        if (rpc.ValueKind != JsonValueKind.Array || rpc.GetArrayLength() < 3 || rpc[2].ValueKind != JsonValueKind.String)
-            return Unavailable("Gemini Apps usage response is unsupported. The private interface may have changed.");
+            // Decode the RPC envelope before interpreting the nested, string-encoded quota payload.
+            var rpc = FindRpc(document.RootElement);
+            if (rpc.ValueKind == JsonValueKind.Undefined)
+                return Unavailable("Gemini Apps returned no usage data. Its private interface may have changed.");
+            if (HasAuthRejection(rpc))
+                return Unavailable("Gemini Apps rejected AgentMeter's local cookie request. The Gemini app may still be signed in. Open Gemini Apps to check the account, then refresh.");
+            if (rpc.ValueKind != JsonValueKind.Array || rpc.GetArrayLength() < 3 || rpc[2].ValueKind != JsonValueKind.String)
+                return Unavailable("Gemini Apps usage response is unsupported. The private interface may have changed.");
 
-        using var payload = ParseFirstJsonValue(rpc[2].GetString()!);
-        var metrics = new Dictionary<int, (double Used, DateTimeOffset? Reset)>();
-        FindMetrics(payload.RootElement, metrics);
-        var quotas = new List<UsageQuota>();
-        if (metrics.TryGetValue(1, out var fiveHour))
-            quotas.Add(new("Gemini Apps 5-hour used", fiveHour.Used * 100, true, fiveHour.Reset));
-        if (metrics.TryGetValue(2, out var weekly))
-            quotas.Add(new("Gemini Apps weekly used", weekly.Used * 100, true, weekly.Reset));
-        if (quotas.Count == 0)
-            return Unavailable("Gemini Apps returned no recognized usage limits. Its private interface may have changed.");
-        return new("gemini", "Gemini Apps", quotas, null,
-            ["Source: Gemini Apps web account, read from a local Gemini app or Edge session.",
-             "These are consumer Gemini Apps limits, separate from Gemini CLI / Workspace and AI Studio API quotas.",
-             "The usage request uses Google's private, undocumented web interface and may stop working if Google changes it.",
-             "AgentMeter reads the session in memory only and sends it only to gemini.google.com."], DateTimeOffset.Now)
-        { SignedIn = true };
+            using var payload = ParseFirstJsonValue(rpc[2].GetString()!);
+            var metrics = new Dictionary<int, (double Used, DateTimeOffset? Reset)>();
+            FindMetrics(payload.RootElement, metrics);
+            var quotas = new List<UsageQuota>();
+            if (metrics.TryGetValue(1, out var fiveHour))
+                quotas.Add(new("Gemini Apps 5-hour used", fiveHour.Used * 100, true, fiveHour.Reset));
+            if (metrics.TryGetValue(2, out var weekly))
+                quotas.Add(new("Gemini Apps weekly used", weekly.Used * 100, true, weekly.Reset));
+            if (quotas.Count == 0)
+                return Unavailable("Gemini Apps returned no recognized usage limits. Its private interface may have changed.");
+            return new("gemini", "Gemini Apps", quotas, null,
+                ["Source: Gemini Apps web account, read from a local Gemini app or Edge session.",
+                 "These are consumer Gemini Apps limits, separate from Gemini CLI / Workspace and AI Studio API quotas.",
+                 "The usage request uses Google's private, undocumented web interface and may stop working if Google changes it.",
+                 "AgentMeter reads the session in memory only and sends it only to gemini.google.com."], DateTimeOffset.Now)
+            { SignedIn = true };
         }
     }
 

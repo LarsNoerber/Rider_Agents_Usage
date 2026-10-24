@@ -37,3 +37,6 @@ windows/tests/obj/
 Thumbs.db
 .DS_Store
 *.DotSettings.user
+
+# Consolidated release and Store upload packages
+/dist/

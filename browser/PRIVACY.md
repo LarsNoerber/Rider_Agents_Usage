@@ -1,12 +1,16 @@
 # Browser privacy
 
-AgentMeter browser extension · maintained by Lars Nörber · updated October 5, 2026.
+AgentMeter browser extension · maintained by Lars Nörber · updated October 9, 2026.
 Privacy questions and support: https://github.com/larsnoerber/Rider_Agents_Usage/issues
 
 AgentMeter queries only selected providers after browser website access is granted. Optional individual provider
 permissions allow limited access; optional HTTP/HTTPS permission enables the display on ordinary websites and
 allows the selected providers' requests. The first install opens Settings. Browser permission prompts require a
 user click. Disabling a provider pauses its reads; removing access clears readings and removes the affected display.
+
+Clicking the toolbar icon grants temporary activeTab access to identify the current provider from its URL.
+This does not replace the website permission required for provider requests or the persistent page bar.
+The popup can also display a selected provider when the current website is unrelated or its URL is unavailable.
 
 The page bar runs in the extension's isolated world and displays sanitized quotas in a closed shadow root. It
 reads no website content, cookies or conversations. It can request sanitized state, refresh, and fixed provider

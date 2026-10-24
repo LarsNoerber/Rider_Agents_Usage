@@ -22,13 +22,13 @@ share its credentials only through the store's private reviewer channel, never t
 
 ## Prerequisites by edition
 
-| Edition | Quota access / sign-in requirements | Setup |
-| --- | --- | --- |
-| Rider / JetBrains | Codex CLI installed and signed in; AI Assistant/Copilot installed and signed in for their optional IDE quota services. Claude/Cursor integrations need the supported local agent/integration and its provider session. | [Rider guide](../README.md), [provider integration details](DEVELOPMENT.md#provider-integrations) |
-| Windows desktop | Official CLIs, supported local provider stores or installed app sessions, depending on provider. OpenRouter uses an explicitly entered API key. Each provider has its own sign-in path. | [Windows provider setup](../windows/README.md#providers-and-sign-in) |
-| Chrome / Edge | Sign in on the provider's official website and grant AgentMeter access to that website. Optional all-site access enables the overlay on ordinary websites. | [Browser setup](../browser/README.md), [Edge submission](../browser/Packaging/edge-submission.md) |
-| Visual Studio Code | Codex CLI installed and signed in; GitHub authentication through VS Code for Copilot quota requests. | [VS Code guide](../vscode/README.md) |
-| Visual Studio | Codex CLI installed and signed in; Copilot signed in within Visual Studio and its optional quota service available. | [Visual Studio guide](../visualstudio/README.md) |
+| Edition            | Quota access / sign-in requirements                                                                                                                                                                                    | Setup                                                                                             |
+|--------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------|
+| Rider / JetBrains  | Codex CLI installed and signed in; AI Assistant/Copilot installed and signed in for their optional IDE quota services. Claude/Cursor integrations need the supported local agent/integration and its provider session. | [Rider guide](../README.md), [provider integration details](DEVELOPMENT.md#provider-integrations) |
+| Windows desktop    | Official CLIs, supported local provider stores or installed app sessions, depending on provider. OpenRouter uses an explicitly entered API key. Each provider has its own sign-in path.                                | [Windows provider setup](../windows/README.md#providers-and-sign-in)                              |
+| Chrome / Edge      | Sign in on the provider's official website and grant AgentMeter access to that website. Optional all-site access enables the overlay on ordinary websites.                                                             | [Browser setup](../browser/README.md), [Edge submission](../browser/Packaging/edge-submission.md) |
+| Visual Studio Code | Codex CLI installed and signed in; GitHub authentication through VS Code for Copilot quota requests.                                                                                                                   | [VS Code guide](../vscode/README.md)                                                              |
+| Visual Studio      | Codex CLI installed and signed in; Copilot signed in within Visual Studio and its optional quota service available.                                                                                                    | [Visual Studio guide](../visualstudio/README.md)                                                  |
 
 Optional providers must not be treated as installed merely because AgentMeter is installed. Browser sign-in does
 not establish a CLI or IDE session. An API-key login does not necessarily expose subscription allowance.

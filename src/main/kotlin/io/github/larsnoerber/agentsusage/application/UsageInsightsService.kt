@@ -23,6 +23,7 @@ import java.time.LocalDateTime
 import java.time.temporal.WeekFields
 import java.util.concurrent.CopyOnWriteArrayList
 
+// Persisted property names are part of the existing XML schema.
 class UsageInsightsState {
     var days: MutableList<UsageInsightsDay> = mutableListOf()
     var bossDamageWeek: String = ""
@@ -77,6 +78,7 @@ private data class WeeklyBoss(
 @Service(Service.Level.APP)
 @State(name = "AgentsUsageInsights", storages = [Storage("agents-usage-insights.xml")])
 internal class UsageInsightsService : PersistentStateComponent<UsageInsightsState>, Disposable {
+    // Persisted daily measurements and transient battle feedback have separate lifetimes.
     private val listeners = CopyOnWriteArrayList<(UsageInsightsSnapshot) -> Unit>()
     private var state = UsageInsightsState()
     private var previousCodex: CodexUsage? = null
@@ -98,6 +100,7 @@ internal class UsageInsightsService : PersistentStateComponent<UsageInsightsStat
     private var nextHitId = 0L
     @Volatile private var disposed = false
 
+    // Keep the exact listener instances so disposal can unsubscribe from every provider.
     private val codexService = CodexUsageService.getInstance()
     private val codexListener: (CodexUsage) -> Unit = ::acceptCodex
     private val jetBrainsService = if (JetBrainsAiUsageService.isAvailable()) JetBrainsAiUsageService.getInstance() else null
@@ -180,10 +183,14 @@ internal class UsageInsightsService : PersistentStateComponent<UsageInsightsStat
         publish()
     }
 
+    // Provider events: distinguish resets from consumption before updating the daily baseline.
     private fun acceptCodex(usage: CodexUsage) {
         if (disposed) return
         val settings = AgentsUsageSettings.getInstance().state
-        if (!settings.showWeeklyInsights || !settings.showOpenAi) { previousCodex = usage; return }
+        if (!settings.showWeeklyInsights || !settings.showOpenAi) {
+            previousCodex = usage
+            return
+        }
         val didReset = previousCodex?.let { old ->
             reset(old.fiveHourResetsAt, usage.fiveHourResetsAt, old.fiveHourLeft, usage.fiveHourLeft) ||
                 reset(old.weeklyResetsAt, usage.weeklyResetsAt, old.weeklyLeft, usage.weeklyLeft)
@@ -207,7 +214,10 @@ internal class UsageInsightsService : PersistentStateComponent<UsageInsightsStat
     private fun acceptJetBrains(usage: JetBrainsAiUsage) {
         if (disposed) return
         val settings = AgentsUsageSettings.getInstance().state
-        if (!settings.showWeeklyInsights || !settings.showJetBrainsAi) { previousJetBrains = usage; return }
+        if (!settings.showWeeklyInsights || !settings.showJetBrainsAi) {
+            previousJetBrains = usage
+            return
+        }
         val didReset = previousJetBrains?.let { old ->
             reset(old.resetsAt, usage.resetsAt, old.quota?.percentLeft, usage.quota?.percentLeft)
         } ?: false
@@ -225,7 +235,10 @@ internal class UsageInsightsService : PersistentStateComponent<UsageInsightsStat
     private fun acceptCopilot(usage: GitHubCopilotUsage) {
         if (disposed) return
         val settings = AgentsUsageSettings.getInstance().state
-        if (!settings.showWeeklyInsights || !settings.showCopilot) { previousCopilot = usage; return }
+        if (!settings.showWeeklyInsights || !settings.showCopilot) {
+            previousCopilot = usage
+            return
+        }
         val didReset = previousCopilot?.let { old ->
             reset(old.resetsAt, usage.resetsAt, old.primary?.percentLeft, usage.primary?.percentLeft)
         } ?: false
@@ -243,12 +256,18 @@ internal class UsageInsightsService : PersistentStateComponent<UsageInsightsStat
     private fun acceptClaude(usage: ClaudeCodeUsage) {
         if (disposed) return
         val settings = AgentsUsageSettings.getInstance().state
-        if (!settings.showWeeklyInsights || !settings.showClaudeCode) { previousClaude = usage; return }
+        if (!settings.showWeeklyInsights || !settings.showClaudeCode) {
+            previousClaude = usage
+            return
+        }
         val before = previousClaude?.takeIf { it.quotaError == null }?.let(::claudeRemaining)
         val after = usage.takeIf { it.quotaError == null }?.let(::claudeRemaining)
         val oldReset = previousClaude?.let(::claudeReset)
         val didReset = reset(oldReset, claudeReset(usage), before, after)
-        if (didReset) { celebrate("Claude"); addBattleEvent("Claude reset") }
+        if (didReset) {
+            celebrate("Claude")
+            addBattleEvent("Claude reset")
+        }
         else {
             val old = previousClaude?.takeIf { it.quotaError == null }
             val drop = if (usage.quotaError == null) usage.quotas.filter { it.title == "Session" || it.title == "Weekly" }
@@ -264,11 +283,17 @@ internal class UsageInsightsService : PersistentStateComponent<UsageInsightsStat
     private fun acceptCursor(usage: CursorUsage) {
         if (disposed) return
         val settings = AgentsUsageSettings.getInstance().state
-        if (!settings.showWeeklyInsights || !settings.showCursor) { previousCursor = usage; return }
+        if (!settings.showWeeklyInsights || !settings.showCursor) {
+            previousCursor = usage
+            return
+        }
         val before = previousCursor?.takeIf { it.error == null }?.percentUsed?.let { 100 - it }
         val after = usage.takeIf { it.error == null }?.percentUsed?.let { 100 - it }
         val didReset = reset(previousCursor?.resetsAt, usage.resetsAt, before, after)
-        if (didReset) { celebrate("Cursor"); addBattleEvent("Cursor reset") }
+        if (didReset) {
+            celebrate("Cursor")
+            addBattleEvent("Cursor reset")
+        }
         else recordHit("Cursor", before, after)
         previousCursor = usage
         if (after != null) observe("cursor", after, didReset)
@@ -294,6 +319,7 @@ internal class UsageInsightsService : PersistentStateComponent<UsageInsightsStat
 
     @Synchronized
     private fun recordHit(provider: String, before: Int?, after: Int?) {
+        // Damage is recorded once on observation, independent of how often the overview repaints.
         val drop = before?.minus(after ?: before) ?: return
         if (drop < HIT_LOG_THRESHOLD) return
         synchronizeBossDamage()
@@ -338,18 +364,45 @@ internal class UsageInsightsService : PersistentStateComponent<UsageInsightsStat
         state.days.removeAll { it.date.toLocalDateOrNull()?.isBefore(today.minusDays(6)) == true }
         val day = state.days.firstOrNull { it.date == today.toString() }
             ?: UsageInsightsDay().also { it.date = today.toString(); state.days.add(it) }
+        // Pair each persisted start/low/time field with its setter; retain the existing schema.
         when (provider) {
-            "codex" -> day.update(remaining, resetObserved, { day.codexStart }, { day.codexStart = it }, { day.codexLow }, { day.codexLow = it }, { day.codexStartAt }, { day.codexStartAt = it })
-            "jetBrains" -> day.update(remaining, resetObserved, { day.jetBrainsStart }, { day.jetBrainsStart = it }, { day.jetBrainsLow }, { day.jetBrainsLow = it }, { day.jetBrainsStartAt }, { day.jetBrainsStartAt = it })
-            "copilot" -> day.update(remaining, resetObserved, { day.copilotStart }, { day.copilotStart = it }, { day.copilotLow }, { day.copilotLow = it }, { day.copilotStartAt }, { day.copilotStartAt = it })
-            "claude" -> day.update(remaining, resetObserved, { day.claudeStart }, { day.claudeStart = it }, { day.claudeLow }, { day.claudeLow = it }, { day.claudeStartAt }, { day.claudeStartAt = it })
-            "cursor" -> day.update(remaining, resetObserved, { day.cursorStart }, { day.cursorStart = it }, { day.cursorLow }, { day.cursorLow = it }, { day.cursorStartAt }, { day.cursorStartAt = it })
+            "codex" -> day.update(
+                remaining, resetObserved,
+                { day.codexStart }, { day.codexStart = it },
+                { day.codexLow }, { day.codexLow = it },
+                { day.codexStartAt }, { day.codexStartAt = it }
+            )
+            "jetBrains" -> day.update(
+                remaining, resetObserved,
+                { day.jetBrainsStart }, { day.jetBrainsStart = it },
+                { day.jetBrainsLow }, { day.jetBrainsLow = it },
+                { day.jetBrainsStartAt }, { day.jetBrainsStartAt = it }
+            )
+            "copilot" -> day.update(
+                remaining, resetObserved,
+                { day.copilotStart }, { day.copilotStart = it },
+                { day.copilotLow }, { day.copilotLow = it },
+                { day.copilotStartAt }, { day.copilotStartAt = it }
+            )
+            "claude" -> day.update(
+                remaining, resetObserved,
+                { day.claudeStart }, { day.claudeStart = it },
+                { day.claudeLow }, { day.claudeLow = it },
+                { day.claudeStartAt }, { day.claudeStartAt = it }
+            )
+            "cursor" -> day.update(
+                remaining, resetObserved,
+                { day.cursorStart }, { day.cursorStart = it },
+                { day.cursorLow }, { day.cursorLow = it },
+                { day.cursorStartAt }, { day.cursorStartAt = it }
+            )
         }
         synchronizeBossDamage()
     }
 
     @Synchronized
     private fun snapshot(): UsageInsightsSnapshot {
+        // Build weekly totals and record phase/day/hour transitions before composing the view model.
         val settings = AgentsUsageSettings.getInstance().state
         val current = LocalDate.now()
         val weekStart = weekStart(current)
@@ -383,6 +436,7 @@ internal class UsageInsightsService : PersistentStateComponent<UsageInsightsStat
             loggedBattleHour = currentHour
             if (dailyDamage > 0) addBattleEvent("Today: $dailyDamage% quota use")
         }
+        // Party members use remaining quota consistently, including consumed-quota providers.
         val party = buildList {
             if (settings.showOpenAi) previousCodex?.takeIf { it.error == null }?.let { usage ->
                 codexRemaining(usage)?.let { add(UsagePartyMember("Codex", it)) }
@@ -400,6 +454,7 @@ internal class UsageInsightsService : PersistentStateComponent<UsageInsightsStat
             if (settings.showCursor) previousCursor?.takeIf { it.error == null }?.percentUsed
                 ?.let { add(UsagePartyMember("Cursor", 100 - it)) }
         }
+        // Forecasts use today's baseline and exclude allowances that reset before the warning level.
         val today = state.days.firstOrNull { it.date == current.toString() }
         val forecasts = buildList {
             if (settings.showOpenAi) {
@@ -454,6 +509,7 @@ internal class UsageInsightsService : PersistentStateComponent<UsageInsightsStat
     private fun synchronizeBossDamage(weekStart: LocalDate = weekStart()) {
         if (state.bossDamageWeek == weekStart.toString()) {
             if (state.bossDamageVersion == 0) {
+                // Migrate legacy quota-point damage once; subsequent reads already store scaled HP.
                 val recorded = state.days.filter { it.date.toLocalDateOrNull()?.let { date -> !date.isBefore(weekStart) } == true }
                     .sumOf { it.codexDrop() + it.jetBrainsDrop() + it.copilotDrop() + it.claudeDrop() + it.cursorDrop() }
                 state.bossDamage = (maxOf(state.bossDamage, recorded) * BOSS_DAMAGE_PER_QUOTA_POINT).coerceIn(0, 100)
@@ -504,6 +560,7 @@ internal class UsageInsightsService : PersistentStateComponent<UsageInsightsStat
         setStartAt: (Long) -> Unit
     ) {
         val newBaseline = resetObserved || getStart() == null || getStartAt() == 0L
+        // A refill starts a new baseline rather than counting a quota increase as negative use.
         if (newBaseline) {
             setStart(value)
             setLow(value)

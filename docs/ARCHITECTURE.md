@@ -1,5 +1,9 @@
 # Code structure
 
+For an entry-point map, the readability conventions and outstanding static-review findings, see the
+[source review and reading guide](CODE_REVIEW.md). Package boundaries and runtime behavior are unchanged by the
+October 24, 2026 comment/layout cleanup.
+
 ## Browser extension
 
 `browser/` is a separate Manifest V3 Chromium extension for Chrome and Edge. It uses the shared version but has
@@ -81,7 +85,11 @@ directory plus ZIP. Browser icon PNGs originate from the Windows SVG's supported
 fixtures. `build-store.ps1` composes the browser build, shared SVG logo rendering and headless UI screenshots
 under ignored `browser/dist/`. Demo fixtures use the actual bar/settings scripts with in-memory sample state;
 they are clearly labelled and are excluded from extension packaging. No account data or personal browser profile
-is used. The unused activeTab permission is removed; quota reads and display use explicitly granted host access.
+is used. The popup captures its own active tab ID and sends it only through the trusted extension-UI route;
+background context lookup filters to normal browser windows. The activeTab permission exposes the clicked tab's
+URL temporarily, including when persistent site access has been withheld. Provider reads and page-bar display still
+require explicitly granted provider host access. A popup selector can read any selected provider's sanitized state;
+when the current site is unrecognized it falls back to the first selected provider instead of blocking quota access.
 It does not install or publish, run tests, or validate signed-in providers. See
 [browser guide](../browser/README.md) and [privacy](../browser/PRIVACY.md).
 

@@ -17,6 +17,7 @@ internal data class UsageReadInfo(
 internal data class UsageRefreshStatus(
     val loading: Boolean = false,
     val hasValues: Boolean = false,
+    // Successful refresh time can advance while the provider's measurement time stays unchanged.
     val lastSuccess: Long = 0,
     val observedAt: Long = 0,
     val error: String? = null,
@@ -54,6 +55,7 @@ internal object UsageRefreshStatuses {
     fun removeListener(listener: () -> Unit) { listeners -= listener }
 
     private fun notifyListeners() {
+        // Several provider updates share one EDT callback; listeners read the latest states there.
         if (!notificationPending.compareAndSet(false, true)) return
         ApplicationManager.getApplication().invokeLater {
             notificationPending.set(false)

@@ -301,3 +301,17 @@ An authorized source update can commit/push code and documentation without chang
 version tag or publishing a release. Exclude generated build/dist folders, portable EXEs, MSIX files and personal IDE
 settings. Local Windows build artifacts and source commits are separate deliverables. See the
 [documentation index](README.md) and [provider matrix](PROVIDERS.md).
+
+## Consolidated 1.2.1 delivery
+
+The requested release packages are collected under `dist/releases/1.2.1/` (ignored by Git), with one folder per
+Store plus `windows-portable/`. The root contains a ZIP of the upload materials for each Store, the portable
+Windows ZIP, `AgentMeter-1.2.1-all-store-packages.zip`, upload instructions and SHA-256 checksums. Upload the inner
+plugin ZIP, browser ZIP, VSIX or MSIX specified by each folder's instructions; the material bundles themselves
+are for transfer/extraction. The unsigned Microsoft Store MSIX uses version `1.2.1.0`.
+
+`buildAllExtensions -x test`, `windows/build.ps1`, `windows/build-msix.ps1` and
+`browser/build-chrome-store.ps1` built the current release. Compilation/packaging completed; Windows emitted
+nullable warnings from the shared Visual Studio transport and Gradle's headless platform emitted compatibility/
+theme warnings. No test suite or live provider authentication check was run. Store certification and actual Store
+submission are separate from the GitHub release.

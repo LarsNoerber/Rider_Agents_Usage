@@ -10,11 +10,13 @@
 <header>
     <div class="brand"><img src="../resources/icon.png" alt="">
         <div><h1>AgentMeter</h1>
-            <p>Usage of your current page</p></div>
+            <p>Usage of your selected provider</p></div>
     </div>
     <button id="settings" class="icon-button" title="Settings" aria-label="Open settings">⚙</button>
 </header>
 <main>
+    <label for="provider-select">Provider</label>
+    <select id="provider-select" aria-label="Choose provider"></select>
     <div class="provider-heading"><h2 id="provider-name">Current page</h2><span id="plan" class="plan" hidden></span>
     </div>
     <p id="context" class="notice" role="status"></p>

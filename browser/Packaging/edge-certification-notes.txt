@@ -1,25 +1,28 @@
-AgentMeter displays provider-reported AI quotas. It has no separate AgentMeter account. The UI is English.
+AgentMeter displays provider-reported quotas. No AgentMeter account is needed. The UI is English.
 
-Testing requires an account with a supported provider. Shared credentials are not supplied because provider
-accounts may be tied to personal subscriptions, organization access and multi-factor authentication. Please use
-reviewer-controlled accounts. Some quotas require a paid subscription. Further account evidence can be requested.
+Resubmission for report dated 2026-10-09, policy 1.1.3:
+The popup now uses its own browser tab, with temporary activeTab URL access on toolbar click. Background lookup
+uses normal browser windows. A Provider selector and enabled-provider fallback make quotas accessible on
+unrecognized pages. Website access grants trigger refresh. Packaging does not verify signed-in reads.
 
-Test steps:
-1. Install the extension and open Settings.
-2. Select OpenAI Codex, Claude, Cursor, GitHub or Gemini Apps.
-3. Grant individual provider access, or use Allow website access & show bar everywhere.
-4. Sign in on the selected provider's official website.
-5. Open the popup and select Refresh; compare with the provider's own usage page.
-6. With all-site access enabled, open an ordinary HTTPS page to see the bar.
-7. Drag the move handle or use arrow keys. The position is saved. Expand details for reset countdowns.
-8. Change provider selection, theme or warning threshold. Settings save automatically.
-9. Deselect providers to stop their reads. Clear saved usage after switching accounts.
+Review steps:
+1. Install; in Settings select a provider and click Allow website access & show bar everywhere.
+2. Sign in to that provider using a reviewer-controlled account in the same browser profile.
+3. Open its official usage page:
+OpenAI: https://chatgpt.com/codex/settings/usage
+GitHub: https://github.com/settings/copilot/features
+Claude: https://claude.ai/settings/usage
+Cursor: https://cursor.com/dashboard?tab=usage
+Gemini: https://gemini.google.com/usage
+4. Click the AgentMeter toolbar icon. Confirm the provider name, or choose it in Provider. Click Refresh.
+5. Compare reported quotas with the provider page. On an unrelated HTTPS page, the bar and provider selector
+remain available. Settings save automatically; deselection stops reads.
 
-OpenAI and Claude show remaining quota; GitHub, Cursor and Gemini show consumption. Values depend on the account
-and provider. Claude Free may report no percentages. Multiple Claude organizations can require selecting one
-on the website and keeping its tab open. Missing values are dashes. Cached observations retain their timestamps.
+Real quotas require valid provider sessions; some require paid plans. Claude Free may not report percentages.
+Missing values show dashes and an availability notice, never invented usage. Cached values retain timestamps.
+Multiple Claude organizations may require keeping the selected organization's tab open.
+Shared credentials are not provided because accounts may contain personal subscriptions, organization access and
+MFA. Please use reviewer-controlled accounts; additional account evidence can be requested.
 
-Polling requires a running browser and valid sessions. Reads are throttled to at least one minute; HTTP 429 pauses
-retries for 15 minutes. Protected browser pages cannot show the bar. All-site access displays the overlay without
-reading unrelated content. All code is packaged. There is no telemetry or AgentMeter server.
-Store screenshots use labelled demo data, not authenticated account evidence.
+Protected browser pages cannot show the bar. All code is packaged. No telemetry or AgentMeter server.
+Store screenshots contain labelled demo data.

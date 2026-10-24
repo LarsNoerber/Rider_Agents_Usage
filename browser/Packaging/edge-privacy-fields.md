@@ -7,6 +7,12 @@ user-selected providers and visual warnings for low remaining quota.
 
 ## Permission justifications
 
+### activeTab
+
+Identify the current provider from the active tab URL when the user clicks the AgentMeter toolbar icon.
+This temporary access avoids treating an unreadable URL as an unsupported site. Background provider requests and
+the persistent bar still require separately granted website access. No browsing history is saved or exported.
+
 ### storage
 
 Save provider selection, appearance, bar position, warning threshold and refresh interval locally. Cache only
@@ -33,7 +39,7 @@ Access chatgpt.com, claude.ai, cursor.com, github.com and gemini.google.com only
 Each enabled provider's reader requests that provider's fixed quota endpoints using its existing browser session
 and can read recognized quota sections on its usage pages. Credentials are not sent to another provider.
 
-### Optional https://*/* and http://*/*
+### Optional https:// */* and http:// */*
 
 Display the same movable quota bar on ordinary websites when the user explicitly requests all-website display.
 The overlay does not read content, forms, conversations or cookies on unrelated websites. Broad access also

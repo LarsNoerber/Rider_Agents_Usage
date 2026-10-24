@@ -37,7 +37,7 @@ AI quota, Codex, Copilot, Claude Code, Cursor, Gemini, OpenRouter, OpenCode, Jun
 
 ## Release notes
 
-Current 1.1.0 source includes ten providers, per-provider settings, persistent numeric usage, official sign-in,
+Current 1.2.1 source includes ten providers, per-provider settings, persistent numeric usage, official sign-in,
 bar refresh progress, six layouts/five palettes and the supplied SVG-backed app/tray icon. This draft does not
 establish that a corresponding Store release has been submitted or accepted.
 

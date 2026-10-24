@@ -28,14 +28,16 @@ internal sealed class JunieConnection : IDisposable
             if (process == null || process.HasExited || executable != path || directory != project)
             {
                 Stop();
-                executable = path; directory = project;
+                executable = path;
+                directory = project;
                 job = new();
                 process = new() { StartInfo = AgentExecutables.StartInfo(path, "--acp=true --skip-update-check") };
                 process.StartInfo.WorkingDirectory = project;
-                process.Start(); job.Add(process);
+                process.Start();
+                job.Add(process);
                 _ = DrainErrorsAsync(process.StandardError);
                 var init = await RequestAsync("initialize", new { protocolVersion = 1,
-                    clientCapabilities = new { }, clientInfo = new { name = "AgentMeter", version = "1.1.0" } }, null, ct);
+                    clientCapabilities = new { }, clientInfo = new { name = "AgentMeter", version = "1.2.1" } }, null, ct);
                 if (init.TryGetProperty("error", out _)) throw new IOException("ACP initialization failed.");
                 var created = await RequestAsync("session/new", new { cwd = project, mcpServers = Array.Empty<object>() }, null, ct);
                 if (created.TryGetProperty("error", out var error))
@@ -58,8 +60,16 @@ internal sealed class JunieConnection : IDisposable
                 : new(true, text.ToString());
         }
         catch (OperationCanceledException) when (!token.IsCancellationRequested && !lifetime.IsCancellationRequested)
-        { var connected = session != null ? true : (bool?)null; Stop(); return new(connected, "", "Junie did not return built-in statistics in time. AgentMeter retries automatically."); }
-        catch { Stop(); throw; }
+        {
+            var connected = session != null ? true : (bool?)null;
+            Stop();
+            return new(connected, "", "Junie did not return built-in statistics in time. AgentMeter retries automatically.");
+        }
+        catch
+        {
+            Stop();
+            throw;
+        }
     }
 
     private async Task<JsonElement> RequestAsync(string method, object parameters, StringBuilder? text, CancellationToken ct)
@@ -69,6 +79,7 @@ internal sealed class JunieConnection : IDisposable
         while (true)
         {
             var value = await ReceiveAsync(ct);
+            // Command advertisements and streamed statistics may arrive before the matching reply.
             Handle(value, text);
             if (!value.TryGetProperty("method", out _) && value.TryGetProperty("id", out var responseId)
                 && responseId.ValueKind == JsonValueKind.Number && responseId.GetInt32() == id) return value;
@@ -111,7 +122,12 @@ internal sealed class JunieConnection : IDisposable
 
     private static async Task DrainErrorsAsync(StreamReader reader)
     {
-        try { var buffer = new char[4096]; while (await reader.ReadAsync(buffer) > 0) { } }
+        try
+        {
+            // Drain without retaining stderr, which may contain provider/session details.
+            var buffer = new char[4096];
+            while (await reader.ReadAsync(buffer) > 0) { }
+        }
         catch (Exception e) when (e is IOException or ObjectDisposedException) { }
     }
 
@@ -119,10 +135,20 @@ internal sealed class JunieConnection : IDisposable
     {
         try { if (process is { HasExited: false }) process.Kill(entireProcessTree: true); }
         catch (Exception) { }
-        job?.Dispose(); process?.Dispose(); job = null; process = null; session = null; statisticsAvailable = false;
+        job?.Dispose();
+        process?.Dispose();
+        job = null;
+        process = null;
+        session = null;
+        statisticsAvailable = false;
     }
 
     internal void Pause() => Stop();
 
-    public void Dispose() { lifetime.Cancel(); Stop(); lifetime.Dispose(); }
+    public void Dispose()
+    {
+        lifetime.Cancel();
+        Stop();
+        lifetime.Dispose();
+    }
 }

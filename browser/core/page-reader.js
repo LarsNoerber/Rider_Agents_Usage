@@ -1,4 +1,4 @@
-// Injected into an isolated world on a matching usage page only. Nothing is sent from page scripts.
+// Shared by isolated provider-page readers and the offscreen reader's detached quota markup.
 (() => {
     const visible = element => element instanceof HTMLElement && element.getClientRects().length > 0 &&
         getComputedStyle(element).visibility !== "hidden";
@@ -70,6 +70,7 @@
     }
 
     async function request(path, options = {}, origin = location.origin) {
+        // The caller supplies its fixed provider origin; page markup cannot redirect credentials elsewhere.
         const url = new URL(path, origin);
         if (url.origin !== origin || url.protocol !== "https:") throw new Error("destination");
         const response = await fetch(url, {

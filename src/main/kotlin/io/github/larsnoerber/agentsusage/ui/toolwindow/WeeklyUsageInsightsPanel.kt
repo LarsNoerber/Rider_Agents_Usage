@@ -36,6 +36,7 @@ import javax.swing.Timer
 
 /** Compact, collapsible recap of locally observed quota changes. */
 internal class WeeklyUsageInsightsPanel : JPanel(BorderLayout(0, 4)), Disposable {
+    // Component construction precedes listener registration because it delivers an initial snapshot.
     private val service = UsageInsightsService.getInstance()
     private val settings = AgentsUsageSettings.getInstance()
     private val toggle = JButton("WEEKLY QUESTS  ▾")
@@ -249,6 +250,7 @@ internal class WeeklyUsageInsightsPanel : JPanel(BorderLayout(0, 4)), Disposable
         forecast.foreground = secondaryTextColor()
         forecast.toolTipText = "Local estimate from observed quota changes. Shown after at least one hour and 3 percentage points of change; resets before the estimate are excluded."
 
+        // Render persisted battle state; repainting must never record additional damage.
         val health = 100 - snapshot.bossDamage
         boss.value = health
         boss.foreground = bossAccent(snapshot.bossVariant)
@@ -312,6 +314,7 @@ internal class WeeklyUsageInsightsPanel : JPanel(BorderLayout(0, 4)), Disposable
     private fun hitText(hit: UsageBossHit): String = "Hit by ${hit.provider} · ${hit.points} Points"
 
     private fun showHits(hits: List<UsageBossHit>) {
+        // Snapshot delivery may repeat hits; IDs prevent replaying their transient animation.
         val now = System.currentTimeMillis()
         val removed = activeHits.filter { active -> hits.none { it.id == active.hit.id } }
         removed.forEach { hitFeedback.remove(it.label) }
@@ -359,6 +362,7 @@ internal class WeeklyUsageInsightsPanel : JPanel(BorderLayout(0, 4)), Disposable
         bossIcon.impactColor = color
         bossBattle.background = blend(bossBackground, color, impact * 0.25)
         bossBattle.repaint()
+        // Hidden/collapsed panels retain state without running a repaint timer.
         if (activeHits.isNotEmpty() && expanded && isShowing) hitTimer.start() else hitTimer.stop()
     }
 
@@ -369,6 +373,7 @@ internal class WeeklyUsageInsightsPanel : JPanel(BorderLayout(0, 4)), Disposable
     }
 
     private fun setWrappedText(label: JBLabel, text: String, availableWidth: Int? = null) {
+        // Measure plain text first, then escape each line before passing it to Swing's HTML renderer.
         if (text.isEmpty()) {
             label.text = ""
             return
@@ -545,6 +550,7 @@ internal class WeeklyUsageInsightsPanel : JPanel(BorderLayout(0, 4)), Disposable
     }
 
     private class WrapLayout(alignment: Int, hgap: Int, vgap: Int) : FlowLayout(alignment, hgap, vgap) {
+        // FlowLayout's default preferred height ignores wrapping in narrow tool windows.
         override fun preferredLayoutSize(target: Container): Dimension = layoutSize(target, true)
 
         override fun minimumLayoutSize(target: Container): Dimension = layoutSize(target, false)

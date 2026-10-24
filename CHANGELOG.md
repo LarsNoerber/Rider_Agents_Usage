@@ -1,7 +1,21 @@
 # Changelog
 
+## 1.2.1 ? 2026-10-24
+
+- Align Rider/JetBrains, Windows, Chrome/Edge, Visual Studio Code and Visual Studio packages on version 1.2.1.
+- Improve comments and source layout across all five applications, with a reading guide and documented open review findings.
+- Include the current Rider refresh reliability, quota compatibility, background history and bounded response handling improvements.
+- Include the current browser popup provider selector, active-tab context and store packaging improvements.
+- Prepare separate Store upload packages and listing materials, plus a GitHub release with checksums.
+
 ## 1.2.0 — 2026-10-22
 
+- Improve source readability across the five applications: explain refresh generations, cache/authentication
+  boundaries and UI lifetimes; expand dense state changes and provider mappings. Add a source reading guide and
+  record outstanding static-review findings. Runtime behavior and persisted identifiers are unchanged.
+
+- Make the JetBrains Marketplace upload ZIP a copy of the built plugin with its required `agentmeter/lib/`
+  structure. Package listing text and artwork separately as `agentmeter-marketplace-media-1.2.0.zip`.
 - Fix opening the JetBrains overview/configuration after the refresh-status update: initialize the Swing
   accessibility context through its getter before assigning the status label name.
 - Restore JetBrains AI quota readings for current AI Assistant versions, which wrap credit values in `Available` /
@@ -14,10 +28,16 @@
 - Read appended Claude session logs incrementally, with bounded lines, less frequent directory scans and handling
   for partial writes, truncation and file replacement.
 - Limit JetBrains quota HTTP responses to 2 MiB while receiving the response.
-- Add an illustrated status bar excerpt to the JetBrains Marketplace overview and as separate media in the upload bundle.
+- Add an illustrated status bar excerpt to the JetBrains Marketplace overview and as separate media in the upload
+  bundle.
 
+## 1.1.1 — 2026-10-13
 
-## Unreleased
+- Bind the browser popup to its own active tab and restrict background active-window lookup to normal browser
+  windows. Use temporary activeTab access when the toolbar icon is clicked. Add a provider selector and
+  selected-provider
+  fallback so quota access does not depend on recognizing the current site; refresh after website access is granted.
+  Update Edge reviewer guidance following the October 9 certification report. Live Store reproduction remains pending.
 
 - Prepare Chrome Web Store submission guidance and a local Chrome package/artwork build with a padded 128px icon,
   required 440×280 promotional tile and labelled UI screenshots. Retain version 1.1.0 and clarify transient tab-URL

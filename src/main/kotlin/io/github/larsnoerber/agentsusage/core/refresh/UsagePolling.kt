@@ -32,8 +32,13 @@ internal class UsagePolling<T>(
         { poll() }, 0, 5, TimeUnit.SECONDS
     )
 
-    fun addListener(listener: (T) -> Unit) { listeners.addIfAbsent(listener) }
-    fun removeListener(listener: (T) -> Unit) { listeners -= listener }
+    fun addListener(listener: (T) -> Unit) {
+        listeners.addIfAbsent(listener)
+    }
+
+    fun removeListener(listener: (T) -> Unit) {
+        listeners -= listener
+    }
 
     fun refresh() {
         if (disposed || !forceRefresh.compareAndSet(false, true)) return
@@ -41,6 +46,7 @@ internal class UsagePolling<T>(
     }
 
     private fun poll() {
+        // A forced refresh stays pending if another read already owns the reader.
         if (disposed || !enabled() || !reading.compareAndSet(false, true)) return
         val generation = UsageRefreshStatuses.generation()
         try {
@@ -49,6 +55,8 @@ internal class UsagePolling<T>(
             val previous = lastRefreshNanos
             val requestUpdate = forceRefresh.getAndSet(false) || previous == null || now - previous >= interval
             if (!requestUpdate && !localPolling) return
+
+            // Selection changes and publication share this lock; no obsolete read may enter history.
             synchronized(UsageRefreshStatuses.publicationLock) {
                 if (!valid(generation)) return
                 if (requestUpdate) UsageRefreshStatuses.update(provider, UsageRefreshStatuses.get(provider).copy(loading = true))
@@ -56,10 +64,12 @@ internal class UsagePolling<T>(
             val usage = try { read(requestUpdate) }
             catch (e: Exception) { failure(e) }
             catch (e: LinkageError) { failure(e) }
+
             synchronized(UsageRefreshStatuses.publicationLock) {
                 if (!valid(generation)) return
                 if (requestUpdate) lastRefreshNanos = now
                 val info = describe(usage)
+                // Failure metadata belongs to the fresh read, even when the UI retains older measurements.
                 val published = retain(current, usage)
                 val display = describe(published)
                 val status = UsageRefreshStatuses.get(provider)
@@ -75,6 +85,7 @@ internal class UsagePolling<T>(
                 if (current == published) return
                 current = published
                 ApplicationManager.getApplication().invokeLater {
+                    // Settings can change again after the callback was queued.
                     if (!disposed && generation == UsageRefreshStatuses.generation()) listeners.forEach { listener ->
                         try { listener(published) } catch (_: Exception) {
                             Logger.getInstance(UsagePolling::class.java).warn("Unable to update usage view")
@@ -84,6 +95,7 @@ internal class UsagePolling<T>(
             }
         } finally {
             reading.set(false)
+            // Consume refresh requests received during the read without overlapping provider processes.
             if (!disposed && forceRefresh.get() && enabled())
                 ApplicationManager.getApplication().executeOnPooledThread { poll() }
         }

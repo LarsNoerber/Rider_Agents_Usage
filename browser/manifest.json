@@ -1,11 +1,12 @@
 {
   "manifest_version": 3,
   "name": "AgentMeter",
-  "version": "1.1.0",
+  "version": "1.2.1",
   "description": "Track AI usage quotas in a movable browser bar, with reset countdowns and configurable quota warnings.",
   "homepage_url": "https://github.com/larsnoerber/Rider_Agents_Usage/tree/main/browser",
   "minimum_chrome_version": "120",
   "permissions": [
+    "activeTab",
     "storage",
     "alarms",
     "scripting",

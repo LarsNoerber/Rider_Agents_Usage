@@ -37,6 +37,8 @@ public partial class MainWindow : Window
         Icon = Branding.WindowIcon();
         AppLogo.Source = Icon;
         settings = initialSettings;
+
+        // Populate controls before attaching selection handlers, avoiding refreshes during construction.
         WidgetOptionsHost.Content = widgetOptions;
         widgetOptions.Apply(settings);
         widgetOptions.Changed += SaveWidgetOptions;
@@ -57,6 +59,8 @@ public partial class MainWindow : Window
         OpenCodePathInput.Text = settings.OpenCodePath;
         JuniePathInput.Text = settings.JuniePath;
         JunieProjectInput.Text = settings.JunieProjectPath;
+
+        // Provider activation and widget visibility are separate persisted choices.
         foreach (var provider in ProviderCatalog.All)
         {
             var (id, name, accent) = (provider.Id, provider.Name, provider.Accent);
@@ -75,6 +79,8 @@ public partial class MainWindow : Window
             widgetChoices[id] = widgetChoice;
             WidgetProviderChoices.Children.Add(widgetChoice);
         }
+
+        // Compose the coordinator and widget after all provider controls are available.
         coordinator = new(Dispatcher, settings);
         coordinator.Updated += Updated;
         coordinator.BusyChanged += BusyChanged;
@@ -87,6 +93,8 @@ public partial class MainWindow : Window
         WidgetEnabled.IsChecked = settings.ShowDesktopWidget;
         widget.Apply(settings);
         initializingWidget = false;
+
+        // User-driven changes can now flow through the coordinator and the widget settings path.
         foreach (var choice in choices.Values)
         {
             choice.Checked += SelectionChanged;
@@ -98,6 +106,7 @@ public partial class MainWindow : Window
             choice.Unchecked += WidgetProviderSelectionChanged;
         }
         RebuildCards();
+
         Loaded += OnLoaded;
         Closing += OnClosing;
         StateChanged += OnStateChanged;

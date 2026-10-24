@@ -1,7 +1,7 @@
 {
   "name": "agentmeter-browser",
   "private": true,
-  "version": "1.1.0",
+  "version": "1.2.1",
   "type": "module",
   "scripts": {
     "package": "powershell -NoProfile -ExecutionPolicy Bypass -File build.ps1"

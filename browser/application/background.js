@@ -10,8 +10,6 @@ import {
 } from "./coordinator.js";
 import {syncPageBars, publishPageBars, removePageBars, isProviderPageSender} from "./page-bars.js";
 
-// Read one open tab per selected provider, including background tabs.
-// All provider requests stay on the provider's own origin.
 // Reconcile scripts when an unpacked extension/worker is reloaded, as well as at install/startup.
 void syncPageBars().catch(() => {
 });
@@ -51,6 +49,7 @@ chrome.tabs.onUpdated.addListener((_id, change, tab) => {
     });
 });
 chrome.permissions.onRemoved.addListener(() => {
+    // Invalidate reads first, then clear measurements and rebuild bars for the remaining permissions.
     invalidate();
     void (async () => {
         await clearSavedUsage();
@@ -62,6 +61,8 @@ chrome.permissions.onRemoved.addListener(() => {
 chrome.permissions.onAdded.addListener(() => {
     void syncPageBars().catch(() => {
     });
+    void refreshCurrentPage().catch(() => {
+    });
 });
 chrome.storage.onChanged.addListener((changes, area) => {
     if ((area === "session" && changes.readings) || (area === "local" && changes.usageCache))
@@ -69,6 +70,7 @@ chrome.storage.onChanged.addListener((changes, area) => {
         });
 });
 chrome.runtime.onMessage.addListener((message, sender, reply) => {
+    // Extension documents can change settings; content scripts use the restricted page-bar route.
     const extensionUi = sender.id === chrome.runtime.id && sender.url?.startsWith(chrome.runtime.getURL("ui/"));
     if (!extensionUi && (sender.id !== chrome.runtime.id || !sender.tab || message?.target === "quotaReader")) return false;
     const handle = async () => {
@@ -113,11 +115,12 @@ chrome.runtime.onMessage.addListener((message, sender, reply) => {
                     return {error: "Unknown page action."};
             }
         }
+        // Only trusted extension UI documents reach these privileged commands.
         switch (message?.type) {
             case "state":
-                return stateForCurrentPage();
+                return stateForCurrentPage(message.tabId, message.providerId);
             case "refresh":
-                return refreshCurrentPage();
+                return refreshCurrentPage(message.tabId, message.providerId);
             case "settings":
             case "settingsPatch": {
                 const value = message.type === "settingsPatch" ? message.patch : message.settings;
@@ -147,5 +150,6 @@ chrome.runtime.onMessage.addListener((message, sender, reply) => {
         }
     };
     void handle().then(reply, () => reply({error: "AgentMeter could not complete this action. Please try again."}));
+    // Keep the message channel open while the asynchronous action resolves.
     return true;
 });

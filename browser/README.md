@@ -5,6 +5,10 @@ The bar shows selected, permitted providers together. Click a provider to open i
 details and **›** to cycle the details provider. **−** collapses the bar. Settings control theme, top/bottom position,
 visibility, provider activation and refresh interval. The bar's **⚙** opens the **Page bar** configuration section.
 Missing measurements show dashes, never invented zeroes.
+The toolbar popup identifies the tab in the window where it was opened. Use its **Provider** selector to view
+any enabled provider, including on unrelated sites. If no current provider is recognized, the popup defaults to
+the first selected provider. Clicking the toolbar icon grants temporary active-tab URL access; quota reads still
+require the separate website permission and a valid provider session.
 The bar has no trailing generic availability label; hover a provider or open its details for availability and
 saved-value information.
 In **Providers & page bar**, select providers once for both refresh and display. Deselecting a provider hides it
@@ -23,16 +27,16 @@ Gemini and Claude show session and weekly values; Codex keeps `OpenAi | D=<perce
 
 ## Installation / updating
 
-### Repository downloads
+### Release downloads
 
-The user explicitly requested these built packages to be available directly in GitHub, without a new release:
+All editions share version **1.2.1**. Download the browser packages from the
+[GitHub release](https://github.com/larsnoerber/Rider_Agents_Usage/releases/tag/v1.2.1):
 
-- [Edge / Chromium ZIP, version 1.1.0](downloads/AgentMeter-1.1.0-chromium.zip)
-- [Chrome ZIP, version 1.1.0](downloads/AgentMeter-1.1.0-chrome.zip)
+- `AgentMeter-1.2.1-chromium.zip` for Edge.
+- `AgentMeter-1.2.1-chrome.zip` for Chrome.
 
-Use GitHub's Download raw file button to download a ZIP. For manual installation, extract it and select the
-extracted folder with **Load unpacked** on the browser's Extensions page after enabling Developer mode.
-These repository downloads are not evidence of store acceptance and are not refreshed automatically by a build.
+For manual installation, extract the package and select its folder with **Load unpacked** on the browser's
+Extensions page after enabling Developer mode. Store acceptance is separate from these release downloads.
 
 For Chrome Web Store submission, see [the Chrome store guide](Packaging/chrome-submission.md).
 `powershell -NoProfile -ExecutionPolicy Bypass -File browser/build-chrome-store.ps1` creates the Chrome ZIP,

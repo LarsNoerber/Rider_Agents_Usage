@@ -19,6 +19,7 @@ namespace AgentMeter.Windows.Application;
 
 internal sealed partial class UsageRefreshCoordinator : IDisposable
 {
+    // Scheduling and lifetime live here; Readers shares reads/publication, Login coordinates sign-in.
     private readonly Dispatcher dispatcher;
     private readonly DispatcherTimer timer;
     private readonly Dictionary<string, IUsageReader> readers;
@@ -40,7 +41,19 @@ internal sealed partial class UsageRefreshCoordinator : IDisposable
     {
         this.dispatcher = dispatcher;
         this.settings = settings;
-        IUsageReader[] sources = [new CodexReader(), new CopilotReader(), new ClaudeReader(), new CursorReader(), new GeminiReader(), new OpenRouterReader(), new KiloReader(), new ClineReader(), new OpenCodeReader(), new JunieReader()];
+        IUsageReader[] sources =
+        [
+            new CodexReader(),
+            new CopilotReader(),
+            new ClaudeReader(),
+            new CursorReader(),
+            new GeminiReader(),
+            new OpenRouterReader(),
+            new KiloReader(),
+            new ClineReader(),
+            new OpenCodeReader(),
+            new JunieReader()
+        ];
         readers = sources.ToDictionary(r => r.Id);
         timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(settings.RefreshSeconds) };
         timer.Tick += OnTick;
@@ -61,6 +74,7 @@ internal sealed partial class UsageRefreshCoordinator : IDisposable
 
     public async Task<bool> RefreshConnectionAsync(string provider)
     {
+        // Login monitoring uses the same gate, cache and publication checks as a full refresh.
         if (disposed || signingIn || !settings.EnabledProviders.Contains(provider) || !readers.TryGetValue(provider, out var reader)) return false;
         var token = cancellation.Token;
         var version = generation;
@@ -88,6 +102,7 @@ internal sealed partial class UsageRefreshCoordinator : IDisposable
     public async Task ApplyAsync(UsageSettings next)
     {
         if (disposed) return;
+        // Cancel queued/active work before starting reads with the new provider selection.
         settings = next;
         generation++;
         cancellation.Cancel();
@@ -109,10 +124,12 @@ internal sealed partial class UsageRefreshCoordinator : IDisposable
             {
                 if (disposed || version != generation) return;
                 refreshing = true;
+                // The widget buffers per-provider updates until this batch leaves the busy state.
                 BusyChanged?.Invoke(true);
                 var selected = settings;
                 if (!selected.EnabledProviders.Contains("junie")) ((JunieReader)readers["junie"]).Pause();
                 var activeReaders = readers.Values.Where(reader => selected.EnabledProviders.Contains(reader.Id));
+                // The gate serializes batches; independent providers within a batch run concurrently.
                 await Task.WhenAll(activeReaders.Select(async reader =>
                 {
                     var snapshot = await ReadProviderAsync(reader, selected, token);

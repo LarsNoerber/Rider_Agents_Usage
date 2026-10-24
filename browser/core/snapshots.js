@@ -1,5 +1,12 @@
-const titles = new Set(["Session", "Weekly", "Sonnet weekly", "Opus weekly", "Premium", "Chat", "Included credits", "Inline suggestions", "Included plan", "Auto", "API", "Shared team pool"]);
-const plans = new Set(["Free", "Plus", "Pro", "Max", "Max 5x", "Max 20x", "Team", "Teams", "Business", "Enterprise", "Ultra", "Pro+", "Student", "Gemini Apps"]);
+// Provider output crosses into extension storage/UI only through these fixed public labels.
+const titles = new Set([
+    "Session", "Weekly", "Sonnet weekly", "Opus weekly", "Premium", "Chat", "Included credits",
+    "Inline suggestions", "Included plan", "Auto", "API", "Shared team pool"
+]);
+const plans = new Set([
+    "Free", "Plus", "Pro", "Max", "Max 5x", "Max 20x", "Team", "Teams", "Business", "Enterprise",
+    "Ultra", "Pro+", "Student", "Gemini Apps"
+]);
 const stages = new Set(["session", "codexUsage", "claudeOrganizations", "claudeUsage", "copilotPages", "injection"]);
 export const notices = Object.freeze({
     permission: "Allow access to this provider to read its usage page.",
@@ -19,6 +26,7 @@ export const notices = Object.freeze({
 });
 
 export function sanitizeSnapshot(id, value) {
+    // Reject ambiguous directions and out-of-range values instead of inferring a quota.
     const quotas = Array.isArray(value?.quotas) ? value.quotas.slice(0, 8).flatMap(quota => {
         if (!quota || !titles.has(quota.title) || typeof quota.percent !== "number" || !Number.isFinite(quota.percent) ||
             quota.percent < 0 || quota.percent > 100 || typeof quota.consumed !== "boolean") return [];
@@ -41,6 +49,7 @@ export function sanitizeSnapshot(id, value) {
 }
 
 export function restoreSnapshot(id, value) {
+    // Restoration validates the payload again and never makes a saved reading look fresh.
     const snapshot = sanitizeSnapshot(id, value);
     const time = typeof value?.updatedAt === "string" ? Date.parse(value.updatedAt) : NaN;
     if (!snapshot.quotas.length || !Number.isFinite(time) || time > Date.now()) return null;

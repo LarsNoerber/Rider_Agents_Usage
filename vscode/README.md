@@ -2,7 +2,7 @@
 
 This edition supports Codex and Copilot. The standalone Windows app's additional providers, tray and floating bar
 belong to a separate executable, not this extension. See [edition comparison](../docs/PROVIDERS.md) and the
-[documentation index](../docs/README.md). The shared source version remains 1.1.0.
+[documentation index](../docs/README.md). The shared source version is 1.2.1.
 
 The VS Code extension reads the provider-reported OpenAI Codex 5-hour and weekly quotas from the locally installed
 Codex CLI app-server. It displays remaining percentages and reset times in the AgentMeter Activity Bar view and an

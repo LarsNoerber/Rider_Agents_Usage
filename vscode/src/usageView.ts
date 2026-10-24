@@ -12,6 +12,7 @@ export class UsageView implements vscode.WebviewViewProvider {
     resolveWebviewView(view: vscode.WebviewView): void {
         this.webview = view.webview;
         view.webview.options = {enableScripts: true};
+        // The webview can request only these fixed commands; it cannot supply arbitrary command IDs.
         view.webview.onDidReceiveMessage((message: unknown) => {
             if (typeof message !== "object" || message === null || !("command" in message)) return;
             if (message.command === "refresh") void vscode.commands.executeCommand("agentsUsage.refresh");
@@ -71,6 +72,7 @@ export class UsageView implements vscode.WebviewViewProvider {
     }
 
     private html(content: string): string {
+        // Provider text is escaped by the render helpers; only this nonce permits embedded styles/scripts.
         const nonce = getNonce();
         return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'nonce-${nonce}'; script-src 'nonce-${nonce}';">
@@ -97,6 +99,7 @@ function providerCard(title: string, content: string): string {
 function quotaRow(label: string, percent: number | undefined, reset: number | undefined, remaining: boolean): string {
     if (percent === undefined) return "";
     const value = Math.max(0, Math.min(100, percent));
+    // Preserve each provider's bar direction while deriving warning colors from consumption.
     const usedPercent = remaining ? 100 - value : value;
     const color = usedPercent >= 90 ? "exhausted" : usedPercent >= 70 ? "warning" : "good";
     const valueText = remaining ? `${Math.round(value)}% remaining` : `${Math.round(value)}% used`;

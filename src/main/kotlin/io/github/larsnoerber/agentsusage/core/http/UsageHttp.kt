@@ -39,7 +39,10 @@ internal class UsageHttp : AutoCloseable {
         val future = client.sendAsync(request.build()) { LimitedJsonBody() }
         active.set(future)
         try {
-            if (closed.get()) { future.cancel(true); error("Usage reader disposed") }
+            if (closed.get()) {
+                future.cancel(true)
+                error("Usage reader disposed")
+            }
             val response = future.get(16, TimeUnit.SECONDS)
             if (response.statusCode() == 429) {
                 val seconds = response.headers().firstValue("Retry-After").orElse("").toLongOrNull()
@@ -86,11 +89,17 @@ private class LimitedJsonBody : HttpResponse.BodySubscriber<String> {
     }
 
     override fun onError(error: Throwable) {
-        if (!done) { done = true; delegate.onError(error) }
+        if (!done) {
+            done = true
+            delegate.onError(error)
+        }
     }
 
     override fun onComplete() {
-        if (!done) { done = true; delegate.onComplete() }
+        if (!done) {
+            done = true
+            delegate.onComplete()
+        }
     }
 }
 

@@ -24,6 +24,7 @@ internal static class ReadOnlyAgentCommand
         {
             job.Add(process);
             process.StandardInput.Close();
+            // Drain both pipes concurrently so a full stderr pipe cannot block process exit.
             var output = ReadBoundedAsync(process.StandardOutput, timeout.Token);
             var error = ReadBoundedAsync(process.StandardError, timeout.Token);
             await process.WaitForExitAsync(timeout.Token);
@@ -38,6 +39,7 @@ internal static class ReadOnlyAgentCommand
 
     private static async Task<string> ReadBoundedAsync(StreamReader reader, CancellationToken token)
     {
+        // Bound retained output as it arrives, including commands without a known response length.
         var result = new System.Text.StringBuilder();
         var buffer = new char[4096];
         int count;

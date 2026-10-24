@@ -1,7 +1,7 @@
 # Documentation index
 
-Source documentation updated for the current 1.1.0 code on October 5, 2026. This update does not create a release,
-version tag or binary upload. Generated build/dist folders are not source documentation.
+Source documentation updated for version 1.2.1 on October 24, 2026. Store submission remains separate from
+building and publishing the GitHub release. Generated build/dist folders are not source documentation.
 
 ## User guides
 
@@ -26,6 +26,7 @@ version tag or binary upload. Generated build/dist folders are not source docume
 
 - [Project rules](../AGENTS.md)
 - [Architecture](ARCHITECTURE.md): package boundaries and Windows partial-class responsibilities
+- [Source review and reading guide](CODE_REVIEW.md): application entry points, readability conventions and open findings
 - [Build/development](DEVELOPMENT.md): separate editor/Windows build commands and Rider C# indexing
 - [Windows verification](../windows/TESTING.md): current evidence, historical checks and opt-in commands
 - [Changelog](../CHANGELOG.md)
@@ -41,5 +42,4 @@ version tag or binary upload. Generated build/dist folders are not source docume
 - [Windows Store draft](../windows/Packaging/StoreListing.md)
 
 Build, installation and publication are separate actions. A successful build does not validate live provider APIs,
-Store certification or every desktop interaction. Run/add tests only when requested. The current GitHub update
-contains source/docs; EXE/MSIX artifacts stay local.
+Store certification or every desktop interaction. Run/add tests only when requested. Generated EXE/MSIX packages stay out of source commits; release binaries are attached to the GitHub release.

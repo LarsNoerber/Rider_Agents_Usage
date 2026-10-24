@@ -36,6 +36,7 @@ export class CodexUsageReader {
         this.activeProcess = child;
 
         const pending = new Map<string, PendingResponse>();
+        // JSON-RPC notifications can interleave with responses; only matching IDs complete requests.
         const lines = readline.createInterface({input: child.stdout!, crlfDelay: Infinity});
         let processError: Error | undefined;
 
@@ -90,6 +91,7 @@ export class CodexUsageReader {
         };
 
         try {
+            // Initialize the protocol before reading optional account metadata and quota windows.
             await request(1, "initialize", {
                 clientInfo: {name: "agents-usage-vscode", version: extensionVersion},
             });
@@ -111,6 +113,7 @@ export class CodexUsageReader {
             if (processError) throw new Error("Could not start the Codex CLI. Check the configured path and installation.");
             throw error instanceof Error ? error : new Error("Codex CLI usage could not be read");
         } finally {
+            // Each refresh owns a short-lived app-server process and all of its request timers.
             lines.close();
             for (const request of pending.values()) clearTimeout(request.timeout);
             pending.clear();

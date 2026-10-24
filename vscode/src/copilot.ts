@@ -24,6 +24,7 @@ export class CopilotUsageReader {
 
         let session: vscode.AuthenticationSession | undefined;
         try {
+            // Background polling stays silent; only the explicit sign-in command may prompt.
             const options = interactive ? {createIfNone: true} : {silent: true};
             session = await vscode.authentication.getSession("github", ["read:user"], options);
         } catch {
@@ -112,6 +113,7 @@ function parseCopilotUsage(payload: unknown): CopilotUsage {
     const usedRequests = entitlementRequests !== undefined && remainingRequests !== undefined
     && entitlementRequests > 0 ? Math.max(0, entitlementRequests - remainingRequests)
         : undefined;
+    // Copilot displays consumption; convert reported remaining quota exactly once here.
     const percentUsed = remainingPercent !== undefined
         ? 100 - remainingPercent
         : entitlementRequests !== undefined && entitlementRequests > 0 && usedRequests !== undefined

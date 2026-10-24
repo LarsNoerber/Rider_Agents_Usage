@@ -53,6 +53,7 @@ internal sealed partial class DesktopWidgetWindow
         }
         strip.Visibility = collapsed ? Visibility.Collapsed : Visibility.Visible;
         var ids = options.WidgetProviderOrder.Concat(selected).Distinct().Where(selected.Contains).ToArray();
+        // Rebuild the visual structure only when selection/order/style changes, reusing segment controls.
         if (!ids.SequenceEqual(renderedProviders) || renderedStyle != widgetStyle || strip.Children.Count == 0)
         {
             detailsPopup.IsOpen = false;
@@ -89,6 +90,7 @@ internal sealed partial class DesktopWidgetWindow
         }
         if (widgetStyle is "cards" or "circles" && contents.Count > 0)
         {
+            // Measure the complete batch before assigning a common height to its cards/rings.
             foreach (var content in contents) content.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
             var height = contents.Max(content => content.DesiredSize.Height);
             foreach (var content in contents) content.Height = height;
@@ -111,6 +113,7 @@ internal sealed partial class DesktopWidgetWindow
             var screen = System.Windows.Forms.Screen.FromPoint(new System.Drawing.Point(
                 (int)Math.Round(screenPoint.X), (int)Math.Round(screenPoint.Y)));
             var scale = source.CompositionTarget.TransformToDevice.M22;
+            // Screen coordinates are pixels; popup layout and the window position use WPF units.
             availableAbove = (screenPoint.Y - screen.WorkingArea.Top) / scale;
         }
         var below = availableAbove < content.DesiredSize.Height + 8;

@@ -1,6 +1,7 @@
-"""Package the existing Rider artwork and listing copy; never publish or read account data."""
+"""Prepare the built Rider plugin and separate listing materials for Marketplace upload."""
 
 from pathlib import Path
+from shutil import copy2
 import xml.etree.ElementTree as ET
 from zipfile import ZIP_DEFLATED, ZipFile
 
@@ -40,7 +41,10 @@ instructions = (
 )
 destination = ROOT / "build/distributions"
 destination.mkdir(parents=True, exist_ok=True)
-archive = destination / f"agentmeter-marketplace-{version}.zip"
+plugin_archive = destination / f"agentmeter-{version}.zip"
+if not plugin_archive.is_file():
+    raise SystemExit(f"Build the Rider plugin first: missing {plugin_archive}")
+archive = destination / f"agentmeter-marketplace-media-{version}.zip"
 with ZipFile(archive, "w", ZIP_DEFLATED, compresslevel=9) as bundle:
     bundle.writestr("description.html", description + "\n")
     bundle.writestr("release-notes.md", release_notes)
@@ -53,4 +57,7 @@ with ZipFile(archive, "w", ZIP_DEFLATED, compresslevel=9) as bundle:
                      "images/agents-usage-statusbar-excerpt" + suffix)
     bundle.write(ROOT / "docs/images/agents-usage-logo.png", "images/agents-usage-logo.png")
 (destination / f"agentmeter-{version}-release-notes.md").write_text(release_notes, encoding="utf-8")
-print(f"Marketplace bundle: {archive}")
+upload_archive = destination / f"agentmeter-marketplace-{version}.zip"
+copy2(plugin_archive, upload_archive)
+print(f"Marketplace plugin upload: {upload_archive}")
+print(f"Marketplace listing materials: {archive}")

@@ -4,8 +4,10 @@ import {percentText, quotaColor, ageText, resetText} from "../core/format.js";
 const $ = id => document.getElementById(id);
 let state;
 let busy = false;
+let tabId;
+let preferredId;
 const contextText = {
-    unsupportedSite: "Open a supported provider to see its quota here.",
+    unsupportedSite: "No provider selected. Enable a provider in Settings to see its quota.",
     permission: "Allow access to this provider's website. AgentMeter reads only usage values.",
     disabled: "This provider is disabled. Enable it in Settings.",
     usagePageRequired: "The toolbar shows the last saved quota. Open the usage page to update it.",
@@ -13,7 +15,7 @@ const contextText = {
 };
 
 async function send(message) {
-    const result = await chrome.runtime.sendMessage(message);
+    const result = await chrome.runtime.sendMessage({...message, tabId, providerId: message.providerId ?? preferredId});
     if (result?.error) throw new Error(result.error);
     return result;
 }
@@ -22,6 +24,15 @@ function render(value) {
     state = value;
     const provider = providerById(state.providerId);
     const snapshot = state.snapshot;
+    const choices = providers.filter(item => state.settings.selected.includes(item.id) || item.id === state.providerId);
+    $("provider-select").replaceChildren(...choices.map(item => {
+        const option = document.createElement("option");
+        option.value = item.id;
+        option.textContent = item.name;
+        return option;
+    }));
+    $("provider-select").value = state.providerId || "";
+    $("provider-select").disabled = busy || !choices.length;
     document.body.dataset.theme = state.settings.theme;
     $("quotas").dataset.style = state.settings.style;
     $("provider-name").textContent = provider?.name || "Current page";
@@ -29,7 +40,7 @@ function render(value) {
     $("plan").hidden = !snapshot?.plan;
     $("plan").textContent = snapshot?.plan || "";
     $("context").textContent = state.context === "ready" && !snapshot ?
-        "No reading yet. Wait for the usage values to appear, then choose Refresh." : contextText[state.context] || "";
+        "No reading yet. Sign in to this provider in your browser, then choose Refresh." : contextText[state.context] || "";
     $("context").hidden = !$("context").textContent;
     $("allow").hidden = state.context !== "permission";
     $("open").hidden = !provider || state.context === "disabled";
@@ -108,6 +119,7 @@ async function perform(action) {
         $("error").hidden = false;
     } finally {
         busy = false;
+        $("provider-select").disabled = !$("provider-select").options.length;
         $("allow").disabled = false;
         $("refresh").textContent = "Refresh";
         $("refresh").disabled = state?.context !== "ready";
@@ -116,6 +128,14 @@ async function perform(action) {
 }
 
 $("settings").addEventListener("click", () => void chrome.runtime.openOptionsPage());
+$("provider-select").addEventListener("change", () => {
+    preferredId = $("provider-select").value;
+    void perform(async () => {
+        const initial = await send({type: "state"});
+        render(initial);
+        return initial.context === "ready" ? send({type: "refresh"}) : initial;
+    });
+});
 $("refresh").addEventListener("click", () => void perform(() => send({type: "refresh"})));
 $("allow").addEventListener("click", () => {
     const provider = providerById(state?.providerId);
@@ -145,6 +165,8 @@ const timer = setInterval(() => {
 }, 30000);
 window.addEventListener("pagehide", () => clearInterval(timer), {once: true});
 void perform(async () => {
+    const [tab] = await chrome.tabs.query({active: true, currentWindow: true});
+    tabId = tab?.id;
     const initial = await send({type: "state"});
     render(initial);
     return initial.context === "ready" ? send({type: "refresh"}) : initial;

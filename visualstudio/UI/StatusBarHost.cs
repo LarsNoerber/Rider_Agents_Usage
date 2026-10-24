@@ -85,7 +85,12 @@ namespace AgentsUsage.VisualStudio.UI
         private void Attach()
         {
             if (disposed) return;
-            if (!options.ShowStatusBar) { Detach(); attachTimer.Stop(); return; }
+            if (!options.ShowStatusBar)
+            {
+                Detach();
+                attachTimer.Stop();
+                return;
+            }
             if (!attachTimer.IsEnabled) attachTimer.Start();
             if (panel?.IsLoaded == true && panel.Children.Contains(button)) return;
             var window = System.Windows.Application.Current?.MainWindow;
@@ -112,7 +117,12 @@ namespace AgentsUsage.VisualStudio.UI
             return null;
         }
 
-        private void Detach() { panel?.Children.Remove(button); panel = null; }
+        private void Detach()
+        {
+            panel?.Children.Remove(button);
+            panel = null;
+        }
+
         public void Dispose()
         {
             if (disposed) return;

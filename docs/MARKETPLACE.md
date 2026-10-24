@@ -1,14 +1,14 @@
 # AgentMeter Marketplace materials
 
-## JetBrains Marketplace — version 1.2.0
+## JetBrains Marketplace — version 1.2.1
 
 AgentMeter monitors OpenAI Codex, JetBrains AI, GitHub Copilot, Claude and Cursor in Rider.
-Version 1.2.0 improves refresh reliability, background history and resource use. Version 1.1.0 was the first stable release.
+Version 1.2.1 improves refresh reliability, background history and resource use. Version 1.1.0 was the first stable release.
 The existing plugin ID remains `io.github.larsnoerber.agentsusage` for upgrade compatibility.
 
 The listing description is in `src/main/resources/META-INF/plugin.xml`. It introduces the current features,
 requirements and privacy behavior without development changelog or migration text.
-The 1.2.0 description includes the overview and a separate status bar excerpt from GitHub's main branch.
+The 1.2.1 description includes the overview and a separate status bar excerpt from GitHub's main branch.
 These source-hosted previews follow later artwork updates; the local media ZIP contains this build's image copies.
 
 ### Gallery images
@@ -37,13 +37,15 @@ The existing Quota Portal logo is `images/agents-usage-logo.png`; the plugin's S
 
 Create the media bundle with `python tools/package_jetbrains_marketplace.py` after building the Rider plugin.
 
-The local build provides `agentmeter-1.2.0.zip` for plugin upload and `agentmeter-marketplace-1.2.0.zip`
-with the five gallery PNGs, status bar excerpt, logo, HTML description, release notes and upload instructions.
+The local build provides `agentmeter-1.2.1.zip` for plugin upload. The packaging script copies it unchanged to
+`agentmeter-marketplace-1.2.1.zip`, which is also ready for the plugin upload and retains the `agentmeter/lib/`
+structure. The separate `agentmeter-marketplace-media-1.2.1.zip` contains the five gallery PNGs, status bar excerpt,
+logo, HTML description, release notes and upload instructions; extract it for the listing fields and Media uploads.
 
 1. Upload the Rider plugin ZIP to JetBrains Marketplace with name **AgentMeter**.
 2. Use the packaged `plugin.xml` description (or the matching `description.html` in the media bundle).
 3. Upload the five PNGs under **Media**, retaining the illustrated-example captions.
-4. Use the packaged 1.2.0 release notes for the refresh, history and resource-use improvements.
+4. Use the packaged 1.2.1 release notes for the refresh, history and resource-use improvements.
 
 Creating the ZIP and GitHub release does not submit the listing to JetBrains Marketplace.
 The 1280 × 800 image format

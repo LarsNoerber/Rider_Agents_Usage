@@ -302,6 +302,11 @@ version tag or publishing a release. Exclude generated build/dist folders, porta
 settings. Local Windows build artifacts and source commits are separate deliverables. See the
 [documentation index](README.md) and [provider matrix](PROVIDERS.md).
 
+Keep ideas, concept artwork and working notes local: use the ignored root folders `ideas/`, `concepts/`, `notes/`
+or `local/`. The existing `docs/IDEAS.md`, `design/icon-concepts/`, `filled-usage-preview.png` and old
+`browser/downloads/` packages are also local-only. Keep source assets, user guides, architecture, build instructions
+and Store publishing sources versioned. Distribute generated packages through release assets rather than source commits.
+
 ## Consolidated 1.2.1 delivery
 
 The requested release packages are collected under `dist/releases/1.2.1/` (ignored by Git), with one folder per

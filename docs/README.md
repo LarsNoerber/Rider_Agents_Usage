@@ -30,7 +30,6 @@ building and publishing the GitHub release. Generated build/dist folders are not
 - [Build/development](DEVELOPMENT.md): separate editor/Windows build commands and Rider C# indexing
 - [Windows verification](../windows/TESTING.md): current evidence, historical checks and opt-in commands
 - [Changelog](../CHANGELOG.md)
-- [Implemented ideas](IDEAS.md): edition scope and future proposals
 
 ## Publishing material
 
@@ -42,4 +41,5 @@ building and publishing the GitHub release. Generated build/dist folders are not
 - [Windows Store draft](../windows/Packaging/StoreListing.md)
 
 Build, installation and publication are separate actions. A successful build does not validate live provider APIs,
-Store certification or every desktop interaction. Run/add tests only when requested. Generated EXE/MSIX packages stay out of source commits; release binaries are attached to the GitHub release.
+Store certification or every desktop interaction. Run/add tests only when requested. Generated EXE/MSIX packages stay
+out of source commits; release binaries are attached to the GitHub release.

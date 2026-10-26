@@ -40,3 +40,15 @@ Thumbs.db
 
 # Consolidated release and Store upload packages
 /dist/
+
+# Local ideas, concepts, notes and working previews (keep off GitHub)
+/docs/IDEAS.md
+/design/icon-concepts/
+/filled-usage-preview.png
+/ideas/
+/concepts/
+/notes/
+/local/
+
+# Old/generated browser download packages
+/browser/downloads/

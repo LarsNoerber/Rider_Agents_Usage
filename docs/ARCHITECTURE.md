@@ -68,8 +68,11 @@ The shared quota contract permits both titles; page parsing includes bold/table/
 reads explicit public plan labels from detached HTML as well as live Usage pages.
 Copilot follows up to four distinct quota-related `include-fragment[src]` references supplied by GitHub's fixed
 billing pages. Only same-origin personal billing/Copilot quota paths are accepted; arbitrary URLs are rejected.
-`core/page-reader.js` removes executable scripts, preload/stylesheet links, styles and resource tags before
-parsing into detached template contents. Only inert application/json script blocks are retained. GitHub fragment
+`core/page-reader.js` parses HTML directly into inert template contents, where scripts, custom elements and
+resource links stay inactive. It then removes executable scripts, links, styles, resource elements, nested
+templates and non-HTML elements through DOM operations. Attributes are removed except for JSON script types,
+machine-readable reset times and passive fragment URLs. No regex rewriting or reserialization is used.
+Only inert application/json script blocks are retained. GitHub fragment
 URLs become passive `data-agentmeter-src` attributes, read only through the provider's bounded same-origin
 requests. Parsed nodes never enter a live document; the extension CSP is unchanged. Claude negotiates JSON,
 recognizes authentication error envelopes and explicit numeric utilization

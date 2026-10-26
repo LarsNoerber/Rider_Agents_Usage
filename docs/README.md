@@ -1,6 +1,6 @@
 # Documentation index
 
-Source documentation updated for version 1.2.1 on October 24, 2026. Store submission remains separate from
+Source documentation updated for version 1.2.2 on October 26, 2026. Store submission remains separate from
 building and publishing the GitHub release. Generated build/dist folders are not source documentation.
 
 ## User guides

@@ -37,7 +37,7 @@ internal sealed class JunieConnection : IDisposable
                 job.Add(process);
                 _ = DrainErrorsAsync(process.StandardError);
                 var init = await RequestAsync("initialize", new { protocolVersion = 1,
-                    clientCapabilities = new { }, clientInfo = new { name = "AgentMeter", version = "1.2.1" } }, null, ct);
+                    clientCapabilities = new { }, clientInfo = new { name = "AgentMeter", version = "1.2.2" } }, null, ct);
                 if (init.TryGetProperty("error", out _)) throw new IOException("ACP initialization failed.");
                 var created = await RequestAsync("session/new", new { cwd = project, mcpServers = Array.Empty<object>() }, null, ct);
                 if (created.TryGetProperty("error", out var error))

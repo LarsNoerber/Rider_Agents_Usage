@@ -6,7 +6,7 @@ integration.
 
 The Windows app also includes OpenRouter, Kilo, Cline, OpenCode and Junie CLI, separate provider configuration pages,
 six bar layouts, five palettes, a refresh progress display and saved usage across restarts. App/window/tray icons
-share the supplied SVG. Existing selections are preserved. All editions share version **1.2.1**.
+share the supplied SVG. Existing selections are preserved. All editions share version **1.2.2**.
 
 | Edition                 | Supported providers                                                                                              | Guide                                   |
 |-------------------------|------------------------------------------------------------------------------------------------------------------|-----------------------------------------|

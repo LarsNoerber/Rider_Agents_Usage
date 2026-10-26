@@ -2,7 +2,7 @@
   "name": "agents-usage-vscode",
   "displayName": "AgentMeter",
   "description": "View provider-reported OpenAI Codex and GitHub Copilot usage in Visual Studio Code.",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "publisher": "lanoerber",
   "author": "nightevil",
   "icon": "resources/icon.png",
@@ -119,6 +119,11 @@
   },
   "dependencies": {
     "cross-spawn": "^7.0.6"
+  },
+  "overrides": {
+    "@azure/identity": {
+      "@azure/msal-node": "7.1.0"
+    }
   },
   "devDependencies": {
     "@types/cross-spawn": "^6.0.6",

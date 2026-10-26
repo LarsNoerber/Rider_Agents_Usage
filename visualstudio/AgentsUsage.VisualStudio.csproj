@@ -6,7 +6,7 @@
         <LangVersion>latest</LangVersion>
         <RootNamespace>AgentsUsage.VisualStudio</RootNamespace>
         <AssemblyName>AgentsUsage.VisualStudio</AssemblyName>
-        <Version>1.2.1</Version>
+        <Version>1.2.2</Version>
         <GeneratePkgDefFile>true</GeneratePkgDefFile>
         <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
         <IncludeCopyLocalReferencesInVSIXContainer>true</IncludeCopyLocalReferencesInVSIXContainer>

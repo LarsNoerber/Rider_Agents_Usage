@@ -47,7 +47,7 @@ internal class CodexUsageReader : Disposable {
                 process.outputStream.bufferedWriter(StandardCharsets.UTF_8).use { writer ->
                     val clientInfo = JsonObject().apply {
                         addProperty("name", "agents-usage")
-                        addProperty("version", "1.2.1")
+                        addProperty("version", "1.2.2")
                     }
                     request(reader, writer, 1, "initialize", JsonObject().apply { add("clientInfo", clientInfo) })
                     writer.write("""{"method":"initialized"}""")

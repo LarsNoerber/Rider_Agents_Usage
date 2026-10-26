@@ -53,6 +53,9 @@ npm run package
 
 The installable VS Code package is `vscode/agents-usage-vscode-<version>.vsix`. Install it using **Extensions: Install
 from VSIX...**. `npm run package` compiles the TypeScript extension and creates the VSIX.
+The npm override for `@azure/identity` pins its MSAL Node dependency to 7.1.0 to address CVE-2026-109461;
+the current upstream dependency range still selects MSAL 6. Remove the override once Azure Identity used by
+`@vscode/vsce` requires a patched version. This dependency belongs to the packaging toolchain.
 The VS Code Marketplace publisher ID is `lanoerber`, so the extension ID is `lanoerber.agents-usage-vscode`.
 The manifest author is `nightevil`, matching the publisher's Marketplace display name.
 The GitHub repository remains `larsnoerber/Rider_Agents_Usage`.

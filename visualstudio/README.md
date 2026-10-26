@@ -2,7 +2,7 @@
 
 This edition supports Codex and Copilot. The standalone Windows app's extra providers and floating desktop bar
 are separate from the Visual Studio VSIX. See [edition comparison](../docs/PROVIDERS.md) and
-[documentation index](../docs/README.md). The shared source version is 1.2.1.
+[documentation index](../docs/README.md). The shared source version is 1.2.2.
 
 Native Visual Studio extension for **Visual Studio 2022 and 2026**, in Community, Professional and Enterprise on
 Windows x64. It uses stable Visual Studio 2022 SDK APIs and an open installation version range (`[17.0,)`).

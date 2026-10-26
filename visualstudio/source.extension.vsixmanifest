@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="lanoerber.AgentsUsage.VisualStudio.82441438-356a-4f3a-a82f-47bc9e090b7e" Version="1.2.1" Language="en-US" Publisher="nightevil" />
+    <Identity Id="lanoerber.AgentsUsage.VisualStudio.82441438-356a-4f3a-a82f-47bc9e090b7e" Version="1.2.2" Language="en-US" Publisher="nightevil" />
     <DisplayName>AgentMeter</DisplayName>
     <Description xml:space="preserve">Track OpenAI Codex and GitHub Copilot quotas in Visual Studio with colored bars, subscription plans, reset times and clickable AI status indicators.</Description>
     <MoreInfo>https://github.com/larsnoerber/Rider_Agents_Usage</MoreInfo>

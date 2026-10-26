@@ -2,6 +2,13 @@
 
 Code and functionality changes to the Rider / JetBrains add-in.
 
+## 1.2.2 - 2026-10-26
+
+- Pin the VS Code packaging toolchain's transitive MSAL Node dependency to patched version 7.1.0 through an
+  Azure Identity override, addressing CVE-2026-109461.
+- Harden browser quota-page parsing by removing unwanted DOM elements and allowing only quota-reader attributes
+  inside an inert template, replacing incomplete regular-expression HTML sanitization.
+
 ## 1.2.1 - 2026-10-24
 
 - Improve comments and source layout around provider refreshes, cached quota readings and UI lifetimes.

@@ -107,22 +107,32 @@
     }
 
     function parseHtml(html) {
-        // Parse only quota markup. Module-preload links can request remote scripts
-        // even when script elements themselves are inert; remove them before parsing.
-        const markup = html
-            .replace(/<script\b((?:[^"'<>]|"[^"]*"|'[^']*')*)>([\s\S]*?)(?:<\/script\s*>|$)/gi,
-                (_tag, attributes, body) => /(?:^|\s)type\s*=\s*(?:"application\/json"|'application\/json'|application\/json(?=\s|$))/i.test(attributes) ?
-                    `<script type="application/json">${body}</script>` : "")
-            .replace(/<style\b(?:[^"'<>]|"[^"]*"|'[^']*')*>[\s\S]*?(?:<\/style\s*>|$)/gi, "")
-            .replace(/<(?:link|base|meta|img|iframe|frame|object|embed|source|video|audio)\b(?:[^"'<>]|"[^"]*"|'[^']*')*>/gi, "");
-        const safe = markup.replace(/<[^>]+>/g, tag => {
-            if (/^<include-fragment(?:\s|>)/i.test(tag))
-                return tag.replace(/\ssrc\s*=/gi, " data-agentmeter-src=");
-            return tag.replace(/\s(?:src|srcset|poster|href|xlink:href|style|on[a-z]+)\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, "");
-        });
-        // Template contents never enter the live extension/provider document.
+        // Template parsing is inert: scripts, custom elements and resource links
+        // stay inactive. Never insert these contents into a live document or reparse them.
         const template = document.createElement("template");
-        template.innerHTML = safe;
+        template.innerHTML = html;
+        const excluded = new Set([
+            "style", "link", "base", "meta", "img", "iframe", "frame", "frameset",
+            "object", "embed", "source", "video", "audio", "template"
+        ]);
+        for (const element of template.content.querySelectorAll("*")) {
+            const tag = element.localName;
+            const json = tag === "script" && element.getAttribute("type")?.toLowerCase() === "application/json";
+            if (element.namespaceURI !== "http://www.w3.org/1999/xhtml" || excluded.has(tag) ||
+                (tag === "script" && !json)) {
+                element.remove();
+                continue;
+            }
+            // Retain only the data consumed by quota readers. Fragment URLs are
+            // inert metadata and still pass the Copilot reader's origin/path checks.
+            const datetime = tag === "time" ? element.getAttribute("datetime") : null;
+            const fragment = tag === "include-fragment" ?
+                element.getAttribute("data-agentmeter-src") || element.getAttribute("src") : null;
+            for (const attribute of [...element.attributes]) element.removeAttributeNode(attribute);
+            if (json) element.setAttribute("type", "application/json");
+            if (datetime !== null) element.setAttribute("datetime", datetime);
+            if (fragment !== null) element.setAttribute("data-agentmeter-src", fragment);
+        }
         return template.content;
     }
 

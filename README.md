@@ -37,8 +37,8 @@ select additional providers in **Visible agents**. Claude and OpenAI show remain
 subscription quotas Claude shows recorded local tokens or its API connection state. Cursor shows consumed quota.
 Visible widgets stay together in OpenAI, JetBrains AI, Copilot order when agents are toggled.
 
-For the source layout, read [Code structure](docs/ARCHITECTURE.md). Contributors and agents should start with
-[Project rules](AGENTS.md) and [Local development](docs/DEVELOPMENT.md).
+For the source layout, read [Code structure](docs/ARCHITECTURE.md). Contributors should start with
+[Local development](docs/DEVELOPMENT.md).
 
 > Codex is a trademark of OpenAI. This independent plugin is not affiliated with or endorsed by OpenAI.
 

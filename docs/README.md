@@ -24,7 +24,6 @@ building and publishing the GitHub release. Generated build/dist folders are not
 - [Accounts, authentication and review](AUTHENTICATION_AND_REVIEW.md): prerequisites and manual review steps for
   every edition, reviewer accounts, credential handling and evidence limitations
 
-- [Project rules](../AGENTS.md)
 - [Architecture](ARCHITECTURE.md): package boundaries and Windows partial-class responsibilities
 - [Source review and reading guide](CODE_REVIEW.md): application entry points, readability conventions and open findings
 - [Build/development](DEVELOPMENT.md): separate editor/Windows build commands and Rider C# indexing

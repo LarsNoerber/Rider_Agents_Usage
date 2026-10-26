@@ -50,5 +50,28 @@ Thumbs.db
 /notes/
 /local/
 
+# Local coding-agent instructions, configuration and sessions
+AGENTS.md
+AGENTS.override.md
+CLAUDE.md
+GEMINI.md
+SKILL.md
+.agents/
+.codex/
+.claude/
+.cursor/
+.junie/
+.aider*
+.cursorrules
+.cursorignore
+.clinerules/
+.roorules/
+.roo/
+.kilocode/
+/.github/copilot-instructions.md
+/.github/instructions/
+/.github/agents/
+/.github/prompts/
+
 # Old/generated browser download packages
 /browser/downloads/

@@ -172,7 +172,7 @@ It uses the same checked MV3 sources, renders the shared SVG with Chrome's recom
 440×280 promotional tile, and places generated upload files under `browser/dist/chrome-store/`.
 No store submission, payment, version change or release is performed.
 
-Read [../AGENTS.md](../AGENTS.md) and [ARCHITECTURE.md](ARCHITECTURE.md).
+Read [ARCHITECTURE.md](ARCHITECTURE.md).
 Keep provider details within their feature folders, and update `plugin.xml` whenever a registered class moves.
 Preserve existing user edits and the persisted settings identifiers.
 
@@ -306,6 +306,8 @@ Keep ideas, concept artwork and working notes local: use the ignored root folder
 or `local/`. The existing `docs/IDEAS.md`, `design/icon-concepts/`, `filled-usage-preview.png` and old
 `browser/downloads/` packages are also local-only. Keep source assets, user guides, architecture, build instructions
 and Store publishing sources versioned. Distribute generated packages through release assets rather than source commits.
+
+Coding-agent instruction files, configuration folders and sessions are local-only and ignored by Git.
 
 ## Consolidated 1.2.1 delivery
 

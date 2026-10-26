@@ -196,7 +196,6 @@ Provider code is grouped by feature, so a provider change can be understood in o
 
 ```text
 AgentMeter/
-├── AGENTS.md                         Project rules
 ├── README.md                         Installation and usage
 ├── CHANGELOG.md                      Release history
 ├── docs/
@@ -537,7 +536,7 @@ existing semantics for the original providers.
 
 ## Adding or changing a provider
 
-1. Read the rules in `AGENTS.md` and keep the work within the provider's folder.
+1. Follow the package boundaries described above and keep the work within the provider's folder.
 2. Use an immutable usage snapshot and a service implementing `UsageSource<T>`.
 3. Keep optional/internal API access in the reader. Reuse `PluginApi` for reflected getters.
 4. Use shared bars and headers in the provider panel, and return a `StatusBarPresentation` from the status factory.

@@ -26,7 +26,7 @@ share its credentials only through the store's private reviewer channel, never t
 |--------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------|
 | Rider / JetBrains  | Codex CLI installed and signed in; AI Assistant/Copilot installed and signed in for their optional IDE quota services. Claude/Cursor integrations need the supported local agent/integration and its provider session. | [Rider guide](../README.md), [provider integration details](DEVELOPMENT.md#provider-integrations) |
 | Windows desktop    | Official CLIs, supported local provider stores or installed app sessions, depending on provider. OpenRouter uses an explicitly entered API key. Each provider has its own sign-in path.                                | [Windows provider setup](../windows/README.md#providers-and-sign-in)                              |
-| Chrome / Edge      | Sign in on the provider's official website and grant AgentMeter access to that website. Optional all-site access enables the overlay on ordinary websites.                                                             | [Browser setup](../browser/README.md), [Edge submission](../browser/Packaging/edge-submission.md) |
+| Chrome / Edge      | Sign in on the provider's official website and grant AgentMeter access to that website. Optional all-site access enables the overlay on ordinary websites.                                                             | [Browser setup](../browser/README.md) |
 | Visual Studio Code | Codex CLI installed and signed in; GitHub authentication through VS Code for Copilot quota requests.                                                                                                                   | [VS Code guide](../vscode/README.md)                                                              |
 | Visual Studio      | Codex CLI installed and signed in; Copilot signed in within Visual Studio and its optional quota service available.                                                                                                    | [Visual Studio guide](../visualstudio/README.md)                                                  |
 
@@ -86,7 +86,6 @@ model prompts or generating extra usage merely to change a quota percentage.
 - Store presentation screenshots render the actual browser UI with explicitly labelled demo state. They are not
   evidence of authenticated quota reads, persistence or successful drag interactions.
 - Latest browser drag/settings behavior and complete signed-in provider coverage still need live review.
-- [Windows verification](../windows/TESTING.md) separates current evidence from historical automated results.
 - Existing tests may be run only when requested. No new test execution is implied by this documentation update.
 
 ## Authentication, data and privacy disclosures
@@ -104,9 +103,7 @@ provider's own terms/privacy information. Do not transfer authentication assumpt
 
 ## Store reviewer notes
 
-Use edition-specific notes with installation, account dependencies and quota limitations. The ready-to-paste
-[Edge certification notes](../browser/Packaging/edge-certification-notes.txt) fit the observed 2,000-character
-Partner Center field. Their explanation is specific to the browser package; do not paste browser permissions or
-controls into the Rider, desktop or Visual Studio submissions.
+Use edition-specific notes with installation, account dependencies and quota limitations. Keep completed
+submission forms, reviewer correspondence and account-specific portal details local.
 
 Reference: [Microsoft Edge reviewer-account policy](https://learn.microsoft.com/en-us/legal/microsoft-edge/extensions/developer-policies#13-product-is-testable).

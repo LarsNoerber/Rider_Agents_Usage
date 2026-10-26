@@ -8,8 +8,6 @@ building and publishing the GitHub release. Generated build/dist folders are not
 - [Chrome / Edge browser extension](../browser/README.md): background quotas, persistent page bar, website access and
   local setup
 - [Browser privacy](../browser/PRIVACY.md)
-- [Edge Add-ons submission](../browser/Packaging/edge-submission.md): package, store assets, copy-ready fields and
-  existing Partner Center product identity
 
 - [Repository overview and Rider setup](../README.md)
 - [Standalone Windows app](../windows/README.md): ten providers, connections, saved usage, bar layouts and tray
@@ -25,19 +23,15 @@ building and publishing the GitHub release. Generated build/dist folders are not
   every edition, reviewer accounts, credential handling and evidence limitations
 
 - [Architecture](ARCHITECTURE.md): package boundaries and Windows partial-class responsibilities
-- [Source review and reading guide](CODE_REVIEW.md): application entry points, readability conventions and open findings
+- [Source reading guide](READING_GUIDE.md): application entry points and readability conventions
 - [Build/development](DEVELOPMENT.md): separate editor/Windows build commands and Rider C# indexing
-- [Windows verification](../windows/TESTING.md): current evidence, historical checks and opt-in commands
 - [Changelog](../CHANGELOG.md)
 
 ## Publishing material
 
-- [Chrome Web Store submission](../browser/Packaging/chrome-submission.md)
-
 - [Marketplace overview](MARKETPLACE.md)
 - [Visual Studio upload workflow](../visualstudio/Marketplace/README.md)
 - [Visual Studio listing copy](../visualstudio/Marketplace/overview.md)
-- [Windows Store draft](../windows/Packaging/StoreListing.md)
 
 Build, installation and publication are separate actions. A successful build does not validate live provider APIs,
 Store certification or every desktop interaction. Run/add tests only when requested. Generated EXE/MSIX packages stay

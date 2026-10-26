@@ -230,7 +230,7 @@ It does not read provider credentials, request real quotas, sign in, install the
 Interactive sign-in, dragging, refresh timing and packaged installation need manual checks in the actual Windows
 session.
 
-Current versus historical verification results are recorded in [TESTING.md](TESTING.md). Open
+Local verification reports are kept outside source control. Open
 `windows/AgentMeter.Windows.csproj` as a .NET project for Rider C# indexing; the repository's Gradle project does not
 index these WPF symbols. See [source structure](../docs/ARCHITECTURE.md) and [documentation index](../docs/README.md).
 

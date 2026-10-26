@@ -38,12 +38,12 @@ All editions share version **1.2.1**. Download the browser packages from the
 For manual installation, extract the package and select its folder with **Load unpacked** on the browser's
 Extensions page after enabling Developer mode. Store acceptance is separate from these release downloads.
 
-For Chrome Web Store submission, see [the Chrome store guide](Packaging/chrome-submission.md).
+Chrome Web Store submission drafts are kept locally.
 `powershell -NoProfile -ExecutionPolicy Bypass -File browser/build-chrome-store.ps1` creates the Chrome ZIP,
 padded 128px icon, required 440×280 promotional tile, screenshots and submission documents in
 `browser/dist/chrome-store/`. It does not register/pay for an account or submit the extension.
 
-For Edge Add-ons submission, see [the prepared store guide](Packaging/edge-submission.md).
+Edge Add-ons submission drafts and reviewer correspondence are kept locally.
 `powershell -NoProfile -ExecutionPolicy Bypass -File browser/build-store.ps1` creates the extension ZIP, store logo,
 labelled UI demonstration screenshots and copy-ready submission documents in `browser/dist/edge-store/`.
 This prepares local files; it does not submit to Microsoft, create a GitHub release or upload build artifacts.

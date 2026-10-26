@@ -1,8 +1,7 @@
 # Code structure
 
-For an entry-point map, the readability conventions and outstanding static-review findings, see the
-[source review and reading guide](CODE_REVIEW.md). Package boundaries and runtime behavior are unchanged by the
-October 24, 2026 comment/layout cleanup.
+For an entry-point map and readability conventions, see the
+[source reading guide](READING_GUIDE.md).
 
 ## Browser extension
 

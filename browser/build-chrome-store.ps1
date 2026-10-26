@@ -35,7 +35,12 @@ foreach ($chromeScreenshot in @('screenshot-bar-1280x800.png', 'screenshot-setti
 }
 foreach ($chromeDocument in @('chrome-submission.md', 'edge-listing-en.md', 'edge-privacy-fields.md', 'edge-certification-notes.txt'))
 {
-    Copy-Item -LiteralPath (Join-Path $PSScriptRoot "Packaging/$chromeDocument") -Destination $chromeOutput -Force
+    # Submission drafts are optional local files.
+    $localDocument = Join-Path $PSScriptRoot "Packaging/$chromeDocument"
+    if (Test-Path -LiteralPath $localDocument)
+    {
+        Copy-Item -LiteralPath $localDocument -Destination $chromeOutput -Force
+    }
 }
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'PRIVACY.md') -Destination $chromeOutput -Force
 Write-Output "Chrome submission files: $chromeOutput"

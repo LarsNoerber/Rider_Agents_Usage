@@ -49,7 +49,12 @@ $storeVersion = (Get-Content -LiteralPath (Join-Path $PSScriptRoot '../gradle.pr
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot "dist/AgentMeter-$storeVersion-chromium.zip") -Destination $storeOutput -Force
 foreach ($storeDocument in @('edge-listing-en.md', 'edge-privacy-fields.md', 'edge-certification-notes.txt', 'edge-submission.md'))
 {
-    Copy-Item -LiteralPath (Join-Path $PSScriptRoot "Packaging/$storeDocument") -Destination $storeOutput -Force
+    # Submission drafts are optional local files.
+    $localDocument = Join-Path $PSScriptRoot "Packaging/$storeDocument"
+    if (Test-Path -LiteralPath $localDocument)
+    {
+        Copy-Item -LiteralPath $localDocument -Destination $storeOutput -Force
+    }
 }
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'PRIVACY.md') -Destination $storeOutput -Force
 Write-Output "Edge submission files: $storeOutput"

@@ -59,7 +59,8 @@ packages. Their preview renderers and publishing materials remain in their respe
 ## Standalone Windows Store materials
 
 The standalone Windows app is a separate product/package, with ten provider choices and its own SVG-backed icon.
-Use [Windows Store listing](../windows/Packaging/StoreListing.md), [privacy policy](../windows/Packaging/Privacy.md)
-and [Windows verification status](../windows/TESTING.md). Its provider matrix differs from the Rider listing.
+See the [privacy policy](../windows/Packaging/Privacy.md) and [Windows user guide](../windows/README.md).
+Store submission drafts and local verification reports are kept outside source control.
+Its provider matrix differs from the Rider listing.
 The MSIX is unsigned until a separate signing/Store process; generating it does not submit or install the app.
 Source-only GitHub updates do not change the shared version, create a release or upload EXE/MSIX artifacts.

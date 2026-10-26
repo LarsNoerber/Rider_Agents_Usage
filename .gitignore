@@ -75,3 +75,13 @@ SKILL.md
 
 # Old/generated browser download packages
 /browser/downloads/
+
+# Local review reports and Store submission drafts
+/browser/Packaging/edge-submission.md
+/browser/Packaging/edge-certification-notes.txt
+/browser/Packaging/edge-listing-en.md
+/browser/Packaging/edge-privacy-fields.md
+/browser/Packaging/chrome-submission.md
+/windows/TESTING.md
+/windows/Packaging/StoreListing.md
+/docs/CODE_REVIEW.md

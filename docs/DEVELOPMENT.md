@@ -18,7 +18,8 @@ Prepare the Edge Add-ons submission files with `powershell -NoProfile -Execution
 .\browser\build-store.ps1`. It builds only the browser package, renders a 300×300 logo from the shared SVG using
 the existing supported-subset WPF renderer, and captures the actual UI with explicitly labelled demo data using
 a separately profiled headless Edge/Chrome. The generated fixtures and screenshots never enter the extension ZIP.
-The output is `browser/dist/edge-store/`; code/listing/privacy sources are versioned, generated files are ignored.
+The output is `browser/dist/edge-store/`. Code and privacy policy sources are versioned; submission drafts and
+generated files stay local. Store packaging includes local submission drafts only when present.
 This is store artwork rendering, not a provider authentication check or test run.
 
 Use JDK 25. The JetBrains Runtime bundled with a compatible IDE can provide it.
@@ -274,7 +275,7 @@ selection, CLI path, refresh interval, and status-bar visibility are managed thr
 
 ## Checks and delivery
 
-Standalone Windows checks are documented in [../windows/TESTING.md](../windows/TESTING.md).
+The standalone Windows smoke project is `windows/tests/AgentMeter.Windows.SmokeTests.csproj`.
 Run the smoke project only when tests are requested. It uses synthetic quota snapshots; account login, interactive
 desktop actions and packaged installation require separate manual verification.
 
@@ -289,8 +290,7 @@ check. If the insertion point changes it does not replace the shell's normal sta
 use `AgentsUsage.imagemanifest` and stable image GUID/ID values.
 
 Use the Gradle task appropriate to the requested work and report its actual result.
-Do not add or run tests unless requested. The existing standalone Windows smoke project is opt-in; its historical
-results and current limitations are documented in [Windows verification](../windows/TESTING.md).
+Do not add or run tests unless requested. The existing standalone Windows smoke project is opt-in.
 Build success checks compilation and packaging; it does not verify live quota APIs, account state, or UI behavior in
 Rider.
 Do not publish, install, commit, or restart the user's IDE unless requested.
@@ -305,7 +305,7 @@ settings. Local Windows build artifacts and source commits are separate delivera
 Keep ideas, concept artwork and working notes local: use the ignored root folders `ideas/`, `concepts/`, `notes/`
 or `local/`. The existing `docs/IDEAS.md`, `design/icon-concepts/`, `filled-usage-preview.png` and old
 `browser/downloads/` packages are also local-only. Keep source assets, user guides, architecture, build instructions
-and Store publishing sources versioned. Distribute generated packages through release assets rather than source commits.
+and reusable packaging sources versioned. Distribute generated packages through release assets rather than source commits.
 
 Coding-agent instruction files, configuration folders and sessions are local-only and ignored by Git.
 

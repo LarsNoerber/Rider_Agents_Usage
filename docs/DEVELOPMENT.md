@@ -308,11 +308,12 @@ settings. Local Windows build artifacts and source commits are separate delivera
 Keep ideas, concept artwork and working notes local: use the ignored root folders `ideas/`, `concepts/`, `notes/`
 or `local/`. The existing `docs/IDEAS.md`, `design/icon-concepts/`, `filled-usage-preview.png` and old
 `browser/downloads/` packages are also local-only. Keep source assets, user guides, architecture, build instructions
-and reusable packaging sources versioned. Distribute generated packages through release assets rather than source commits.
+and reusable packaging sources versioned. Distribute generated packages through release assets rather than source
+commits.
 
 Coding-agent instruction files, configuration folders and sessions are local-only and ignored by Git.
 
-## Consolidated 1.2.1 delivery
+## Historical 1.2.1 delivery
 
 The requested release packages are collected under `dist/releases/1.2.1/` (ignored by Git), with one folder per
 Store plus `windows-portable/`. The root contains a ZIP of the upload materials for each Store, the portable
@@ -325,3 +326,15 @@ are for transfer/extraction. The unsigned Microsoft Store MSIX uses version `1.2
 nullable warnings from the shared Visual Studio transport and Gradle's headless platform emitted compatibility/
 theme warnings. No test suite or live provider authentication check was run. Store certification and actual Store
 submission are separate from the GitHub release.
+
+Marketplace submission bundles were subsequently removed from GitHub release 1.2.1. Keep such generated upload
+materials local. Current public releases contain installation packages and a checksum list using the exact asset
+filenames, without staging-directory prefixes. See [Release process](RELEASING.md).
+
+## GitHub build check
+
+`.github/workflows/build-plugin.yml` packages the Rider/JetBrains plugin on Windows with Temurin JDK 25 using
+`buildPlugin --no-daemon -x test`. It runs on main pushes, pull requests and manual dispatch. It does not run tests,
+install plugins, read provider accounts or publish releases. The resulting plugin ZIP is retained as an Actions
+artifact for seven days. No additional Gradle dependency cache is uploaded, keeping cache storage bounded by the
+other workflows' policies. Third-party action references are pinned to commit SHAs.

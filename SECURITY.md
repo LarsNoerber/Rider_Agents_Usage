@@ -11,9 +11,10 @@ and Visual Studio.
 Security fixes are developed on the main branch and delivered through
 updates to the affected edition. Please use its latest published version.
 
-The current shared source version is 1.1.0. Publication versions may
-differ between editions. Security backports to older versions are
-not guaranteed.
+The shared source version is recorded in `gradle.properties`; available
+packages and their versions are listed in GitHub Releases. Source updates
+and package publication are separate steps. Security backports to older
+versions are not guaranteed.
 
 ## Reporting a Vulnerability
 
@@ -27,6 +28,7 @@ Never publish passwords, API keys, session tokens, account identifiers
 or private provider data in issues, screenshots or attachments.
 
 Include:
+
 - The affected AgentMeter edition and version.
 - Your operating system and browser or IDE version.
 - Steps to reproduce using redacted or synthetic data.

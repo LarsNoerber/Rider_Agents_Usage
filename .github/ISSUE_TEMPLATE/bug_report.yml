@@ -1,0 +1,56 @@
+name: Bug report
+description: Report a reproducible AgentMeter problem.
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Search existing issues and the Wiki troubleshooting page first.
+        Do not include keys, tokens, cookies, account identifiers, raw responses or private conversations.
+        Report vulnerabilities privately using SECURITY.md.
+  - type: dropdown
+    id: edition
+    attributes:
+      label: Edition
+      options:
+        - Rider / JetBrains
+        - Windows desktop
+        - Chrome / Edge
+        - Visual Studio Code
+        - Visual Studio
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Installed AgentMeter version
+      placeholder: "1.2.2"
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment and provider
+      description: OS, IDE/browser version, provider CLI/plugin version and account mode/tier. No account identity.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Include provider selection, refresh actions and whether you changed accounts/settings.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual result
+      description: Safe notice, timestamp, saved/stale state and comparison with the official quota view. Redact screenshots.
+    validations:
+      required: true

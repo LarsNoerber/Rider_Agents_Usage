@@ -1,0 +1,29 @@
+name: Feature request
+description: Suggest an improvement for a specific AgentMeter edition.
+title: "[Feature]: "
+body:
+  - type: input
+    id: edition
+    attributes:
+      label: Affected edition(s)
+      placeholder: "Windows desktop, Rider, browser, VS Code or Visual Studio"
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+      description: Describe the task and what is currently difficult.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: For a new provider, link public quota documentation. Never include credentials or account data.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered

@@ -1,5 +1,14 @@
 # Code structure
 
+## Repository automation and public documentation
+
+`.github/workflows/build-plugin.yml` owns the build-only Windows/JDK 25 Rider packaging check. It has read-only
+repository permissions and retains the installable ZIP for seven days, without publishing releases or creating
+dependency caches. Issue forms and the pull request template under `.github/` collect edition-specific reports
+without requesting provider secrets. `CONTRIBUTING.md` and `docs/RELEASING.md` define contribution and release steps.
+The GitHub Wiki is a separate documentation repository; public releases contain installation assets and a checksum
+list, while generated Store submission material stays local.
+
 For an entry-point map and readability conventions, see the
 [source reading guide](READING_GUIDE.md).
 

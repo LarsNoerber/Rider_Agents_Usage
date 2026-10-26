@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Setup and troubleshooting
+    url: https://github.com/LarsNoerber/Rider_Agents_Usage/wiki/Troubleshooting
+    about: Check installation, provider sessions and quota availability.
+  - name: Report a security vulnerability privately
+    url: https://github.com/LarsNoerber/Rider_Agents_Usage/security/advisories/new
+    about: Do not report credentials or vulnerability details in a public issue.
+  - name: Questions and discussion
+    url: https://github.com/LarsNoerber/Rider_Agents_Usage/discussions
+    about: Discuss usage and ideas with the community.

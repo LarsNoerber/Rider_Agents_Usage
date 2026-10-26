@@ -29,11 +29,11 @@ Gemini and Claude show session and weekly values; Codex keeps `OpenAi | D=<perce
 
 ### Release downloads
 
-All editions share source version **1.2.2**. The existing 1.2.1 browser packages are available from the
-[GitHub release](https://github.com/larsnoerber/Rider_Agents_Usage/releases/tag/v1.2.1):
+All editions share version **1.2.2**. Download the browser packages from the
+[GitHub release](https://github.com/larsnoerber/Rider_Agents_Usage/releases/tag/v1.2.2):
 
-- `AgentMeter-1.2.1-chromium.zip` for Edge.
-- `AgentMeter-1.2.1-chrome.zip` for Chrome.
+- `AgentMeter-1.2.2-chromium.zip` for Edge.
+- `AgentMeter-1.2.2-chrome.zip` for Chrome.
 
 For manual installation, extract the package and select its folder with **Load unpacked** on the browser's
 Extensions page after enabling Developer mode. Store acceptance is separate from these release downloads.

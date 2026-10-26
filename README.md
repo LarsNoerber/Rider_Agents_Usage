@@ -1,5 +1,14 @@
 # AgentMeter
 
+[Wiki and setup guides](https://github.com/LarsNoerber/Rider_Agents_Usage/wiki) ·
+[Downloads](https://github.com/LarsNoerber/Rider_Agents_Usage/releases/latest) ·
+[Troubleshooting](https://github.com/LarsNoerber/Rider_Agents_Usage/wiki/Troubleshooting) ·
+[Report a bug](https://github.com/LarsNoerber/Rider_Agents_Usage/issues/new/choose)
+
+The current shared source version is **1.2.2**. Check the version on the
+[latest release](https://github.com/LarsNoerber/Rider_Agents_Usage/releases/latest) before downloading;
+source updates and binary publication are separate steps.
+
 A [standalone Windows app](windows/README.md) is also available: a portable `.exe` showing quotas without a running IDE,
 with official agent sign-in buttons and configurable automatic refresh. JetBrains AI quota currently requires the IDE
 integration.
@@ -63,7 +72,7 @@ For the source layout, read [Code structure](docs/ARCHITECTURE.md). Contributors
 - English interface, tooltips, settings, and error messages.
 - Click the subscription badge for a usage chart with distinct colored series,
   consumed percentages, reset countdowns and rings, and selectable 1/6/24-hour views.
-  The local 24-hour history starts with observations made while provider panels exist; it cannot reconstruct past
+  The local 24-hour history records observations in background provider services; it cannot reconstruct past
   account usage. Observation gaps and quota resets are kept separate.
 - Use the **Weekly** and **Games** checkboxes in configuration to activate or deactivate those areas. Both are off
   by default on a fresh installation. Choices survive

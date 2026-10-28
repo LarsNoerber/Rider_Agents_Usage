@@ -5,382 +5,563 @@
         Title="AgentMeter" Width="980" Height="720" MinWidth="700" MinHeight="500"
         Background="#242424" FontFamily="Segoe UI" FontSize="13" WindowStartupLocation="CenterScreen"
         WindowStyle="None" ResizeMode="CanResize">
-  <shell:WindowChrome.WindowChrome>
-    <shell:WindowChrome CaptionHeight="42" ResizeBorderThickness="6" GlassFrameThickness="0" CornerRadius="5" />
-  </shell:WindowChrome.WindowChrome>
-  <Window.Resources>
-    <Style x:Key="AppButton" TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
-      <Setter Property="Background" Value="#151B25" />
-      <Setter Property="Foreground" Value="#D8E3F2" />
-      <Setter Property="BorderBrush" Value="#303A49" />
-      <Setter Property="BorderThickness" Value="1" />
-      <Setter Property="Padding" Value="12,7" />
-      <Setter Property="Margin" Value="0,0,8,0" />
-      <Style.Triggers>
-        <Trigger Property="IsMouseOver" Value="True">
-          <Setter Property="Background" Value="#202A38" />
-          <Setter Property="BorderBrush" Value="#46566D" />
-        </Trigger>
-        <Trigger Property="IsPressed" Value="True">
-          <Setter Property="Background" Value="#174044" />
-          <Setter Property="Foreground" Value="#82E9CB" />
-        </Trigger>
-        <Trigger Property="IsEnabled" Value="False">
-          <Setter Property="Opacity" Value="0.5" />
-        </Trigger>
-      </Style.Triggers>
-    </Style>
-    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource AppButton}" />
-    <Style x:Key="CaptionButton" TargetType="Button" BasedOn="{StaticResource AppButton}">
-      <Setter Property="Background" Value="Transparent" />
-      <Setter Property="Foreground" Value="#BDCBDD" />
-      <Setter Property="Width" Value="46" />
-      <Setter Property="Height" Value="42" />
-      <Setter Property="Padding" Value="0" />
-      <Setter Property="Margin" Value="0" />
-      <Setter Property="shell:WindowChrome.IsHitTestVisibleInChrome" Value="True" />
-    </Style>
-    <Style TargetType="{x:Type TabControl}">
-      <Setter Property="Background" Value="#242424" />
-      <Setter Property="BorderThickness" Value="0" />
-    </Style>
-    <Style TargetType="{x:Type TabItem}">
-      <Setter Property="Foreground" Value="#B8B8B8" />
-      <Setter Property="Background" Value="Transparent" />
-      <Setter Property="BorderBrush" Value="Transparent" />
-      <Setter Property="Padding" Value="18,11" />
-      <Setter Property="Margin" Value="0,0,4,0" />
-      <Setter Property="Template">
-        <Setter.Value>
-          <ControlTemplate TargetType="{x:Type TabItem}">
-            <Grid>
-              <Border x:Name="TabSurface" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
-                <ContentPresenter ContentSource="Header" HorizontalAlignment="Center" VerticalAlignment="Center"
-                                  RecognizesAccessKey="True" TextElement.Foreground="{TemplateBinding Foreground}" />
-              </Border>
-              <Border x:Name="ActiveMark" Height="3" Background="#E45745" VerticalAlignment="Bottom" Visibility="Collapsed" />
-            </Grid>
-            <ControlTemplate.Triggers>
-              <Trigger Property="IsSelected" Value="True">
-                <Setter TargetName="TabSurface" Property="Background" Value="#292929" />
-                <Setter TargetName="ActiveMark" Property="Visibility" Value="Visible" />
-                <Setter Property="Foreground" Value="#FFFFFF" />
-              </Trigger>
-              <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Opacity" Value="0.5" />
-              </Trigger>
-            </ControlTemplate.Triggers>
-          </ControlTemplate>
-        </Setter.Value>
-      </Setter>
-    </Style>
-    <Style TargetType="{x:Type ScrollBar}">
-      <Setter Property="Width" Value="9" />
-      <Setter Property="Background" Value="#080A0E" />
-      <Setter Property="Template">
-        <Setter.Value>
-          <ControlTemplate TargetType="{x:Type ScrollBar}">
-            <Grid Background="{TemplateBinding Background}">
-              <Track x:Name="PART_Track" Orientation="{TemplateBinding Orientation}" IsDirectionReversed="True">
-                <Track.DecreaseRepeatButton>
-                  <RepeatButton Command="{x:Static ScrollBar.PageUpCommand}" Focusable="False" IsTabStop="False" Opacity="0" />
-                </Track.DecreaseRepeatButton>
-                <Track.Thumb>
-                  <Thumb MinHeight="28">
-                    <Thumb.Template>
-                      <ControlTemplate TargetType="{x:Type Thumb}">
-                        <Border x:Name="ThumbSurface" Background="#3B4656" CornerRadius="5" Margin="1" />
+    <shell:WindowChrome.WindowChrome>
+        <shell:WindowChrome CaptionHeight="42" ResizeBorderThickness="6" GlassFrameThickness="0" CornerRadius="5" />
+    </shell:WindowChrome.WindowChrome>
+    <Window.Resources>
+        <Style x:Key="AppButton" TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Background" Value="#151B25" />
+            <Setter Property="Foreground" Value="#D8E3F2" />
+            <Setter Property="BorderBrush" Value="#303A49" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="12,7" />
+            <Setter Property="Margin" Value="0,0,8,0" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#202A38" />
+                    <Setter Property="BorderBrush" Value="#46566D" />
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#174044" />
+                    <Setter Property="Foreground" Value="#82E9CB" />
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value="0.5" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource AppButton}" />
+        <Style x:Key="CaptionButton" TargetType="Button" BasedOn="{StaticResource AppButton}">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="#BDCBDD" />
+            <Setter Property="Width" Value="46" />
+            <Setter Property="Height" Value="42" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="shell:WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+        </Style>
+        <Style TargetType="{x:Type TabControl}">
+            <Setter Property="Background" Value="#242424" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+        <Style TargetType="{x:Type TabItem}">
+            <Setter Property="Foreground" Value="#B8B8B8" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Padding" Value="18,11" />
+            <Setter Property="Margin" Value="0,0,4,0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TabItem}">
+                        <Grid>
+                            <Border x:Name="TabSurface" Background="{TemplateBinding Background}"
+                                    Padding="{TemplateBinding Padding}">
+                                <ContentPresenter ContentSource="Header" HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"
+                                                  RecognizesAccessKey="True"
+                                                  TextElement.Foreground="{TemplateBinding Foreground}" />
+                            </Border>
+                            <Border x:Name="ActiveMark" Height="3" Background="#E45745" VerticalAlignment="Bottom"
+                                    Visibility="Collapsed" />
+                        </Grid>
                         <ControlTemplate.Triggers>
-                          <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="ThumbSurface" Property="Background" Value="#65788F" />
-                          </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="TabSurface" Property="Background" Value="#292929" />
+                                <Setter TargetName="ActiveMark" Property="Visibility" Value="Visible" />
+                                <Setter Property="Foreground" Value="#FFFFFF" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.5" />
+                            </Trigger>
                         </ControlTemplate.Triggers>
-                      </ControlTemplate>
-                    </Thumb.Template>
-                  </Thumb>
-                </Track.Thumb>
-                <Track.IncreaseRepeatButton>
-                  <RepeatButton Command="{x:Static ScrollBar.PageDownCommand}" Focusable="False" IsTabStop="False" Opacity="0" />
-                </Track.IncreaseRepeatButton>
-              </Track>
-            </Grid>
-            <ControlTemplate.Triggers>
-              <Trigger Property="Orientation" Value="Horizontal">
-                <Setter Property="Width" Value="Auto" />
-                <Setter Property="Height" Value="10" />
-              </Trigger>
-            </ControlTemplate.Triggers>
-          </ControlTemplate>
-        </Setter.Value>
-      </Setter>
-    </Style>
-    <Style TargetType="TreeViewItem">
-      <Setter Property="Foreground" Value="#D8E3F2" />
-      <Setter Property="Background" Value="Transparent" />
-      <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-      <Setter Property="Template">
-        <Setter.Value>
-          <ControlTemplate TargetType="TreeViewItem">
-            <Grid>
-              <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
-              <Grid.ColumnDefinitions><ColumnDefinition Width="16" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
-              <ToggleButton x:Name="ExpandToggle" IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" Focusable="False" Width="14" Height="22">
-                <ToggleButton.Template>
-                  <ControlTemplate TargetType="ToggleButton">
-                    <Border Background="Transparent">
-                      <Path x:Name="Arrow" Data="M 0 0 L 4 4 L 0 8" Stroke="#9BAAC1" StrokeThickness="1.4" HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5" />
-                    </Border>
-                    <ControlTemplate.Triggers>
-                      <Trigger Property="IsChecked" Value="True"><Setter TargetName="Arrow" Property="RenderTransform"><Setter.Value><RotateTransform Angle="90" /></Setter.Value></Setter></Trigger>
-                    </ControlTemplate.Triggers>
-                  </ControlTemplate>
-                </ToggleButton.Template>
-              </ToggleButton>
-              <Border x:Name="NavSurface" Grid.Column="1" Background="{TemplateBinding Background}" CornerRadius="4" Padding="8,7" Margin="0,1,0,1">
-                <ContentPresenter ContentSource="Header" TextElement.Foreground="{TemplateBinding Foreground}" />
-              </Border>
-              <ItemsPresenter x:Name="Children" Grid.Row="1" Grid.ColumnSpan="2" Margin="12,0,0,0" Visibility="Collapsed" />
-            </Grid>
-            <ControlTemplate.Triggers>
-              <Trigger Property="IsExpanded" Value="True"><Setter TargetName="Children" Property="Visibility" Value="Visible" /></Trigger>
-              <Trigger Property="HasItems" Value="False"><Setter TargetName="ExpandToggle" Property="Visibility" Value="Hidden" /></Trigger>
-              <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="NavSurface" Property="Background" Value="#252E3C" /></Trigger>
-              <Trigger Property="IsSelected" Value="True"><Setter TargetName="NavSurface" Property="Background" Value="#30435C" /><Setter Property="Foreground" Value="#FFFFFF" /></Trigger>
-            </ControlTemplate.Triggers>
-          </ControlTemplate>
-        </Setter.Value>
-      </Setter>
-    </Style>
-  </Window.Resources>
-  <DockPanel>
-    <Border DockPanel.Dock="Top" Background="#202020" BorderBrush="#414141" BorderThickness="0,0,0,1" Height="48">
-      <DockPanel>
-        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-          <Button Style="{StaticResource CaptionButton}" Content="—" Click="MinimizeClick" ToolTip="Minimize to system tray" />
-          <Button Style="{StaticResource CaptionButton}" Content="□" Click="MaximizeClick" ToolTip="Maximize or restore" />
-          <Button Style="{StaticResource CaptionButton}" Content="×" Click="CloseToTrayClick" ToolTip="Hide in system tray" FontSize="21" />
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="12,0,0,0">
-          <Image x:Name="AppLogo" Width="30" Height="30" />
-          <TextBlock Text="AgentMeter" VerticalAlignment="Center" Margin="10,0,0,0" FontWeight="SemiBold" FontSize="14" />
-          <Border Background="#383838" CornerRadius="4" Padding="8,3" Margin="12,0,0,0" VerticalAlignment="Center">
-            <TextBlock Text="QUOTA DASHBOARD" FontSize="9" FontWeight="SemiBold" Foreground="#D0D0D0" />
-          </Border>
-        </StackPanel>
-      </DockPanel>
-    </Border>
-  <DockPanel Margin="18,14,18,12">
-    <TextBlock DockPanel.Dock="Bottom" Margin="4,10,4,0" Text="Provider-reported quotas  ·  Official local sign-ins  ·  No telemetry"
-               Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap" />
-    <TabControl x:Name="MainTabs">
-      <TabItem Header="Usage">
-        <Grid Margin="8,12,8,0">
-          <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /></Grid.RowDefinitions>
-          <DockPanel Grid.Row="0" Margin="0,0,0,14" LastChildFill="True">
-            <WrapPanel DockPanel.Dock="Right" VerticalAlignment="Center">
-              <Button x:Name="RefreshButton" Content="Refresh" Click="RefreshClick" />
-              <Button Content="Desktop widget" Click="DesktopModeClick" />
-              <Button x:Name="ExitButton" Content="Exit" Click="ExitClick" ToolTip="Exit AgentMeter completely. Closing the window keeps it in the system tray." />
-              <CheckBox x:Name="PinWindow" Content="Always on top" Checked="PinChanged" Unchecked="PinChanged" Margin="8,0,0,0" VerticalAlignment="Center" />
-            </WrapPanel>
-            <StackPanel VerticalAlignment="Center">
-              <TextBlock Text="Usage overview" FontSize="22" FontWeight="SemiBold" />
-              <TextBlock x:Name="RefreshStatus" Text="Ready" Foreground="{StaticResource MutedBrush}" FontSize="11" TextWrapping="Wrap" Margin="0,3,0,0" />
-            </StackPanel>
-          </DockPanel>
-          <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-            <StackPanel x:Name="Cards" />
-          </ScrollViewer>
-        </Grid>
-      </TabItem>
-      <TabItem x:Name="SettingsTab" Header="Settings">
-        <Grid Margin="8,14,8,0">
-          <Grid.ColumnDefinitions><ColumnDefinition Width="215" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
-          <Border Grid.Column="0" Background="#1C2027" BorderBrush="#343D49" BorderThickness="1" CornerRadius="6" Padding="6" Margin="0,0,16,0">
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="{x:Type ScrollBar}">
+            <Setter Property="Width" Value="9" />
+            <Setter Property="Background" Value="#080A0E" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ScrollBar}">
+                        <Grid Background="{TemplateBinding Background}">
+                            <Track x:Name="PART_Track" Orientation="{TemplateBinding Orientation}"
+                                   IsDirectionReversed="True">
+                                <Track.DecreaseRepeatButton>
+                                    <RepeatButton Command="{x:Static ScrollBar.PageUpCommand}" Focusable="False"
+                                                  IsTabStop="False" Opacity="0" />
+                                </Track.DecreaseRepeatButton>
+                                <Track.Thumb>
+                                    <Thumb MinHeight="28">
+                                        <Thumb.Template>
+                                            <ControlTemplate TargetType="{x:Type Thumb}">
+                                                <Border x:Name="ThumbSurface" Background="#3B4656" CornerRadius="5"
+                                                        Margin="1" />
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="ThumbSurface" Property="Background"
+                                                                Value="#65788F" />
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Thumb.Template>
+                                    </Thumb>
+                                </Track.Thumb>
+                                <Track.IncreaseRepeatButton>
+                                    <RepeatButton Command="{x:Static ScrollBar.PageDownCommand}" Focusable="False"
+                                                  IsTabStop="False" Opacity="0" />
+                                </Track.IncreaseRepeatButton>
+                            </Track>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="Orientation" Value="Horizontal">
+                                <Setter Property="Width" Value="Auto" />
+                                <Setter Property="Height" Value="10" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="TreeViewItem">
+            <Setter Property="Foreground" Value="#D8E3F2" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TreeViewItem">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" /><RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="16" /><ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <ToggleButton x:Name="ExpandToggle"
+                                          IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                          Focusable="False" Width="14" Height="22">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border Background="Transparent">
+                                            <Path x:Name="Arrow" Data="M 0 0 L 4 4 L 0 8" Stroke="#9BAAC1"
+                                                  StrokeThickness="1.4" HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5" />
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsChecked" Value="True">
+                                                <Setter TargetName="Arrow" Property="RenderTransform">
+                                                    <Setter.Value>
+                                                        <RotateTransform Angle="90" />
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+                            <Border x:Name="NavSurface" Grid.Column="1" Background="{TemplateBinding Background}"
+                                    CornerRadius="4" Padding="8,7" Margin="0,1,0,1">
+                                <ContentPresenter ContentSource="Header"
+                                                  TextElement.Foreground="{TemplateBinding Foreground}" />
+                            </Border>
+                            <ItemsPresenter x:Name="Children" Grid.Row="1" Grid.ColumnSpan="2" Margin="12,0,0,0"
+                                            Visibility="Collapsed" />
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsExpanded" Value="True">
+                                <Setter TargetName="Children" Property="Visibility" Value="Visible" />
+                            </Trigger>
+                            <Trigger Property="HasItems" Value="False">
+                                <Setter TargetName="ExpandToggle" Property="Visibility" Value="Hidden" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="NavSurface" Property="Background" Value="#252E3C" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="NavSurface" Property="Background" Value="#30435C" />
+                                <Setter Property="Foreground" Value="#FFFFFF" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <DockPanel>
+        <Border DockPanel.Dock="Top" Background="#202020" BorderBrush="#414141" BorderThickness="0,0,0,1" Height="48">
             <DockPanel>
-              <TextBlock DockPanel.Dock="Top" Text="SETTINGS" FontSize="10" FontWeight="SemiBold" Foreground="#8493A9" Margin="10,8,0,12" />
-              <TreeView x:Name="SettingsNavigation" Background="Transparent" BorderThickness="0" Foreground="#D8E3F2"
-                        SelectedItemChanged="SettingsPageChanged" HorizontalContentAlignment="Stretch">
-                <TreeViewItem x:Name="GeneralSettingsNode" Header="General" Tag="general" />
-                <TreeViewItem Header="Desktop widget" IsExpanded="True">
-                  <TreeViewItem Header="Appearance" Tag="appearance" />
-                  <TreeViewItem Header="Behavior &amp; order" Tag="behavior" />
-                </TreeViewItem>
-                <TreeViewItem Header="Providers" IsExpanded="True">
-                  <TreeViewItem Header="OpenAI Codex" Tag="codex" />
-                  <TreeViewItem Header="GitHub Copilot" Tag="copilot" />
-                  <TreeViewItem Header="Claude Code" Tag="claude" />
-                  <TreeViewItem Header="Cursor" Tag="cursor" />
-                  <TreeViewItem Header="Gemini" Tag="gemini" />
-                  <TreeViewItem Header="OpenRouter" Tag="openrouter" />
-                  <TreeViewItem Header="Kilo" Tag="kilo" />
-                  <TreeViewItem Header="Cline" Tag="cline" />
-                  <TreeViewItem Header="OpenCode" Tag="opencode" />
-                  <TreeViewItem Header="Junie" Tag="junie" />
-                </TreeViewItem>
-              </TreeView>
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                    <Button Style="{StaticResource CaptionButton}" Content="—" Click="MinimizeClick"
+                            ToolTip="Minimize to system tray" />
+                    <Button Style="{StaticResource CaptionButton}" Content="□" Click="MaximizeClick"
+                            ToolTip="Maximize or restore" />
+                    <Button Style="{StaticResource CaptionButton}" Content="×" Click="CloseToTrayClick"
+                            ToolTip="Hide to tray in bar mode, otherwise minimize to taskbar" FontSize="21" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="12,0,0,0">
+                    <Image x:Name="AppLogo" Width="30" Height="30" />
+                    <TextBlock Text="AgentMeter" VerticalAlignment="Center" Margin="10,0,0,0" FontWeight="SemiBold"
+                               FontSize="14" />
+                    <Border Background="#383838" CornerRadius="4" Padding="8,3" Margin="12,0,0,0"
+                            VerticalAlignment="Center">
+                        <TextBlock Text="QUOTA DASHBOARD" FontSize="9" FontWeight="SemiBold" Foreground="#D0D0D0" />
+                    </Border>
+                </StackPanel>
             </DockPanel>
-          </Border>
-          <Grid Grid.Column="1">
-            <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
-            <StackPanel Margin="0,2,0,18">
-              <TextBlock x:Name="SettingsPageTitle" Text="General" FontSize="23" FontWeight="SemiBold" />
-              <TextBlock x:Name="SettingsPageDescription" Text="Provider visibility and automatic refresh." Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap" Margin="0,5,0,0" />
-            </StackPanel>
-            <Border Grid.Row="1" Background="#292B2F" BorderBrush="#3B424D" BorderThickness="1" CornerRadius="6" Padding="16">
-              <ScrollViewer x:Name="SettingsPageScroll" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                <Grid Margin="0,0,10,0">
-                  <StackPanel x:Name="SettingsGeneralPage">
-                    <TextBlock Text="Visible providers" FontWeight="SemiBold" />
-                    <WrapPanel x:Name="ProviderChoices" Margin="0,8,0,16" />
-                    <TextBlock Text="Automatic refresh (30-3600 seconds)" />
-                    <TextBox x:Name="IntervalInput" Text="300" MaxLength="4" MaxWidth="160" HorizontalAlignment="Left" />
-                    <TextBlock Text="Provider selection applies immediately and pauses reads for deselected providers. Save settings to apply a new refresh interval." TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}" Margin="0,8,0,0" />
-                  </StackPanel>
-                  <StackPanel x:Name="SettingsAppearancePage" Visibility="Collapsed">
-            <CheckBox x:Name="WidgetEnabled" Content="Show desktop status bar" Checked="WidgetVisibilityChanged" Unchecked="WidgetVisibilityChanged" />
-            <TextBlock Text="Providers shown in bar" FontWeight="SemiBold" Margin="0,16,0,6" />
-            <WrapPanel x:Name="WidgetProviderChoices" Margin="0,0,0,8" />
-            <TextBlock Text="Choose which enabled providers appear in the desktop bar. Enable provider reads under General. Changes save immediately."
-                       TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}" Margin="0,0,0,12" />
-            <TextBlock Text="Bar style" Margin="0,9,0,4" />
-            <ComboBox x:Name="WidgetStyleInput" DisplayMemberPath="Label" SelectedValuePath="Id"
-                      SelectionChanged="WidgetStyleSelectionChanged" HorizontalAlignment="Left" MinWidth="190" />
-            <TextBlock x:Name="WidgetStyleDescription" Foreground="{StaticResource MutedBrush}" FontSize="11"
-                       TextWrapping="Wrap" Margin="0,5,0,4" />
-            <TextBlock Text="Color style" Margin="0,9,0,4" />
-            <ComboBox x:Name="WidgetColorInput" SelectedValuePath="Id"
-                      SelectionChanged="WidgetColorSelectionChanged" HorizontalAlignment="Left" MinWidth="190">
-              <ComboBox.ItemTemplate>
-                <DataTemplate>
-                  <StackPanel Orientation="Horizontal">
-                    <Border Width="22" Height="14" CornerRadius="3" Background="{Binding Badge}" BorderBrush="{Binding Accent}" BorderThickness="2" Margin="0,0,8,0" />
-                    <TextBlock Text="{Binding Label}" VerticalAlignment="Center" />
-                  </StackPanel>
-                </DataTemplate>
-              </ComboBox.ItemTemplate>
-            </ComboBox>
-            <DockPanel Margin="0,18,0,4">
-              <TextBlock x:Name="WidgetOpacityValue" Text="100%" DockPanel.Dock="Right" Foreground="{StaticResource MutedBrush}" />
-              <TextBlock Text="Status bar opacity" />
-            </DockPanel>
-            <Slider x:Name="WidgetOpacityInput" Minimum="20" Maximum="100" Value="100" TickFrequency="5"
-                    ValueChanged="WidgetOpacityChanged" Margin="0,2,0,12" ToolTip="Adjust desktop status bar opacity from 20% to 100%." />
-                  </StackPanel>
-                  <StackPanel x:Name="SettingsBehaviorPage" Visibility="Collapsed">
-                    <TextBlock Text="Movement, time labels and provider order" FontWeight="SemiBold" Margin="0,0,0,8" />
-                    <ContentControl x:Name="WidgetOptionsHost" />
-                    <TextBlock Text="Widget choices save immediately. Hover expands a collapsed widget; open details and menus keep it expanded." Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap" Margin="0,12,0,0" />
-                  </StackPanel>
-                  <StackPanel x:Name="SettingsCodexPage" Visibility="Collapsed">
-                    <TextBlock x:Name="CodexConnectionState" Text="Not checked" FontWeight="SemiBold" Foreground="#9BAAC1" Margin="0,0,0,16" />
-                    <TextBlock Text="Codex CLI path (optional; executable or .cmd)" />
-                    <TextBox x:Name="CodexPathInput" />
-                    <TextBlock Text="Sign in with the official Codex CLI. Its account and rate limits are detected automatically." TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}" Margin="0,6,0,8" />
-                    <Button Content="Sign in" Tag="codex" Click="ProviderLoginClick" HorizontalAlignment="Left" Margin="0,8,0,0" />
-                    <TextBlock Text="An empty path uses automatic detection. Save settings to apply path changes." TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}" Margin="0,16,0,0" />
-                  </StackPanel>
-                  <StackPanel x:Name="SettingsCopilotPage" Visibility="Collapsed">
-                    <TextBlock x:Name="CopilotConnectionState" Text="Not checked" FontWeight="SemiBold" Foreground="#9BAAC1" Margin="0,0,0,16" />
-                    <TextBlock Text="Copilot Language Server path (optional; executable or .cmd)" />
-                    <TextBox x:Name="CopilotPathInput" />
-                    <TextBlock Text="Use the official Copilot sign-in flow. The widget shows consumed quota." TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}" Margin="0,6,0,8" />
-                    <Button Content="Sign in" Tag="copilot" Click="ProviderLoginClick" HorizontalAlignment="Left" Margin="0,8,0,0" />
-                    <TextBlock Text="An empty path uses automatic detection. Save settings to apply path changes." TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}" Margin="0,16,0,0" />
-                  </StackPanel>
-                  <StackPanel x:Name="SettingsClaudePage" Visibility="Collapsed">
-                    <TextBlock x:Name="ClaudeConnectionState" Text="Not checked" FontWeight="SemiBold" Foreground="#9BAAC1" Margin="0,0,0,16" />
-                    <TextBlock Text="Claude Code path for sign-in (optional)" />
-                    <TextBox x:Name="ClaudePathInput" />
-                    <TextBlock Text="Sign in through Claude Code. Subscription quotas and locally recorded API usage are shown when available." TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}" Margin="0,6,0,8" />
-                    <Button Content="Sign in" Tag="claude" Click="ProviderLoginClick" HorizontalAlignment="Left" Margin="0,8,0,0" />
-                    <TextBlock Text="An empty path uses automatic detection. Save settings to apply path changes." TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}" Margin="0,16,0,0" />
-                  </StackPanel>
-                  <StackPanel x:Name="SettingsCursorPage" Visibility="Collapsed">
-                    <TextBlock x:Name="CursorConnectionState" Text="Not checked" FontWeight="SemiBold" Foreground="#9BAAC1" Margin="0,0,0,16" />
-                    <TextBlock Text="Cursor Agent path for sign-in (optional)" />
-                    <TextBox x:Name="CursorPathInput" />
-                    <TextBlock Text="Sign in through Cursor Agent. AgentMeter reads the official local session for quota requests." TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}" Margin="0,6,0,8" />
-                    <Button Content="Sign in" Tag="cursor" Click="ProviderLoginClick" HorizontalAlignment="Left" Margin="0,8,0,0" />
-                    <TextBlock Text="An empty path uses automatic detection. Save settings to apply path changes." TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}" Margin="0,16,0,0" />
-                  </StackPanel>
-                  <StackPanel x:Name="SettingsGeminiPage" Visibility="Collapsed">
-                    <TextBlock x:Name="GeminiConnectionState" Text="Not checked" FontWeight="SemiBold" Foreground="#9BAAC1" Margin="0,0,0,16" />
-                    <TextBlock Text="Gemini CLI path for Google sign-in (optional)" />
-                    <TextBox x:Name="GeminiPathInput" />
-                    <TextBlock Text="Gemini Apps and CLI quotas use separate official sessions. Apps usage refreshes while Gemini remains open." TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}" Margin="0,6,0,8" />
-                    <TextBlock Text="Workspace Cloud project ID (optional)" Margin="0,12,0,0" />
-                    <TextBox x:Name="GeminiProjectInput" />
-                    <WrapPanel Margin="0,8,0,0">
-                      <Button Content="Open Gemini Apps" Tag="gemini" Click="ProviderLoginClick" />
-                      <Button Content="Sign in to CLI" Tag="gemini-cli" Click="ProviderLoginClick" />
-                      <Button Content="AI Studio quotas" Tag="gemini-api" Click="ProviderLoginClick" />
-                    </WrapPanel>
-                    <TextBlock Text="An empty path uses automatic detection. Save settings to apply path changes." TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}" Margin="0,16,0,0" />
-                  </StackPanel>
+        </Border>
+        <DockPanel Margin="18,14,18,12">
+            <TextBlock DockPanel.Dock="Bottom" Margin="4,10,4,0"
+                       Text="Provider-reported quotas  ·  Official local sign-ins  ·  No telemetry"
+                       Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap" />
+            <TabControl x:Name="MainTabs">
+                <TabItem Header="Usage">
+                    <Grid Margin="8,12,8,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" /><RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <DockPanel Grid.Row="0" Margin="0,0,0,14" LastChildFill="True">
+                            <WrapPanel DockPanel.Dock="Right" VerticalAlignment="Center">
+                                <Button x:Name="RefreshButton" Content="Refresh" Click="RefreshClick" />
+                                <Button Content="Hide dashboard" Click="HideDashboardClick" />
+                                <Button x:Name="ExitButton" Content="Exit" Click="ExitClick"
+                                        ToolTip="Exit AgentMeter completely. Closing the window keeps it in the system tray." />
+                                <CheckBox x:Name="PinWindow" Content="Always on top" Checked="PinChanged"
+                                          Unchecked="PinChanged" Margin="8,0,0,0" VerticalAlignment="Center" />
+                            </WrapPanel>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="Usage overview" FontSize="22" FontWeight="SemiBold" />
+                                <TextBlock x:Name="RefreshStatus" Text="Ready" Foreground="{StaticResource MutedBrush}"
+                                           FontSize="11" TextWrapping="Wrap" Margin="0,3,0,0" />
+                            </StackPanel>
+                        </DockPanel>
+                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto"
+                                      HorizontalScrollBarVisibility="Disabled">
+                            <StackPanel x:Name="Cards" />
+                        </ScrollViewer>
+                    </Grid>
+                </TabItem>
+                <TabItem x:Name="SettingsTab" Header="Settings">
+                    <Grid Margin="8,14,8,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="215" /><ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" Background="#1C2027" BorderBrush="#343D49" BorderThickness="1"
+                                CornerRadius="6" Padding="6" Margin="0,0,16,0">
+                            <DockPanel>
+                                <TextBlock DockPanel.Dock="Top" Text="SETTINGS" FontSize="10" FontWeight="SemiBold"
+                                           Foreground="#8493A9" Margin="10,8,0,12" />
+                                <TreeView x:Name="SettingsNavigation" Background="Transparent" BorderThickness="0"
+                                          Foreground="#D8E3F2"
+                                          SelectedItemChanged="SettingsPageChanged"
+                                          HorizontalContentAlignment="Stretch">
+                                    <TreeViewItem x:Name="GeneralSettingsNode" Header="General" Tag="general" />
+                                    <TreeViewItem Header="Desktop widget" IsExpanded="True">
+                                        <TreeViewItem Header="Appearance" Tag="appearance" />
+                                        <TreeViewItem Header="Behavior &amp; order" Tag="behavior" />
+                                    </TreeViewItem>
+                                    <TreeViewItem Header="Providers" IsExpanded="True">
+                                        <TreeViewItem Header="OpenAI Codex" Tag="codex" />
+                                        <TreeViewItem Header="GitHub Copilot" Tag="copilot" />
+                                        <TreeViewItem Header="Claude Code" Tag="claude" />
+                                        <TreeViewItem Header="Cursor" Tag="cursor" />
+                                        <TreeViewItem Header="Gemini" Tag="gemini" />
+                                        <TreeViewItem Header="OpenRouter" Tag="openrouter" />
+                                        <TreeViewItem Header="Kilo" Tag="kilo" />
+                                        <TreeViewItem Header="Cline" Tag="cline" />
+                                        <TreeViewItem Header="OpenCode" Tag="opencode" />
+                                        <TreeViewItem Header="Junie" Tag="junie" />
+                                    </TreeViewItem>
+                                </TreeView>
+                            </DockPanel>
+                        </Border>
+                        <Grid Grid.Column="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" /><RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <StackPanel Margin="0,2,0,18">
+                                <TextBlock x:Name="SettingsPageTitle" Text="General" FontSize="23"
+                                           FontWeight="SemiBold" />
+                                <TextBlock x:Name="SettingsPageDescription"
+                                           Text="Provider visibility and automatic refresh."
+                                           Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap"
+                                           Margin="0,5,0,0" />
+                            </StackPanel>
+                            <Border Grid.Row="1" Background="#292B2F" BorderBrush="#3B424D" BorderThickness="1"
+                                    CornerRadius="6" Padding="16">
+                                <ScrollViewer x:Name="SettingsPageScroll" VerticalScrollBarVisibility="Auto"
+                                              HorizontalScrollBarVisibility="Disabled">
+                                    <Grid Margin="0,0,10,0">
+                                        <StackPanel x:Name="SettingsGeneralPage">
+                                            <TextBlock Text="Visible providers" FontWeight="SemiBold" />
+                                            <WrapPanel x:Name="ProviderChoices" Margin="0,8,0,16" />
+                                            <TextBlock Text="Automatic refresh (30-3600 seconds)" />
+                                            <TextBox x:Name="IntervalInput" Text="300" MaxLength="4" MaxWidth="160"
+                                                     HorizontalAlignment="Left" />
+                                            <CheckBox x:Name="StartWithWindowsInput"
+                                                      Content="Start AgentMeter with Windows" Margin="0,14,0,0"
+                                                      Checked="StartWithWindowsChanged"
+                                                      Unchecked="StartWithWindowsChanged" />
+                                            <TextBlock
+                                                Text="Provider selection applies immediately and pauses reads for deselected providers. Save settings to apply a new refresh interval."
+                                                TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}"
+                                                Margin="0,8,0,0" />
+                                        </StackPanel>
+                                        <StackPanel x:Name="SettingsAppearancePage" Visibility="Collapsed">
+                                            <CheckBox x:Name="DashboardVisibleInput"
+                                                      Content="Show dashboard"
+                                                      Margin="0,8,0,0" />
+                                            <TextBlock Text="This view change applies after selecting Save settings."
+                                                       Foreground="{StaticResource MutedBrush}" Margin="0,4,0,0" />
+                                            <TextBlock Text="Providers shown in bar" FontWeight="SemiBold"
+                                                       Margin="0,16,0,6" />
+                                            <WrapPanel x:Name="WidgetProviderChoices" Margin="0,0,0,8" />
+                                            <TextBlock
+                                                Text="Choose which enabled providers appear in the desktop bar. Enable provider reads under General. Changes save immediately."
+                                                TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}"
+                                                Margin="0,0,0,12" />
+                                            <TextBlock Text="Bar style" Margin="0,9,0,4" />
+                                            <ComboBox x:Name="WidgetStyleInput" DisplayMemberPath="Label"
+                                                      SelectedValuePath="Id"
+                                                      SelectionChanged="WidgetStyleSelectionChanged"
+                                                      HorizontalAlignment="Left" MinWidth="190" />
+                                            <TextBlock x:Name="WidgetStyleDescription"
+                                                       Foreground="{StaticResource MutedBrush}" FontSize="11"
+                                                       TextWrapping="Wrap" Margin="0,5,0,4" />
+                                            <TextBlock Text="Color style" Margin="0,9,0,4" />
+                                            <ComboBox x:Name="WidgetColorInput" SelectedValuePath="Id"
+                                                      SelectionChanged="WidgetColorSelectionChanged"
+                                                      HorizontalAlignment="Left" MinWidth="190">
+                                                <ComboBox.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <Border Width="22" Height="14" CornerRadius="3"
+                                                                    Background="{Binding Badge}"
+                                                                    BorderBrush="{Binding Accent}" BorderThickness="2"
+                                                                    Margin="0,0,8,0" />
+                                                            <TextBlock Text="{Binding Label}"
+                                                                       VerticalAlignment="Center" />
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </ComboBox.ItemTemplate>
+                                            </ComboBox>
+                                            <DockPanel Margin="0,18,0,4">
+                                                <TextBlock x:Name="WidgetOpacityValue" Text="100%"
+                                                           DockPanel.Dock="Right"
+                                                           Foreground="{StaticResource MutedBrush}" />
+                                                <TextBlock Text="Status bar opacity" />
+                                            </DockPanel>
+                                            <Slider x:Name="WidgetOpacityInput" Minimum="20" Maximum="100" Value="100"
+                                                    TickFrequency="5"
+                                                    ValueChanged="WidgetOpacityChanged" Margin="0,2,0,12"
+                                                    ToolTip="Adjust desktop status bar opacity from 20% to 100%." />
+                                        </StackPanel>
+                                        <StackPanel x:Name="SettingsBehaviorPage" Visibility="Collapsed">
+                                            <TextBlock Text="Movement, time labels and provider order"
+                                                       FontWeight="SemiBold" Margin="0,0,0,8" />
+                                            <ContentControl x:Name="WidgetOptionsHost" />
+                                            <TextBlock
+                                                Text="Widget choices save immediately. Hover expands a collapsed widget; open details and menus keep it expanded."
+                                                Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap"
+                                                Margin="0,12,0,0" />
+                                        </StackPanel>
+                                        <StackPanel x:Name="SettingsCodexPage" Visibility="Collapsed">
+                                            <TextBlock x:Name="CodexConnectionState" Text="Not checked"
+                                                       FontWeight="SemiBold" Foreground="#9BAAC1" Margin="0,0,0,16" />
+                                            <TextBlock Text="Codex CLI path (optional; executable or .cmd)" />
+                                            <TextBox x:Name="CodexPathInput" />
+                                            <TextBlock
+                                                Text="Sign in with the official Codex CLI. Its account and rate limits are detected automatically."
+                                                TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}"
+                                                Margin="0,6,0,8" />
+                                            <Button Content="Sign in" Tag="codex" Click="ProviderLoginClick"
+                                                    HorizontalAlignment="Left" Margin="0,8,0,0" />
+                                            <TextBlock
+                                                Text="An empty path uses automatic detection. Save settings to apply path changes."
+                                                TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}"
+                                                Margin="0,16,0,0" />
+                                        </StackPanel>
+                                        <StackPanel x:Name="SettingsCopilotPage" Visibility="Collapsed">
+                                            <TextBlock x:Name="CopilotConnectionState" Text="Not checked"
+                                                       FontWeight="SemiBold" Foreground="#9BAAC1" Margin="0,0,0,16" />
+                                            <TextBlock
+                                                Text="Copilot Language Server path (optional; executable or .cmd)" />
+                                            <TextBox x:Name="CopilotPathInput" />
+                                            <TextBlock
+                                                Text="Use the official Copilot sign-in flow. The widget shows consumed quota."
+                                                TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}"
+                                                Margin="0,6,0,8" />
+                                            <Button Content="Sign in" Tag="copilot" Click="ProviderLoginClick"
+                                                    HorizontalAlignment="Left" Margin="0,8,0,0" />
+                                            <TextBlock
+                                                Text="An empty path uses automatic detection. Save settings to apply path changes."
+                                                TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}"
+                                                Margin="0,16,0,0" />
+                                        </StackPanel>
+                                        <StackPanel x:Name="SettingsClaudePage" Visibility="Collapsed">
+                                            <TextBlock x:Name="ClaudeConnectionState" Text="Not checked"
+                                                       FontWeight="SemiBold" Foreground="#9BAAC1" Margin="0,0,0,16" />
+                                            <TextBlock Text="Claude Code path for sign-in (optional)" />
+                                            <TextBox x:Name="ClaudePathInput" />
+                                            <TextBlock
+                                                Text="Sign in through Claude Code. Subscription quotas and locally recorded API usage are shown when available."
+                                                TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}"
+                                                Margin="0,6,0,8" />
+                                            <Button Content="Sign in" Tag="claude" Click="ProviderLoginClick"
+                                                    HorizontalAlignment="Left" Margin="0,8,0,0" />
+                                            <TextBlock
+                                                Text="An empty path uses automatic detection. Save settings to apply path changes."
+                                                TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}"
+                                                Margin="0,16,0,0" />
+                                        </StackPanel>
+                                        <StackPanel x:Name="SettingsCursorPage" Visibility="Collapsed">
+                                            <TextBlock x:Name="CursorConnectionState" Text="Not checked"
+                                                       FontWeight="SemiBold" Foreground="#9BAAC1" Margin="0,0,0,16" />
+                                            <TextBlock Text="Cursor Agent path for sign-in (optional)" />
+                                            <TextBox x:Name="CursorPathInput" />
+                                            <TextBlock
+                                                Text="Sign in through Cursor Agent. AgentMeter reads the official local session for quota requests."
+                                                TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}"
+                                                Margin="0,6,0,8" />
+                                            <Button Content="Sign in" Tag="cursor" Click="ProviderLoginClick"
+                                                    HorizontalAlignment="Left" Margin="0,8,0,0" />
+                                            <TextBlock
+                                                Text="An empty path uses automatic detection. Save settings to apply path changes."
+                                                TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}"
+                                                Margin="0,16,0,0" />
+                                        </StackPanel>
+                                        <StackPanel x:Name="SettingsGeminiPage" Visibility="Collapsed">
+                                            <TextBlock x:Name="GeminiConnectionState" Text="Not checked"
+                                                       FontWeight="SemiBold" Foreground="#9BAAC1" Margin="0,0,0,16" />
+                                            <TextBlock Text="Gemini CLI path for Google sign-in (optional)" />
+                                            <TextBox x:Name="GeminiPathInput" />
+                                            <TextBlock
+                                                Text="Gemini Apps and CLI quotas use separate official sessions. Apps usage refreshes while Gemini remains open."
+                                                TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}"
+                                                Margin="0,6,0,8" />
+                                            <TextBlock Text="Workspace Cloud project ID (optional)" Margin="0,12,0,0" />
+                                            <TextBox x:Name="GeminiProjectInput" />
+                                            <WrapPanel Margin="0,8,0,0">
+                                                <Button Content="Open Gemini Apps" Tag="gemini"
+                                                        Click="ProviderLoginClick" />
+                                                <Button Content="Sign in to CLI" Tag="gemini-cli"
+                                                        Click="ProviderLoginClick" />
+                                                <Button Content="AI Studio quotas" Tag="gemini-api"
+                                                        Click="ProviderLoginClick" />
+                                            </WrapPanel>
+                                            <TextBlock
+                                                Text="An empty path uses automatic detection. Save settings to apply path changes."
+                                                TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}"
+                                                Margin="0,16,0,0" />
+                                        </StackPanel>
 
-                  <StackPanel x:Name="SettingsKiloPage" Visibility="Collapsed">
-                    <TextBlock x:Name="KiloConnectionState" Text="Not checked" FontWeight="SemiBold" Foreground="#9BAAC1" Margin="0,0,0,16" />
-                    <TextBlock Text="Kilo CLI path (optional)" />
-                    <TextBox x:Name="KiloPathInput" />
-                    <TextBlock Text="Installed Rider ACP packages are detected automatically. Kilo manages its own sign-in; AgentMeter refreshes balance and local usage in the background." TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}" Margin="0,6,0,8" />
-                    <Button Content="Sign in to Kilo" Tag="kilo" Click="ProviderLoginClick" HorizontalAlignment="Left" />
-                    <TextBlock Text="Local costs and tokens cover the last 30 days. Balance applies to the active Kilo account or team; other model providers are billed separately. Save settings to apply path changes." TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}" Margin="0,16,0,0" />
-                  </StackPanel>
-                  <StackPanel x:Name="SettingsClinePage" Visibility="Collapsed">
-                    <TextBlock x:Name="ClineConnectionState" Text="Not checked" FontWeight="SemiBold" Foreground="#9BAAC1" Margin="0,0,0,16" />
-                    <TextBlock Text="Cline CLI path (optional)" />
-                    <TextBox x:Name="ClinePathInput" />
-                    <Button Content="Sign in to Cline" Tag="cline" Click="ProviderLoginClick" HorizontalAlignment="Left" Margin="0,8,0,8" />
-                    <TextBlock Text="Sign in or configure a model provider through the official Cline CLI. Installed Rider ACP packages are detected automatically. AgentMeter then reads recorded tokens and estimated costs from local session history. Use Cline to create usage records." TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}" Margin="0,6,0,8" />
-                    <TextBlock Text="The last 30 days of local sessions are shown. Local history does not verify your current sign-in or report remaining account credits." TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}" Margin="0,6,0,8" />
-                    <Button Content="Open Cline guide" Tag="cline-docs" Click="ProviderLoginClick" HorizontalAlignment="Left" />
-                  </StackPanel>
-                  <StackPanel x:Name="SettingsOpenCodePage" Visibility="Collapsed">
-                    <TextBlock x:Name="OpenCodeConnectionState" Text="Not checked" FontWeight="SemiBold" Foreground="#9BAAC1" Margin="0,0,0,16" />
-                    <TextBlock Text="OpenCode CLI path (optional)" />
-                    <TextBox x:Name="OpenCodePathInput" />
-                    <Button Content="Sign in to OpenCode" Tag="opencode" Click="ProviderLoginClick" HorizontalAlignment="Left" Margin="0,8,0,8" />
-                    <TextBlock Text="Connect a model provider through OpenCode's official auth login. OpenCode retains its own credentials; AgentMeter detects configured connections and refreshes local costs and tokens automatically." TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}" Margin="0,6,0,8" />
-                    <TextBlock Text="Local statistics cover all projects over the last 30 days. These costs are separate from provider account credits. An empty path uses automatic detection. Save settings to apply path changes." TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}" Margin="0,6,0,8" />
-                  </StackPanel>
-                  <StackPanel x:Name="SettingsJuniePage" Visibility="Collapsed">
-                    <TextBlock x:Name="JunieConnectionState" Text="Not checked" FontWeight="SemiBold" Foreground="#9BAAC1" Margin="0,0,0,16" />
-                    <TextBlock Text="Junie CLI path (optional)" />
-                    <TextBox x:Name="JuniePathInput" />
-                    <Button Content="Sign in to Junie" Tag="junie" Click="ProviderLoginClick" HorizontalAlignment="Left" Margin="0,8,0,8" />
-                    <TextBlock Text="The button opens the official Junie CLI. Complete its account sign-in (use /account to manage connections). Junie retains the login. Installed Rider ACP packages are detected automatically; Rider sign-in alone may not provide a standalone CLI session." TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}" Margin="0,6,0,8" />
-                    <TextBlock Text="Project directory for saved usage (optional)" Margin="0,10,0,0" />
-                    <TextBox x:Name="JunieProjectInput" />
-                    <TextBlock Text="Choose your coding project to show its saved all-time costs and tokens. An empty directory uses your home folder. Balance is shown only when Junie reports it; BYOK connections may have no JetBrains balance. Refresh uses Junie's built-in statistics command without submitting a model task. Save settings to apply changes." TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}" Margin="0,6,0,8" />
-                  </StackPanel>
-                  <StackPanel x:Name="SettingsOpenRouterPage" Visibility="Collapsed">
-                    <TextBlock x:Name="OpenRouterConnectionState" Text="Not checked" FontWeight="SemiBold" Foreground="#9BAAC1" Margin="0,0,0,16" />
-            <TextBlock Text="OpenRouter API key" Margin="0,8,0,4" />
-            <PasswordBox x:Name="OpenRouterKeyInput" MaxLength="4096" Padding="9,7" Background="#10141B"
-                         Foreground="#D8E3F2" BorderBrush="#303A49" BorderThickness="1" Margin="0,0,0,6"
-                         ToolTip="Paste your OpenRouter API key. Connect saves it in Windows Credential Manager." />
-            <StackPanel Orientation="Horizontal">
-              <Button x:Name="OpenRouterConnectButton" Content="Connect" Click="OpenRouterConnectClick" Margin="0,0,8,0" />
-              <Button x:Name="OpenRouterClearButton" Content="Remove saved key" Click="OpenRouterClearClick" />
-            </StackPanel>
-            <TextBlock x:Name="OpenRouterKeyStatus" Text="Saved Windows credentials and existing OpenCode keys are detected automatically."
-                       TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}" Margin="0,6,0,4" />
-            <TextBlock Text="Connect or Save settings saves the key securely in Windows Credential Manager for your Windows user. It is loaded automatically after restarting. OpenRouter shows key budgets and spend; account credits are separate."
-                       TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}" Margin="0,4,0,8" />
+                                        <StackPanel x:Name="SettingsKiloPage" Visibility="Collapsed">
+                                            <TextBlock x:Name="KiloConnectionState" Text="Not checked"
+                                                       FontWeight="SemiBold" Foreground="#9BAAC1" Margin="0,0,0,16" />
+                                            <TextBlock Text="Kilo CLI path (optional)" />
+                                            <TextBox x:Name="KiloPathInput" />
+                                            <TextBlock
+                                                Text="Installed Rider ACP packages are detected automatically. Kilo manages its own sign-in; AgentMeter refreshes balance and local usage in the background."
+                                                TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}"
+                                                Margin="0,6,0,8" />
+                                            <Button Content="Sign in to Kilo" Tag="kilo" Click="ProviderLoginClick"
+                                                    HorizontalAlignment="Left" />
+                                            <TextBlock
+                                                Text="Local costs and tokens cover the last 30 days. Balance applies to the active Kilo account or team; other model providers are billed separately. Save settings to apply path changes."
+                                                TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}"
+                                                Margin="0,16,0,0" />
+                                        </StackPanel>
+                                        <StackPanel x:Name="SettingsClinePage" Visibility="Collapsed">
+                                            <TextBlock x:Name="ClineConnectionState" Text="Not checked"
+                                                       FontWeight="SemiBold" Foreground="#9BAAC1" Margin="0,0,0,16" />
+                                            <TextBlock Text="Cline CLI path (optional)" />
+                                            <TextBox x:Name="ClinePathInput" />
+                                            <Button Content="Sign in to Cline" Tag="cline" Click="ProviderLoginClick"
+                                                    HorizontalAlignment="Left" Margin="0,8,0,8" />
+                                            <TextBlock
+                                                Text="Sign in or configure a model provider through the official Cline CLI. Installed Rider ACP packages are detected automatically. AgentMeter then reads recorded tokens and estimated costs from local session history. Use Cline to create usage records."
+                                                TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}"
+                                                Margin="0,6,0,8" />
+                                            <TextBlock
+                                                Text="The last 30 days of local sessions are shown. Local history does not verify your current sign-in or report remaining account credits."
+                                                TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}"
+                                                Margin="0,6,0,8" />
+                                            <Button Content="Open Cline guide" Tag="cline-docs"
+                                                    Click="ProviderLoginClick" HorizontalAlignment="Left" />
+                                        </StackPanel>
+                                        <StackPanel x:Name="SettingsOpenCodePage" Visibility="Collapsed">
+                                            <TextBlock x:Name="OpenCodeConnectionState" Text="Not checked"
+                                                       FontWeight="SemiBold" Foreground="#9BAAC1" Margin="0,0,0,16" />
+                                            <TextBlock Text="OpenCode CLI path (optional)" />
+                                            <TextBox x:Name="OpenCodePathInput" />
+                                            <Button Content="Sign in to OpenCode" Tag="opencode"
+                                                    Click="ProviderLoginClick" HorizontalAlignment="Left"
+                                                    Margin="0,8,0,8" />
+                                            <TextBlock
+                                                Text="Connect a model provider through OpenCode's official auth login. OpenCode retains its own credentials; AgentMeter detects configured connections and refreshes local costs and tokens automatically."
+                                                TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}"
+                                                Margin="0,6,0,8" />
+                                            <TextBlock
+                                                Text="Local statistics cover all projects over the last 30 days. These costs are separate from provider account credits. An empty path uses automatic detection. Save settings to apply path changes."
+                                                TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}"
+                                                Margin="0,6,0,8" />
+                                        </StackPanel>
+                                        <StackPanel x:Name="SettingsJuniePage" Visibility="Collapsed">
+                                            <TextBlock x:Name="JunieConnectionState" Text="Not checked"
+                                                       FontWeight="SemiBold" Foreground="#9BAAC1" Margin="0,0,0,16" />
+                                            <TextBlock Text="Junie CLI path (optional)" />
+                                            <TextBox x:Name="JuniePathInput" />
+                                            <Button Content="Sign in to Junie" Tag="junie" Click="ProviderLoginClick"
+                                                    HorizontalAlignment="Left" Margin="0,8,0,8" />
+                                            <TextBlock
+                                                Text="The button opens the official Junie CLI. Complete its account sign-in (use /account to manage connections). Junie retains the login. Installed Rider ACP packages are detected automatically; Rider sign-in alone may not provide a standalone CLI session."
+                                                TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}"
+                                                Margin="0,6,0,8" />
+                                            <TextBlock Text="Project directory for saved usage (optional)"
+                                                       Margin="0,10,0,0" />
+                                            <TextBox x:Name="JunieProjectInput" />
+                                            <TextBlock
+                                                Text="Choose your coding project to show its saved all-time costs and tokens. An empty directory uses your home folder. Balance is shown only when Junie reports it; BYOK connections may have no JetBrains balance. Refresh uses Junie's built-in statistics command without submitting a model task. Save settings to apply changes."
+                                                TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}"
+                                                Margin="0,6,0,8" />
+                                        </StackPanel>
+                                        <StackPanel x:Name="SettingsOpenRouterPage" Visibility="Collapsed">
+                                            <TextBlock x:Name="OpenRouterConnectionState" Text="Not checked"
+                                                       FontWeight="SemiBold" Foreground="#9BAAC1" Margin="0,0,0,16" />
+                                            <TextBlock Text="OpenRouter API key" Margin="0,8,0,4" />
+                                            <PasswordBox x:Name="OpenRouterKeyInput" MaxLength="4096" Padding="9,7"
+                                                         Background="#10141B"
+                                                         Foreground="#D8E3F2" BorderBrush="#303A49" BorderThickness="1"
+                                                         Margin="0,0,0,6"
+                                                         ToolTip="Paste your OpenRouter API key. Connect saves it in Windows Credential Manager." />
+                                            <StackPanel Orientation="Horizontal">
+                                                <Button x:Name="OpenRouterConnectButton" Content="Connect"
+                                                        Click="OpenRouterConnectClick" Margin="0,0,8,0" />
+                                                <Button x:Name="OpenRouterClearButton" Content="Remove saved key"
+                                                        Click="OpenRouterClearClick" />
+                                            </StackPanel>
+                                            <TextBlock x:Name="OpenRouterKeyStatus"
+                                                       Text="Saved Windows credentials and existing OpenCode keys are detected automatically."
+                                                       TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}"
+                                                       Margin="0,6,0,4" />
+                                            <TextBlock
+                                                Text="Connect or Save settings saves the key securely in Windows Credential Manager for your Windows user. It is loaded automatically after restarting. OpenRouter shows key budgets and spend; account credits are separate."
+                                                TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}"
+                                                Margin="0,4,0,8" />
 
-                  </StackPanel>
-                </Grid>
-              </ScrollViewer>
-            </Border>
-            <StackPanel Grid.Row="2" Margin="0,14,0,0">
-              <Button Content="Save settings" HorizontalAlignment="Left" Click="SaveClick" />
-              <TextBlock x:Name="SettingsStatus" TextWrapping="Wrap" Margin="0,8,0,0" Foreground="{StaticResource MutedBrush}" />
-            </StackPanel>
-          </Grid>
-        </Grid>
-      </TabItem>
-    </TabControl>
-  </DockPanel>
-  </DockPanel>
+                                        </StackPanel>
+                                    </Grid>
+                                </ScrollViewer>
+                            </Border>
+                            <StackPanel Grid.Row="2" Margin="0,14,0,0">
+                                <Button Content="Save settings" HorizontalAlignment="Left" Click="SaveClick" />
+                                <TextBlock x:Name="SettingsStatus" TextWrapping="Wrap" Margin="0,8,0,0"
+                                           Foreground="{StaticResource MutedBrush}" />
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </TabItem>
+            </TabControl>
+        </DockPanel>
+    </DockPanel>
 </Window>

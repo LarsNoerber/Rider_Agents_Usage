@@ -135,6 +135,8 @@ Double-click the AgentMeter tray icon or choose **Open dashboard** to restore it
 tray/widget
 menu shuts down the app, timers and provider processes. EXE, dashboard and tray share the ICO generated from
 `Packaging/AgentMeter.svg`, the supplied vector icon. Each icon size is rendered directly from vector geometry.
+Enable **Start AgentMeter with Windows** under **Settings > General** to launch the app at sign-in for the current
+Windows user. The floating bar restores its last position and clamps it to the current screen's work area.
 
 ## Desktop status widget
 
@@ -153,6 +155,9 @@ Drag the ridged grip on the left to move the strip; open details close before dr
 reopen the dashboard. Right-click for refresh, pin, dashboard, hide
 and exit actions. Position, pin and desktop mode are saved. **Show desktop status bar** in Settings displays it
 alongside the dashboard. It is a floating desktop window, independent of the Windows Widgets board and taskbar.
+The desktop status bar stays active while the dashboard is open or hidden. The **Show dashboard** checkbox controls
+only the dashboard; its change applies after **Save settings**. Closing or minimizing the dashboard hides it while the
+bar remains available to reopen it.
 Agent segments have subtle dividers and hover highlighting without a persistent click frame. Click an agent to open
 its dark details popup above the strip (below when there
 is insufficient room above on the current screen), with plans, colored

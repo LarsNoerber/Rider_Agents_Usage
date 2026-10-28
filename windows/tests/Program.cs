@@ -132,7 +132,7 @@ internal static class Program
             Check(AgentLogin.WebProviderUrl("gemini") == "https://gemini.google.com/",
                 "Web provider actions have fixed official HTTPS destinations");
 
-            var widget = new DesktopWidgetWindow(() => { }, () => { }, () => { }, () => { });
+            var widget = new DesktopWidgetWindow(() => { }, () => { }, () => { }, () => false, () => { });
             widget.Apply(new UsageSettings { EnabledProviders = ["codex", "jetbrains", "copilot"] });
             widget.Update(new("codex", "Plus", [new("5-hour remaining", 87, false), new("Weekly remaining", 64, false)]));
             widget.Update(new("jetbrains", "AI Pro", [new("Credits remaining", 29, false)]));

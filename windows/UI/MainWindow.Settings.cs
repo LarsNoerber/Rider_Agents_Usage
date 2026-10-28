@@ -1,12 +1,37 @@
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using AgentMeter.Windows.Settings;
+using Microsoft.Win32;
 
 namespace AgentMeter.Windows.UI;
 
 // Configuration navigation and saved provider choices.
 public partial class MainWindow
 {
+    private void StartWithWindowsChanged(object sender, RoutedEventArgs args)
+    {
+        if (initializingWidget || closed || StartWithWindowsInput.IsChecked is not bool enabled) return;
+        try
+        {
+            using var runKey = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run")
+                ?? throw new InvalidOperationException("Windows startup settings are unavailable.");
+            var executable = Environment.ProcessPath;
+            if (string.IsNullOrWhiteSpace(executable)) throw new InvalidOperationException("Application path is unavailable.");
+            if (enabled) runKey.SetValue("AgentMeter", $"\"{executable}\"");
+            else runKey.DeleteValue("AgentMeter", false);
+            settings = settings with { StartWithWindows = enabled };
+            SettingsStatus.Text = SettingsStore.Save(settings) ? "Startup preference saved." : "Could not save settings.";
+        }
+        catch (Exception error) when (error is UnauthorizedAccessException or System.Security.SecurityException or IOException or InvalidOperationException)
+        {
+            initializingWidget = true;
+            StartWithWindowsInput.IsChecked = settings.StartWithWindows;
+            initializingWidget = false;
+            SettingsStatus.Text = "Could not update Windows startup.";
+        }
+    }
+
     private async void SelectionChanged(object sender, RoutedEventArgs args)
     {
         if (closed || updatingOpenRouterSelection) return;
@@ -20,10 +45,15 @@ public partial class MainWindow
     private async void SaveClick(object sender, RoutedEventArgs args)
     {
         if (!int.TryParse(IntervalInput.Text, out var seconds) || seconds is < 30 or > 3600)
-        { SettingsStatus.Text = "Enter a refresh interval between 30 and 3600 seconds."; return; }
+        {
+            SettingsStatus.Text = "Enter a refresh interval between 30 and 3600 seconds.";
+            return;
+        }
         settings = settings with
         {
             RefreshSeconds = seconds,
+            StartInWidgetOnlyMode = DashboardVisibleInput.IsChecked != true,
+            ShowDesktopWidget = true,
             CodexPath = CodexPathInput.Text.Trim(),
             CopilotPath = CopilotPathInput.Text.Trim(),
             ClaudePath = ClaudePathInput.Text.Trim(),
@@ -43,6 +73,23 @@ public partial class MainWindow
         SettingsStatus.Text = SettingsStore.Save(settings) ? "Settings saved." : "Could not save settings. Changes apply for this session.";
         foreach (var card in cards.Values) card.RefreshSeconds = settings.RefreshSeconds;
         widget?.Apply(settings);
+        widget?.Show();
+        if (!settings.StartInWidgetOnlyMode)
+        {
+            Opacity = 1;
+            ShowInTaskbar = true;
+            ShowActivated = true;
+            Show();
+            WindowState = WindowState.Normal;
+            Activate();
+        }
+        else
+        {
+            Opacity = 1;
+            ShowInTaskbar = true;
+            ShowActivated = true;
+            Hide();
+        }
         await coordinator.ApplyAsync(settings);
     }
 

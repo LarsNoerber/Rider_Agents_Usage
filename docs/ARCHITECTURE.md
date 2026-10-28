@@ -134,6 +134,11 @@ owns cross-provider sign-in coordination. Copilot's protocol-specific device flo
 `Core/History/UsageSnapshotStore` retains the existing `saved-usage.json` schema and filename. Refactoring preserves
 settings identifiers and UI event bindings. The WPF sources are not indexed in the currently open Kotlin/Gradle
 Rider project; source refactoring is used after the IDE rejected the symbol operation without modifying files.
+Windows startup is an explicit user choice in General settings, applied through the current-user Run registry key;
+the floating bar's last coordinates remain in `UsageSettings` and are clamped to the active work area when shown.
+The desktop widget stays active for the app lifetime. The persisted dashboard visibility choice controls only the
+dashboard window; the bar can reopen it. In hidden-dashboard mode the dashboard starts transparent and outside the
+taskbar before the bar is shown.
 
 `Packaging/AgentMeter.svg` is the user-supplied icon source. `Packaging/read-icon.ps1` translates its supported
 shapes, gradients and transforms into WPF vector geometry. `render-assets.ps1` generates each ICO/PNG size directly

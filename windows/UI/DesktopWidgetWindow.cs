@@ -65,7 +65,8 @@ internal sealed partial class DesktopWidgetWindow : Window
     public event Action<string>? ColorStyleChanged;
     public event Action<Func<UsageSettings, UsageSettings>>? OptionsChanged;
 
-    public DesktopWidgetWindow(Action openDashboard, Action refresh, Action hideWidget, Action exit)
+    public DesktopWidgetWindow(Action openDashboard, Action refresh, Action hideDashboard,
+        Func<bool> dashboardVisible, Action exit)
     {
         dashboardAction = openDashboard;
         Title = "AgentMeter desktop status";
@@ -100,9 +101,26 @@ internal sealed partial class DesktopWidgetWindow : Window
         dragGrip.Template = new ControlTemplate(typeof(Thumb)) { VisualTree = gripSurface };
         System.Windows.Automation.AutomationProperties.SetName(dragGrip, "Move desktop status bar");
         dragGrip.PreviewMouseLeftButtonDown += (_, _) => PrepareGripDrag();
-        dragGrip.DragStarted += (_, _) => { dragging = true; detailsPopup.IsOpen = false; collapseDelay.Stop(); };
-        dragGrip.DragDelta += (_, args) => { if (!options.WidgetPositionLocked) { Left += args.HorizontalChange; Top += args.VerticalChange; } };
-        dragGrip.DragCompleted += (_, _) => { dragging = false; FinishMove(); ScheduleCollapse(); };
+        dragGrip.DragStarted += (_, _) =>
+        {
+            dragging = true;
+            detailsPopup.IsOpen = false;
+            collapseDelay.Stop();
+        };
+        dragGrip.DragDelta += (_, args) =>
+        {
+            if (!options.WidgetPositionLocked)
+            {
+                Left += args.HorizontalChange;
+                Top += args.VerticalChange;
+            }
+        };
+        dragGrip.DragCompleted += (_, _) =>
+        {
+            dragging = false;
+            FinishMove();
+            ScheduleCollapse();
+        };
         var layout = new DockPanel { LastChildFill = true };
         DockPanel.SetDock(dragGrip, Dock.Left);
         layout.Children.Add(dragGrip);
@@ -125,14 +143,27 @@ internal sealed partial class DesktopWidgetWindow : Window
             ScheduleCollapse();
         };
         collapseDelay.Tick += CollapseTick;
-        MouseEnter += (_, _) => { collapseDelay.Stop(); SetCollapsed(false); };
+        MouseEnter += (_, _) =>
+        {
+            collapseDelay.Stop();
+            SetCollapsed(false);
+        };
         MouseLeave += (_, _) => ScheduleCollapse();
         IsVisibleChanged += (_, _) =>
         {
-            if (!IsVisible) { detailsPopup.IsOpen = false; collapseDelay.Stop(); }
+            if (!IsVisible)
+            {
+                detailsPopup.IsOpen = false;
+                collapseDelay.Stop();
+            }
             else ScheduleCollapse();
         };
-        Loaded += (_, _) => { WidgetPlacement.Constrain(this, false); ScheduleCollapse(); };
+        Loaded += (_, _) =>
+        {
+            WidgetPlacement.Constrain(this, options.WidgetSnapToEdges);
+            PositionSaved?.Invoke(Left, Top);
+            ScheduleCollapse();
+        };
         SizeChanged += (_, _) =>
         {
             if (IsVisible && !dragging) WidgetPlacement.Constrain(this, false);
@@ -144,14 +175,26 @@ internal sealed partial class DesktopWidgetWindow : Window
             else if (!options.WidgetPositionLocked && args.ButtonState == MouseButtonState.Pressed)
             {
                 dragging = true;
-                try { DragMove(); FinishMove(); }
-                finally { dragging = false; ScheduleCollapse(); }
+                try
+                {
+                    DragMove();
+                    FinishMove();
+                }
+                finally
+                {
+                    dragging = false;
+                    ScheduleCollapse();
+                }
             }
         };
-        surface.ContextMenu = CreateContextMenu(openDashboard, refresh, hideWidget, exit);
+        surface.ContextMenu = CreateContextMenu(openDashboard, refresh, hideDashboard, dashboardVisible, exit);
         Closing += (_, args) =>
         {
-            if (!closing) { args.Cancel = true; hideWidget(); }
+            if (!closing)
+            {
+                args.Cancel = true;
+                hideDashboard();
+            }
         };
     }
 
@@ -198,5 +241,12 @@ internal sealed partial class DesktopWidgetWindow : Window
         Render();
     }
 
-    public void Shutdown() { closing = true; collapseDelay.Stop(); collapseDelay.Tick -= CollapseTick; detailsPopup.IsOpen = false; Close(); }
+    public void Shutdown()
+    {
+        closing = true;
+        collapseDelay.Stop();
+        collapseDelay.Tick -= CollapseTick;
+        detailsPopup.IsOpen = false;
+        Close();
+    }
 }

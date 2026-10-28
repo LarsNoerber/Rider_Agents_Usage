@@ -26,9 +26,10 @@ internal static class SettingsStore
                 WidgetColorStyle = settings.WidgetColorStyle is "midnight" or "ocean" or "forest" or "plum" or "graphite"
                     ? settings.WidgetColorStyle : "midnight",
                 WidgetProviderOrder = (settings.WidgetProviderOrder ?? [])
-                    .Concat(ProviderIds.All)
-                    .Where(ProviderIds.IsKnown).Distinct().ToArray(),
+                .Concat(ProviderIds.All)
+                .Where(ProviderIds.IsKnown).Distinct().ToArray(),
                 EnabledProviders = (settings.EnabledProviders ?? []).Where(ProviderIds.IsKnown).Distinct().ToArray(),
+                ShowDesktopWidget = true,
                 WidgetVisibleProviders = settings.WidgetVisibleProviders?.Where(ProviderIds.IsKnown).Distinct().ToArray(),
                 CodexPath = settings.CodexPath ?? "",
                 CopilotPath = settings.CopilotPath ?? "",
@@ -44,7 +45,9 @@ internal static class SettingsStore
             };
         }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException or JsonException)
-        { return new(); }
+        {
+            return new();
+        }
     }
 
     public static bool Save(UsageSettings settings)
@@ -58,7 +61,10 @@ internal static class SettingsStore
                 File.WriteAllText(temporary, JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true }));
                 File.Move(temporary, FilePath, true);
             }
-            finally { if (File.Exists(temporary)) File.Delete(temporary); }
+            finally
+            {
+                if (File.Exists(temporary)) File.Delete(temporary);
+            }
             return true;
         }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException) { return false; }

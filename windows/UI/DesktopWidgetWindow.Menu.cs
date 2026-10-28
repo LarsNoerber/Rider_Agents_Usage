@@ -8,13 +8,24 @@ namespace AgentMeter.Windows.UI;
 // Context menu actions delegate persisted changes to MainWindow.
 internal sealed partial class DesktopWidgetWindow
 {
-    private ContextMenu CreateContextMenu(Action openDashboard, Action refresh, Action hideWidget, Action exit)
+    private ContextMenu CreateContextMenu(Action openDashboard, Action refresh, Action hideDashboard,
+        Func<bool> dashboardVisible, Action exit)
     {
         var menu = new ContextMenu();
-        AddItem(menu, "Open dashboard", openDashboard);
+        var dashboardToggle = new MenuItem();
+        dashboardToggle.Click += (_, _) =>
+        {
+            if (dashboardVisible()) hideDashboard();
+            else openDashboard();
+        };
+        menu.Items.Add(dashboardToggle);
         AddItem(menu, "Refresh all", refresh);
         var pin = new MenuItem { Header = "Always on top", IsCheckable = true, IsChecked = true };
-        pin.Click += (_, _) => { Topmost = pin.IsChecked; PinChanged?.Invoke(Topmost); };
+        pin.Click += (_, _) =>
+        {
+            Topmost = pin.IsChecked;
+            PinChanged?.Invoke(Topmost);
+        };
         menu.Items.Add(pin);
         var styles = new MenuItem { Header = "Bar style" };
         foreach (var choice in WidgetStyles.Choices)
@@ -48,7 +59,11 @@ internal sealed partial class DesktopWidgetWindow
             });
             swatch.Children.Add(new TextBlock { Text = choice.Label, VerticalAlignment = VerticalAlignment.Center });
             var item = new MenuItem { Header = swatch, IsCheckable = true, Tag = choice.Id };
-            item.Click += (_, _) => { SetColors(choice.Id); ColorStyleChanged?.Invoke(choice.Id); };
+            item.Click += (_, _) =>
+            {
+                SetColors(choice.Id);
+                ColorStyleChanged?.Invoke(choice.Id);
+            };
             colorStyles.Items.Add(item);
         }
         colorStyles.SubmenuOpened += (_, _) =>
@@ -61,10 +76,20 @@ internal sealed partial class DesktopWidgetWindow
         AddToggle(menu, "Show reset countdowns", s => s.WidgetShowResets, (s, value) => s with { WidgetShowResets = value });
         AddToggle(menu, "Show data freshness", s => s.WidgetShowFreshness, (s, value) => s with { WidgetShowFreshness = value });
         AddToggle(menu, "Collapse when not in use", s => s.WidgetAutoCollapse, (s, value) => s with { WidgetAutoCollapse = value });
-        menu.Opened += (_, _) => { menuOpen = true; collapseDelay.Stop(); detailsPopup.IsOpen = false; pin.IsChecked = Topmost; };
-        menu.Closed += (_, _) => { menuOpen = false; ScheduleCollapse(); };
+        menu.Opened += (_, _) =>
+        {
+            menuOpen = true;
+            collapseDelay.Stop();
+            detailsPopup.IsOpen = false;
+            pin.IsChecked = Topmost;
+            dashboardToggle.Header = dashboardVisible() ? "Hide dashboard" : "Show dashboard";
+        };
+        menu.Closed += (_, _) =>
+        {
+            menuOpen = false;
+            ScheduleCollapse();
+        };
         menu.Items.Add(new Separator());
-        AddItem(menu, "Hide desktop widget", hideWidget);
         AddItem(menu, "Exit AgentMeter", exit);
         return menu;
     }

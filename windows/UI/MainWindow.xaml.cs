@@ -27,6 +27,7 @@ public partial class MainWindow : Window
     private bool openRouterPersistenceFailed;
     private TrayHost? tray;
     private bool exiting;
+    internal bool StartsDashboardHidden => settings.StartInWidgetOnlyMode;
 
     public MainWindow() : this(SettingsStore.Load()) { }
 
@@ -37,6 +38,12 @@ public partial class MainWindow : Window
         Icon = Branding.WindowIcon();
         AppLogo.Source = Icon;
         settings = initialSettings;
+        if (settings.StartInWidgetOnlyMode)
+        {
+            Opacity = 0;
+            ShowInTaskbar = false;
+            ShowActivated = false;
+        }
 
         // Populate controls before attaching selection handlers, avoiding refreshes during construction.
         WidgetOptionsHost.Content = widgetOptions;
@@ -48,6 +55,8 @@ public partial class MainWindow : Window
         WidgetStyleInput.SelectedValue = settings.WidgetStyle;
         WidgetOpacityInput.Value = settings.WidgetOpacity * 100;
         IntervalInput.Text = settings.RefreshSeconds.ToString();
+        StartWithWindowsInput.IsChecked = settings.StartWithWindows;
+        DashboardVisibleInput.IsChecked = !settings.StartInWidgetOnlyMode;
         CodexPathInput.Text = settings.CodexPath;
         CopilotPathInput.Text = settings.CopilotPath;
         ClaudePathInput.Text = settings.ClaudePath;
@@ -84,13 +93,14 @@ public partial class MainWindow : Window
         coordinator = new(Dispatcher, settings);
         coordinator.Updated += Updated;
         coordinator.BusyChanged += BusyChanged;
-        widget = new(OpenDashboard, () => RefreshClick(this, new RoutedEventArgs()), HideWidget, ExitApplication);
+        widget = new(OpenDashboard, () => RefreshClick(this, new RoutedEventArgs()), HideDashboard,
+            () => IsVisible, ExitApplication);
         widget.PositionSaved += SaveWidgetPosition;
         widget.PinChanged += SaveWidgetPin;
         widget.StyleChanged += SaveWidgetStyle;
         widget.ColorStyleChanged += SaveWidgetColors;
         widget.OptionsChanged += SaveWidgetOptions;
-        WidgetEnabled.IsChecked = settings.ShowDesktopWidget;
+        DashboardVisibleInput.IsChecked = !settings.StartInWidgetOnlyMode;
         widget.Apply(settings);
         initializingWidget = false;
 
@@ -120,10 +130,10 @@ public partial class MainWindow : Window
         // Let the window draw before initializing tray integration or starting provider reads.
         await Dispatcher.InvokeAsync(() => { }, DispatcherPriority.ContextIdle);
         if (closed) return;
-        tray ??= new TrayHost(Dispatcher, OpenDashboard, () => DesktopModeClick(this, new RoutedEventArgs()),
+        tray ??= new TrayHost(Dispatcher, OpenDashboard, () => HideDashboard(),
             () => RefreshClick(this, new RoutedEventArgs()), ExitApplication);
-        if (settings.ShowDesktopWidget) widget?.Show();
-        if (settings.ShowDesktopWidget && settings.WidgetOnly) Hide();
+        widget?.Show();
+        if (settings.StartInWidgetOnlyMode) Hide();
         coordinator.RestoreSavedUsage();
         await coordinator.RefreshAsync();
     }
@@ -131,10 +141,11 @@ public partial class MainWindow : Window
     private void Updated(UsageSnapshot snapshot)
     {
         if (!closed) UpdateConnectionState(snapshot);
-        if (!closed && snapshot.ProviderId == "openrouter") OpenRouterKeyStatus.Text = snapshot.SignedIn == true
-            ? openRouterPersistenceFailed ? "Connected for this session. Windows could not save the key; reconnect to retry saving."
-                : "Connected. Saved keys are loaded automatically after restarting."
-            : snapshot.Notice ?? "OpenRouter usage is unavailable.";
+        if (!closed && snapshot.ProviderId == "openrouter")
+            OpenRouterKeyStatus.Text = snapshot.SignedIn == true
+                ? openRouterPersistenceFailed ? "Connected for this session. Windows could not save the key; reconnect to retry saving."
+                    : "Connected. Saved keys are loaded automatically after restarting."
+                : snapshot.Notice ?? "OpenRouter usage is unavailable.";
         if (!closed && cards.TryGetValue(snapshot.ProviderId, out var card)) card.Update(snapshot);
         if (!closed) widget?.Update(snapshot);
     }
@@ -151,7 +162,8 @@ public partial class MainWindow : Window
         ApplyWidgetProviderChoices();
         Cards.Children.Clear();
         foreach (var provider in ProviderCatalog.All)
-            if (settings.EnabledProviders.Contains(provider.Id)) Cards.Children.Add(cards[provider.Id]);
+            if (settings.EnabledProviders.Contains(provider.Id))
+                Cards.Children.Add(cards[provider.Id]);
         if (Cards.Children.Count == 0)
             Cards.Children.Add(new TextBlock { Text = "Select a provider in Settings to display usage.", TextWrapping = TextWrapping.Wrap });
     }

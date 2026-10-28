@@ -15,12 +15,12 @@ public partial class MainWindow
     {
         if (exiting) return;
         args.Cancel = true;
-        Hide();
+        HideDashboard();
     }
 
     private void OnStateChanged(object? sender, EventArgs args)
     {
-        if (WindowState == WindowState.Minimized && !exiting) Hide();
+        if (WindowState == WindowState.Minimized && !exiting) HideDashboard();
     }
 
     private void ExitClick(object sender, RoutedEventArgs args) => ExitApplication();

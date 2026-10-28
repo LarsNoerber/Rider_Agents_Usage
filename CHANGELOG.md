@@ -1,13 +1,13 @@
 # Changelog
 
-Code and functionality changes to the Rider / JetBrains add-in.
-
 ## 1.2.2 - 2026-10-26
 
 - Publish the comprehensive AgentMeter Wiki and add prominent setup, download and troubleshooting links.
 - Add bug/feature forms, a pull request template, contributor guidance and a Rider build-only GitHub workflow.
 - Align release documentation and checksums with installation assets; keep Marketplace submission bundles local.
 - Include the existing Visual Studio MessagePack dependency override in the packaged release.
+- Add a Windows sign-in startup option and restore the desktop bar's saved position on launch.
+- Keep the Windows desktop bar active independently from dashboard visibility.
 
 - Pin the VS Code packaging toolchain's transitive MSAL Node dependency to patched version 7.1.0 through an
   Azure Identity override, addressing CVE-2026-109461.

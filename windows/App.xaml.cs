@@ -20,8 +20,10 @@ public partial class App : System.Windows.Application
         if (!e.Args.Contains("--diagnose-gemini", StringComparer.Ordinal))
         {
             base.OnStartup(e);
-            MainWindow = new UI.MainWindow();
-            MainWindow.Show();
+            var mainWindow = new UI.MainWindow();
+            MainWindow = mainWindow;
+            mainWindow.Show();
+            if (mainWindow.StartsDashboardHidden) mainWindow.Hide();
             return;
         }
         base.OnStartup(e);
@@ -33,9 +35,12 @@ public partial class App : System.Windows.Application
             {
                 using var reader = new GeminiReader();
                 var snapshot = await reader.ReadWorkspaceAsync("", CancellationToken.None);
-                return new { snapshot.SignedIn, snapshot.UpdatedAt, snapshot.Notice,
+                return new
+                {
+                    snapshot.SignedIn, snapshot.UpdatedAt, snapshot.Notice,
                     QuotaCount = snapshot.Quotas.Count,
-                    Quotas = snapshot.Quotas.Select(q => new { q.Title, q.Percent }).ToArray() };
+                    Quotas = snapshot.Quotas.Select(q => new { q.Title, q.Percent }).ToArray()
+                };
             });
             Directory.CreateDirectory(Path.GetDirectoryName(report)!);
             await File.WriteAllTextAsync(report, JsonSerializer.Serialize(result));
@@ -46,7 +51,7 @@ public partial class App : System.Windows.Application
             // Exception types only: never export exception text, bodies, headers or session material.
             Directory.CreateDirectory(Path.GetDirectoryName(report)!);
             await File.WriteAllTextAsync(report, JsonSerializer.Serialize(new
-            { ErrorType = error.GetType().Name, InnerErrorType = error.InnerException?.GetType().Name }));
+                { ErrorType = error.GetType().Name, InnerErrorType = error.InnerException?.GetType().Name }));
             Shutdown(1);
         }
     }

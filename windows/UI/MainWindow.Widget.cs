@@ -79,43 +79,38 @@ public partial class MainWindow
         SettingsStore.Save(settings);
     }
 
-    private void DesktopModeClick(object sender, RoutedEventArgs args)
+    private void HideDashboardClick(object sender, RoutedEventArgs args) => HideDashboard();
+
+    private void HideDashboard()
     {
-        settings = settings with { ShowDesktopWidget = true, WidgetOnly = true };
-        WidgetEnabled.IsChecked = true;
+        settings = settings with { ShowDesktopWidget = true, WidgetOnly = true, StartInWidgetOnlyMode = true };
+        Opacity = 0;
+        ShowInTaskbar = false;
+        ShowActivated = false;
         widget?.Apply(settings);
         widget?.Show();
+        initializingWidget = true;
+        DashboardVisibleInput.IsChecked = false;
+        initializingWidget = false;
         SettingsStore.Save(settings);
         Hide();
-    }
-
-    private void WidgetVisibilityChanged(object sender, RoutedEventArgs args)
-    {
-        if (initializingWidget || closed) return;
-        settings = settings with
-        {
-            ShowDesktopWidget = WidgetEnabled.IsChecked == true,
-            WidgetOnly = WidgetEnabled.IsChecked == true && settings.WidgetOnly
-        };
-        if (settings.ShowDesktopWidget) { widget?.Apply(settings); widget?.Show(); }
-        else widget?.Hide();
-        SettingsStore.Save(settings);
     }
 
     private void OpenDashboard()
     {
         if (closed) return;
-        settings = settings with { WidgetOnly = false };
+        settings = settings with { ShowDesktopWidget = true, WidgetOnly = false, StartInWidgetOnlyMode = false };
+        widget?.Show();
+        Opacity = 1;
+        ShowInTaskbar = true;
+        ShowActivated = true;
+        initializingWidget = true;
+        DashboardVisibleInput.IsChecked = true;
+        initializingWidget = false;
         SettingsStore.Save(settings);
         Show();
         WindowState = WindowState.Normal;
         Activate();
-    }
-
-    private void HideWidget()
-    {
-        OpenDashboard();
-        WidgetEnabled.IsChecked = false;
     }
 
     private void SaveWidgetPosition(double left, double top)
@@ -133,6 +128,7 @@ public partial class MainWindow
     {
         widget?.RefreshTime();
         foreach (var id in settings.EnabledProviders)
-            if (cards.TryGetValue(id, out var card)) card.RefreshCountdowns();
+            if (cards.TryGetValue(id, out var card))
+                card.RefreshCountdowns();
     }
 }

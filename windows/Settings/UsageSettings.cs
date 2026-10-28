@@ -18,6 +18,8 @@ internal sealed record UsageSettings
     public string JunieProjectPath { get; init; } = "";
     public string GeminiProjectId { get; init; } = "";
     public bool ShowDesktopWidget { get; init; }
+    public bool StartWithWindows { get; init; }
+    public bool StartInWidgetOnlyMode { get; init; }
     public bool WidgetOnly { get; init; }
     public bool WidgetAlwaysOnTop { get; init; } = true;
     public double WidgetOpacity { get; init; } = 1;

@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.6 - 2026-11-05
+
+- Detect Android Studio through the public ApplicationInfo build product code instead of internal PlatformUtils,
+  removing the new internal-API usages reported by Marketplace verification. Gemini defaults and saved choices remain
+  unchanged.
+
 ## 1.2.5 - 2026-11-05
 
 - Select Gemini's quota service for the active Consumer, Business or Enterprise account category instead of reading

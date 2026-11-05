@@ -117,6 +117,8 @@ the original UserQuota service path. It does not merge quotas from inactive acco
 provider selection and refresh coordinator control its optional polling and status widget; changes
 in the internal Android Studio API can make the values unavailable. Android Studio defaults its selection to enabled
 when the persisted field is absent; explicit saved selections are retained. Shared refresh metadata distinguishes
+The default uses the public `ApplicationInfo.getInstance().build.productCode == "AI"` API, avoiding internal platform
+helpers.
 unknown measurement times from successful local reads, so this passive provider never invents quota freshness.
 Its overview gives each model a full-width label and preserves the original model ID in escaped tooltips.
 Gemini reads only public tier metadata for the subscription badge; Free follows Gemini's explicit unpaid Consumer

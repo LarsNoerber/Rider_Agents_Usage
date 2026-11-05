@@ -2,7 +2,7 @@
   "name": "agents-usage-vscode",
   "displayName": "AgentMeter",
   "description": "View OpenAI Codex, GitHub Copilot, Claude Code and Cursor quotas in Visual Studio Code.",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "publisher": "lanoerber",
   "author": "nightevil",
   "icon": "resources/icon.png",

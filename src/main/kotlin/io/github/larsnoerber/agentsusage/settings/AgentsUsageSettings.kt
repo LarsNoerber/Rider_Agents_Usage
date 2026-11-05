@@ -1,10 +1,10 @@
 package io.github.larsnoerber.agentsusage.settings
 
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.application.ApplicationInfo
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
-import com.intellij.util.PlatformUtils
 
 // Keep legacy constructor defaults so omitted fields in existing XML retain their previous meaning.
 data class AgentsUsageState(
@@ -15,7 +15,7 @@ data class AgentsUsageState(
     @Volatile var showCopilot: Boolean = true,
     @Volatile var showClaudeCode: Boolean = true,
     @Volatile var showCursor: Boolean = false,
-    @Volatile var showGemini: Boolean = PlatformUtils.getPlatformPrefix() == "AndroidStudio",
+    @Volatile var showGemini: Boolean = ApplicationInfo.getInstance().build.productCode == "AI",
     @Volatile var geminiStatusAllModels: Boolean = true,
     @Volatile var geminiStatusModels: MutableList<String> = mutableListOf(),
     @Volatile var showWeeklyInsights: Boolean = true,

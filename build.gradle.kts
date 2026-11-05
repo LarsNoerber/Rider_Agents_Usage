@@ -41,8 +41,9 @@ intellijPlatform {
             url = "https://github.com/larsnoerber/Rider_Agents_Usage"
         }
         changeNotes = """
-            <h3>AgentMeter 1.2.5</h3>
+            <h3>AgentMeter 1.2.6</h3>
             <ul>
+              <li>Use the public IDE product-code API for Android Studio detection, removing the PlatformUtils internal-API usages reported by Marketplace verification.</li>
               <li>Add Gemini in Android Studio: show each reported model's remaining quota and available reset time in the overview.</li>
               <li>Select the matching Gemini quota service for personal, Business and Enterprise accounts.</li>
               <li>Show Gemini's reported plan, including explicitly identified Free accounts, and choose all or individual status-bar models in settings.</li>

@@ -17,6 +17,8 @@ import io.github.larsnoerber.agentsusage.providers.cursor.ui.CursorUsagePanel
 import io.github.larsnoerber.agentsusage.providers.copilot.ui.GitHubCopilotUsagePanel
 import io.github.larsnoerber.agentsusage.providers.jetbrainsai.JetBrainsAiUsageService
 import io.github.larsnoerber.agentsusage.providers.jetbrainsai.ui.JetBrainsAiUsagePanel
+import io.github.larsnoerber.agentsusage.providers.gemini.GeminiUsageService
+import io.github.larsnoerber.agentsusage.providers.gemini.ui.GeminiUsagePanel
 import io.github.larsnoerber.agentsusage.settings.AgentsUsageSettings
 import io.github.larsnoerber.agentsusage.ui.components.AgentSection
 import io.github.larsnoerber.agentsusage.ui.components.UsageToolbar
@@ -72,6 +74,7 @@ internal class AgentsUsagePanel : JPanel(BorderLayout()), Disposable {
     private var copilot: GitHubCopilotUsagePanel? = null
     private var claudeCode: ClaudeCodeUsagePanel? = null
     private var cursor: CursorUsagePanel? = null
+    private var gemini: GeminiUsagePanel? = null
     private var visibleAgentSelection: List<Boolean>? = null
     private var disposed = false
     private val visibilityListener: () -> Unit = { if (!disposed) updateVisibleAgents() }
@@ -128,7 +131,8 @@ internal class AgentsUsagePanel : JPanel(BorderLayout()), Disposable {
             choices.showJetBrainsAi && JetBrainsAiUsageService.isAvailable(),
             choices.showCopilot && (GitHubCopilotUsageService.isAvailable() || AcpAgentInstallation.isInstalled("github-copilot")),
             choices.showClaudeCode && ClaudeCodeUsageService.isInstalled(),
-            choices.showCursor && CursorUsageService.isInstalled())
+            choices.showCursor && CursorUsageService.isInstalled(),
+            choices.showGemini && GeminiUsageService.isAvailable())
         if (selection == visibleAgentSelection) return
         visibleAgentSelection = selection
         codex?.dispose()
@@ -136,18 +140,21 @@ internal class AgentsUsagePanel : JPanel(BorderLayout()), Disposable {
         copilot?.dispose()
         claudeCode?.dispose()
         cursor?.dispose()
+        gemini?.dispose()
         codex = if (selection[0]) CodexUsagePanel() else null
         jetBrainsAi = if (selection[1]) JetBrainsAiUsagePanel() else null
         copilot = if (selection[2]) GitHubCopilotUsagePanel() else null
         claudeCode = if (selection[3]) ClaudeCodeUsagePanel() else null
         cursor = if (selection[4]) CursorUsagePanel() else null
+        gemini = if (selection[5]) GeminiUsagePanel() else null
         sections.removeAll()
         listOfNotNull(
             codex?.let { AgentSection(it, Color(57, 174, 153)) },
             jetBrainsAi?.let { AgentSection(it, Color(157, 119, 220)) },
             copilot?.let { AgentSection(it, Color(82, 151, 230)) },
             claudeCode?.let { AgentSection(it, Color(207, 117, 77)) },
-            cursor?.let { AgentSection(it, Color(130, 145, 164)) }
+            cursor?.let { AgentSection(it, Color(130, 145, 164)) },
+            gemini?.let { AgentSection(it, Color(100, 145, 230)) }
         ).forEachIndexed { index, section ->
             sections.add(section, GridBagConstraints().apply {
                 gridx = 0
@@ -212,12 +219,14 @@ internal class AgentsUsagePanel : JPanel(BorderLayout()), Disposable {
     override fun dispose() {
         disposed = true
         toolbar.dispose()
+        settings.dispose()
         UsageRefreshCoordinator.removeVisibilityListener(visibilityListener)
         codex?.dispose()
         jetBrainsAi?.dispose()
         copilot?.dispose()
         claudeCode?.dispose()
         cursor?.dispose()
+        gemini?.dispose()
         insights?.dispose()
     }
 

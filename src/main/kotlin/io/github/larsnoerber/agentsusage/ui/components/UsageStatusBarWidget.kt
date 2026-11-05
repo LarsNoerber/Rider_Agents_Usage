@@ -1,6 +1,7 @@
 package io.github.larsnoerber.agentsusage.ui.components
 
 import io.github.larsnoerber.agentsusage.core.refresh.UsageRefreshStatuses
+import io.github.larsnoerber.agentsusage.application.UsageRefreshCoordinator
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.CustomStatusBarWidget
@@ -52,6 +53,7 @@ internal class UsageStatusBarWidget<T>(
         addMouseListener(mouseHandler)
         source.addListener(listener)
         UsageRefreshStatuses.addListener(refreshListener)
+        UsageRefreshCoordinator.addVisibilityListener(refreshListener)
         render(source.current)
     }
 
@@ -93,6 +95,7 @@ internal class UsageStatusBarWidget<T>(
         disposed = true
         source.removeListener(listener)
         UsageRefreshStatuses.removeListener(refreshListener)
+        UsageRefreshCoordinator.removeVisibilityListener(refreshListener)
         installedStatusBar?.let(UsageStatusBarGroup::schedule)
         installedStatusBar = null
     }

@@ -13,6 +13,7 @@
           <li>GitHub Copilot: consumed quota through the installed IDE plugin or ACP language server.</li>
           <li>Claude: reported subscription quotas and monthly local tokens, or API connection status when subscription quotas do not apply.</li>
           <li>Cursor: reported account consumption through its existing ACP sign-in.</li>
+          <li>Gemini in Android Studio: remaining model quotas from the integrated Gemini chat.</li>
         </ul>
         <h3>Choose what you see</h3>
         <p>Click a subscription badge to show or hide provider details and local usage charts.
@@ -69,6 +70,9 @@
         <statusBarWidgetFactory id="CursorUsageStatusBar"
                                 implementation="io.github.larsnoerber.agentsusage.providers.cursor.ui.CursorStatusBarWidgetFactory"
                                 order="last, after ClaudeCodeUsageStatusBar"/>
+        <statusBarWidgetFactory id="GeminiUsageStatusBar"
+                                implementation="io.github.larsnoerber.agentsusage.providers.gemini.ui.GeminiStatusBarWidgetFactory"
+                                order="last, after CursorUsageStatusBar"/>
         <applicationConfigurable parentId="tools"
                                  displayName="AgentMeter"
                                  instance="io.github.larsnoerber.agentsusage.settings.AgentsUsageConfigurable"/>

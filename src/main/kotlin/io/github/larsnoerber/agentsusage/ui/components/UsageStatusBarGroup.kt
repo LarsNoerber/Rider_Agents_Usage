@@ -8,7 +8,7 @@ import java.awt.GridBagLayout
 /** Keep the existing independent widget IDs while placing visible agents in one contiguous group. */
 internal object UsageStatusBarGroup {
     private val ids = listOf("CodexUsageStatusBar", "JetBrainsAiCreditsStatusBar", "GitHubCopilotUsageStatusBar",
-        "ClaudeCodeUsageStatusBar", "CursorUsageStatusBar")
+        "ClaudeCodeUsageStatusBar", "CursorUsageStatusBar", "GeminiUsageStatusBar")
 
     fun schedule(statusBar: StatusBar) {
         // Widget installation/removal and the IDE's own sorting finish before we adjust the layout.

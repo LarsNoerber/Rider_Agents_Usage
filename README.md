@@ -19,7 +19,7 @@ share the supplied SVG. Existing selections are preserved. All editions share ve
 
 | Edition                 | Supported providers                                                                                              | Guide                                   |
 |-------------------------|------------------------------------------------------------------------------------------------------------------|-----------------------------------------|
-| Rider / JetBrains       | Codex, JetBrains AI, Copilot, Claude, Cursor                                                                     | This README                             |
+| Rider / JetBrains       | Codex, JetBrains AI, Copilot, Claude, Cursor, Gemini in Android Studio                                           | This README                             |
 | Windows desktop         | Codex, Copilot, Claude, Cursor, Gemini, OpenRouter, Kilo, Cline, OpenCode, Junie CLI                             | [Windows](windows/README.md)            |
 | Chrome / Edge browser   | Background quota: Codex, Claude, Cursor, Copilot, Gemini Apps; optional persistent bar (live validation pending) | [Browser](browser/README.md)            |
 | Visual Studio Code      | Codex, Copilot                                                                                                   | [VS Code](vscode/README.md)             |
@@ -45,6 +45,20 @@ and Claude subscription quota and monthly local tokens. On a fresh Rider install
 select additional providers in **Visible agents**. Claude and OpenAI show remaining subscription quota; without
 subscription quotas Claude shows recorded local tokens or its API connection state. Cursor shows consumed quota.
 Visible widgets stay together in OpenAI, JetBrains AI, Copilot order when agents are toggled.
+
+In Android Studio, **Gemini in Android Studio** defaults to enabled when no selection is stored; change it under
+**Visible agents**. It displays the integrated Gemini
+chat's reported remaining model quotas. The status widget displays a named remaining percentage for every reported
+model; the tooltip and overview show individual models. AgentMeter reads Gemini's existing state without requesting
+fresh quota itself. The Gemini plugin must be loaded and signed in; its internal quota interface may change. These
+values
+are separate from Gemini Apps and Gemini CLI usage. Quota measurement age is unknown; the last local read time does
+not imply a fresh provider request. The user confirmed operation in Android Studio and Rider; not every account tier
+has been checked live.
+
+Gemini's status settings let you keep all models (including new ones) or select individual models. The overview
+continues to show every reported quota. Personal (Free or paid), Business and Enterprise accounts use their matching
+IDE quota service; the subscription badge shows Gemini's reported plan or its explicit Free classification.
 
 For the source layout, read [Code structure](docs/ARCHITECTURE.md). Contributors should start with
 [Local development](docs/DEVELOPMENT.md).

@@ -13,6 +13,8 @@ import io.github.larsnoerber.agentsusage.providers.copilot.GitHubCopilotUsageSer
 import io.github.larsnoerber.agentsusage.providers.copilot.ui.GitHubCopilotStatusBarWidgetFactory
 import io.github.larsnoerber.agentsusage.providers.jetbrainsai.JetBrainsAiUsageService
 import io.github.larsnoerber.agentsusage.providers.jetbrainsai.ui.JetBrainsAiStatusBarWidgetFactory
+import io.github.larsnoerber.agentsusage.providers.gemini.GeminiUsageService
+import io.github.larsnoerber.agentsusage.providers.gemini.ui.GeminiStatusBarWidgetFactory
 import io.github.larsnoerber.agentsusage.settings.AgentsUsageSettings
 import io.github.larsnoerber.agentsusage.core.refresh.UsageRefreshStatuses
 import java.util.concurrent.CopyOnWriteArrayList
@@ -29,11 +31,11 @@ internal object UsageRefreshCoordinator {
         visibilityListeners -= listener
     }
 
-    fun changeVisibleAgents(openAi: Boolean, jetBrainsAi: Boolean, copilot: Boolean, claudeCode: Boolean, cursor: Boolean) {
+    fun changeVisibleAgents(openAi: Boolean, jetBrainsAi: Boolean, copilot: Boolean, claudeCode: Boolean, cursor: Boolean, gemini: Boolean) {
         val settings = AgentsUsageSettings.getInstance().state
         val changed = settings.showOpenAi != openAi || settings.showJetBrainsAi != jetBrainsAi ||
             settings.showCopilot != copilot || settings.showClaudeCode != claudeCode ||
-            settings.showCursor != cursor
+            settings.showCursor != cursor || settings.showGemini != gemini
         // Invalidate in-flight reads atomically with the choices they were started for.
         synchronized(UsageRefreshStatuses.publicationLock) {
             if (changed) UsageRefreshStatuses.invalidate()
@@ -42,6 +44,7 @@ internal object UsageRefreshCoordinator {
             settings.showCopilot = copilot
             settings.showClaudeCode = claudeCode
             settings.showCursor = cursor
+            settings.showGemini = gemini
         }
         if (!changed) return
         if (openAi) CodexUsageService.getInstance().refresh()
@@ -59,9 +62,21 @@ internal object UsageRefreshCoordinator {
                     updateWidget(GitHubCopilotStatusBarWidgetFactory::class.java)
                     updateWidget(ClaudeCodeStatusBarWidgetFactory::class.java)
                     updateWidget(CursorStatusBarWidgetFactory::class.java)
+                    updateWidget(GeminiStatusBarWidgetFactory::class.java)
                 }
             }
         }
+    }
+
+    fun changeGeminiStatusModels(allModels: Boolean, modelIds: List<String>) {
+        val settings = AgentsUsageSettings.getInstance().state
+        val selected = modelIds.filter { it.isNotBlank() }.distinct().sorted()
+        if (settings.geminiStatusAllModels == allModels && settings.geminiStatusModels == selected) return
+        settings.geminiStatusAllModels = allModels
+        settings.geminiStatusModels = selected.toMutableList()
+        // Display-only choices repaint widgets without starting or invalidating provider reads.
+        ApplicationManager.getApplication().invokeLater { visibilityListeners.forEach { it() } }
+        refreshStatusWidgets()
     }
 
     fun changeOverviewFeatures(weekly: Boolean, games: Boolean) {
@@ -80,6 +95,7 @@ internal object UsageRefreshCoordinator {
             if (state.showCopilot) add("copilot")
             if (state.showClaudeCode) add("claude")
             if (state.showCursor) add("cursor")
+            if (state.showGemini) add("gemini")
         }
     }
 
@@ -102,5 +118,6 @@ internal object UsageRefreshCoordinator {
         if (settings.showCopilot && GitHubCopilotUsageService.isAvailable()) GitHubCopilotUsageService.getInstance().refresh()
         if (settings.showClaudeCode && ClaudeCodeUsageService.isInstalled()) ClaudeCodeUsageService.getInstance().refresh()
         if (settings.showCursor && CursorUsageService.isInstalled()) CursorUsageService.getInstance().refresh()
+        if (settings.showGemini && GeminiUsageService.isAvailable()) GeminiUsageService.getInstance().refresh()
     }
 }

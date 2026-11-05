@@ -1,6 +1,7 @@
 package io.github.larsnoerber.agentsusage.ui.settings
 
 import com.intellij.ide.BrowserUtil
+import com.intellij.openapi.Disposable
 import com.intellij.ui.JBColor
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
@@ -28,7 +29,7 @@ import javax.swing.JSpinner
 import javax.swing.SpinnerNumberModel
 
 /** Edits the shared refresh interval without owning provider subscriptions or timers. */
-internal class RefreshSettingsPanel(private val onBack: () -> Unit) : JPanel(BorderLayout()) {
+internal class RefreshSettingsPanel(private val onBack: () -> Unit) : JPanel(BorderLayout()), Disposable {
     private val settingsNotice = JBLabel(" ")
     private val agents = AgentSelectionPanel()
     private val showWeeklyInsights = JBCheckBox("Show Weekly recap")
@@ -50,6 +51,8 @@ internal class RefreshSettingsPanel(private val onBack: () -> Unit) : JPanel(Bor
         settingsNotice.text = " "
         settingsNotice.foreground = usageBarColor(100)
     }
+
+    override fun dispose() = agents.dispose()
 
     private fun createSettings(): JPanel = JPanel(GridBagLayout()).apply {
         isOpaque = false

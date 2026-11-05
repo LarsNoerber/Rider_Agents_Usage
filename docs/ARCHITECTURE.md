@@ -109,6 +109,21 @@ repository.
 See the [documentation index](README.md) and [provider matrix](PROVIDERS.md) for edition availability. The shared
 version and persisted identifiers remain unchanged by the Windows source refactoring.
 
+The JetBrains plugin's `providers/gemini/` integration reads Android Studio's loaded Gemini chat quota service via
+isolated reflection. It shows model-level remaining quota without reading credentials or substituting Gemini Apps or
+CLI quotas. The reader selects AiCode, UserQuota or Baicode quota services using only Gemini's Consumer, Business or
+Enterprise category; it never reads authorized-user or identity fields. Older APIs without category metadata retain
+the original UserQuota service path. It does not merge quotas from inactive account backends. The
+provider selection and refresh coordinator control its optional polling and status widget; changes
+in the internal Android Studio API can make the values unavailable. Android Studio defaults its selection to enabled
+when the persisted field is absent; explicit saved selections are retained. Shared refresh metadata distinguishes
+unknown measurement times from successful local reads, so this passive provider never invents quota freshness.
+Its overview gives each model a full-width label and preserves the original model ID in escaped tooltips.
+Gemini reads only public tier metadata for the subscription badge; Free follows Gemini's explicit unpaid Consumer
+classification. Status model settings are independent of provider activation and overview quotas. The coordinator
+persists model choices and requests widget redraws without invalidating provider reads. The provider-owned model
+selection panel subscribes while visible and releases its listener on hiding or disposal; settings hosts dispose it.
+
 ### Windows source organization
 
 The standalone WPF app keeps the XAML window types and event handler names stable while organizing their partial
@@ -640,6 +655,17 @@ responses; the existing HTTPS, no-redirect, timeout and rate-limit rules are pre
 
 ## Editor quota parity update
 
-VS Code keeps Claude/Cursor readers under `src/providers/`, quota contracts under `src/core/`, and renders their selected-provider batches in the existing view/status items. Configuration revisions reject stale reads and disposal aborts HTTP requests. Visual Studio keeps the readers in `Providers/Claude` and `Providers/Cursor`, shared quota contracts/HTTP in `Core/`, and uses the existing background coordinator and WPF dispatcher publication. Credentials are transient and redirects are rejected. JetBrains internal APIs are not available in these editors. Both editor editions retain bounded session-local numeric observations for seven days and render observed consumption ranges. These are not billing totals or persisted history. Local Claude token statistics, games and the richer Rider insights/charts remain Rider-specific.
+VS Code keeps Claude/Cursor readers under `src/providers/`, quota contracts under `src/core/`, and renders their
+selected-provider batches in the existing view/status items. Configuration revisions reject stale reads and disposal
+aborts HTTP requests. Visual Studio keeps the readers in `Providers/Claude` and `Providers/Cursor`, shared quota
+contracts/HTTP in `Core/`, and uses the existing background coordinator and WPF dispatcher publication. Credentials are
+transient and redirects are rejected. JetBrains internal APIs are not available in these editors. Both editor editions
+retain bounded session-local numeric observations for seven days and render observed consumption ranges. These are not
+billing totals or persisted history. Local Claude token statistics, games and the richer Rider insights/charts remain
+Rider-specific.
 
-VS Code provider controls accept only the four fixed provider IDs and boolean choices. The webview persists them through VS Code configuration and immediately reapplies visibility before background refresh completion. `tools/render_editor_icons.ps1` generates the shared VS Code/Visual Studio PNG from `windows/Packaging/AgentMeter.svg` using the existing supported-subset WPF reader; arbitrary SVG features are not supported. Activity Bar artwork is a monochrome portal for theme tinting.
+VS Code provider controls accept only the four fixed provider IDs and boolean choices. The webview persists them through
+VS Code configuration and immediately reapplies visibility before background refresh completion.
+`tools/render_editor_icons.ps1` generates the shared VS Code/Visual Studio PNG from `windows/Packaging/AgentMeter.svg`
+using the existing supported-subset WPF reader; arbitrary SVG features are not supported. Activity Bar artwork is a
+monochrome portal for theme tinting.

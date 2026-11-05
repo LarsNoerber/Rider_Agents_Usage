@@ -10,7 +10,7 @@ expired sessions or changed provider interfaces produce unavailable results. A c
 | GitHub Copilot         | Consumed quota                       | Consumed quota                      | Consumed quota  | Consumed quota  |
 | Claude Code            | Subscription quota / recorded tokens | Subscription quota / connection     | Subscription quota | Subscription quota |
 | Cursor                 | Consumed quota                       | Consumed quota                      | Consumed quota | Consumed quota |
-| Gemini                 | Not included                         | CLI/Workspace / Apps quota          | Not included    | Not included    |
+| Gemini                 | Android Studio chat remaining quota  | CLI/Workspace / Apps quota          | Not included    | Not included    |
 | OpenRouter             | Not included                         | Key budget / spending               | Not included    | Not included    |
 | Kilo                   | Not included                         | Gateway balance / local usage       | Not included    | Not included    |
 | Cline                  | Not included                         | Configured connection / local usage | Not included    | Not included    |

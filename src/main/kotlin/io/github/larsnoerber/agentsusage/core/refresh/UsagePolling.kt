@@ -77,10 +77,11 @@ internal class UsagePolling<T>(
                 UsageRefreshStatuses.update(provider, UsageRefreshStatus(
                     hasValues = display.hasValues,
                     lastSuccess = if (requestUpdate && info.error == null && info.hasValues) System.currentTimeMillis() else status.lastSuccess,
-                    observedAt = if (info.error == null && info.hasValues) info.observedAt.takeIf { it > 0 }
+                    observedAt = if (!info.measurementTimeKnown) 0 else if (info.error == null && info.hasValues) info.observedAt.takeIf { it > 0 }
                         ?: status.observedAt.takeIf { !requestUpdate && it > 0 } ?: System.currentTimeMillis() else status.observedAt,
                     error = info.error,
-                    problem = info.problem
+                    problem = info.problem,
+                    measurementTimeKnown = info.measurementTimeKnown
                 ))
                 if (current == published) return
                 current = published

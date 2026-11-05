@@ -62,6 +62,8 @@ class AgentsUsageConfigurable : Configurable {
     override fun getPreferredFocusedComponent(): JComponent = intervalField
     override fun createComponent(): JComponent = panel
 
+    override fun disposeUIResources() = agents.dispose()
+
     override fun isModified(): Boolean {
         val settings = AgentsUsageSettings.getInstance().state
         return pathField.text != settings.codexPath || intervalField.text.toIntOrNull() != settings.refreshSeconds ||

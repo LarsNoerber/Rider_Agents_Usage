@@ -41,12 +41,16 @@ intellijPlatform {
             url = "https://github.com/larsnoerber/Rider_Agents_Usage"
         }
         changeNotes = """
+            <h3>AgentMeter 1.2.5</h3>
             <ul>
-              <li>AgentMeter 1.2.4: declare the settings display name in the plugin descriptor to prevent an exception when opening IDE settings.</li>
-              <li>Discard results from deselected providers and show refresh progress, last successful readings and explicit stale values.</li>
-              <li>Record numeric chart history in background services, including when only status widgets are used.</li>
-              <li>Read appended Claude session logs incrementally and bound quota HTTP responses to 2 MiB.</li>
-              <li>Distinguish known sign-in and provider API compatibility failures. Existing provider sign-ins remain in their official stores.</li>
+              <li>Add Gemini in Android Studio: show each reported model's remaining quota and available reset time in the overview.</li>
+              <li>Select the matching Gemini quota service for personal, Business and Enterprise accounts.</li>
+              <li>Show Gemini's reported plan, including explicitly identified Free accounts, and choose all or individual status-bar models in settings.</li>
+              <li>Display a named, quota-colored remaining percentage for every reported Gemini model directly in the status bar.</li>
+              <li>Enable Gemini by default in Android Studio when no selection is stored, while preserving explicit saved choices.</li>
+              <li>Label successful Gemini reads as local state reads and show quota measurement age as unknown. Gemini controls quota updates.</li>
+              <li>Improve model label readability, preserve full model IDs in tooltips, and group Gemini with the other provider widgets.</li>
+              <li>Explain in settings when the optional Gemini plugin is unavailable. AgentMeter reads its existing state without accessing credentials.</li>
             </ul>
         """.trimIndent()
     }

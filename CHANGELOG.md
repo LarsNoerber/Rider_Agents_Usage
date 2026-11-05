@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.2.5 - 2026-11-05
+
+- Select Gemini's quota service for the active Consumer, Business or Enterprise account category instead of reading
+  the Business-only service for every account.
+- Show Gemini's reported subscription name, including Free when Gemini explicitly classifies an unpaid Consumer.
+- Choose all or individual Gemini models for the status bar independently of the complete overview.
+- Add an optional Gemini in Android Studio view and status widget using the integrated chat's model quotas.
+- Enable Gemini by default in Android Studio when no selection is stored; preserve explicit saved choices.
+- Show each reported Gemini model's remaining percentage directly in the status bar with its quota color.
+- Distinguish Gemini's local state reads from quota measurement freshness, show full-width model labels with original
+  IDs in tooltips, group its status widget with other providers, and explain when its plugin is unavailable.
+
 ## 1.2.4 - 2026-11-04
 
 - Declare the settings display name in the plugin descriptor to prevent an exception when opening IDE settings.
@@ -135,11 +147,14 @@ Versions below document development builds before the first stable Marketplace r
 
 ## VS Code and Visual Studio parity update (unreleased)
 
-- Added Claude Code subscription quotas and Cursor plan consumption, provider selection, subscription plans and colored status indicators.
+- Added Claude Code subscription quotas and Cursor plan consumption, provider selection, subscription plans and colored
+  status indicators.
 - Added cancellation/disposal protection for VS Code refresh publication.
 - Updated editor Marketplace descriptions and illustrated previews for the four supported providers.
 
 - Added bounded session-local weekly consumption observations to both editor overviews.
 
-- Fixed VS Code provider selection: added four independent overview checkboxes, grouped settings, and immediate hiding of deselected providers during active refreshes.
-- Replaced legacy editor AI-chip icons with the current AgentMeter portal artwork and refreshed Marketplace illustrations.
+- Fixed VS Code provider selection: added four independent overview checkboxes, grouped settings, and immediate hiding
+  of deselected providers during active refreshes.
+- Replaced legacy editor AI-chip icons with the current AgentMeter portal artwork and refreshed Marketplace
+  illustrations.

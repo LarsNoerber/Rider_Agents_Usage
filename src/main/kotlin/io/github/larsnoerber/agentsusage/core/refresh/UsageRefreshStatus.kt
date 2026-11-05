@@ -11,7 +11,8 @@ internal data class UsageReadInfo(
     val hasValues: Boolean,
     val error: String? = null,
     val observedAt: Long = 0,
-    val problem: UsageProblem = UsageProblem.UNAVAILABLE
+    val problem: UsageProblem = UsageProblem.UNAVAILABLE,
+    val measurementTimeKnown: Boolean = true
 )
 
 internal data class UsageRefreshStatus(
@@ -21,7 +22,8 @@ internal data class UsageRefreshStatus(
     val lastSuccess: Long = 0,
     val observedAt: Long = 0,
     val error: String? = null,
-    val problem: UsageProblem = UsageProblem.UNAVAILABLE
+    val problem: UsageProblem = UsageProblem.UNAVAILABLE,
+    val measurementTimeKnown: Boolean = true
 )
 
 /** Runtime metadata only; no persisted errors, accounts or authentication. */

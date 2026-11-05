@@ -1,8 +1,8 @@
 # AgentMeter for Visual Studio
 
-This edition supports Codex and Copilot. The standalone Windows app's extra providers and floating desktop bar
+This edition supports Codex, Copilot, Claude Code and Cursor. The standalone Windows app's extra providers and floating desktop bar
 are separate from the Visual Studio VSIX. See [edition comparison](../docs/PROVIDERS.md) and
-[documentation index](../docs/README.md). The shared source version is 1.2.2.
+[documentation index](../docs/README.md). The package uses the shared repository version.
 
 Native Visual Studio extension for **Visual Studio 2022 and 2026**, in Community, Professional and Enterprise on
 Windows x64. It uses stable Visual Studio 2022 SDK APIs and an open installation version range (`[17.0,)`).
@@ -10,6 +10,8 @@ Older 32-bit Visual Studio releases are not targeted. A declared installation ta
 checking the extension in each IDE version.
 
 ## Features
+
+- Claude Code subscription quotas and Cursor included-plan consumption with provider selection, plans and colored bars.
 
 - OpenAI Codex remaining 5-hour and weekly quotas with colored bars.
 - Provider-reported subscription plan, credits and local reset times.
@@ -61,3 +63,8 @@ The Visual Studio and VS Code packages both use the `.vsix` suffix but have diff
 Choose the package whose filename contains **visualstudio** for Visual Studio Community.
 
 Codex is a trademark of OpenAI. This independent extension is not affiliated with or endorsed by OpenAI.
+
+
+Claude Code reports session, weekly, Sonnet and Opus subscription quotas when available. Cursor reports consumed included-plan quota. Sign in with the official Claude Code or Cursor agent first. Claude uses `.claude/.credentials.json` (or absolute `CLAUDE_CONFIG_DIR`); Cursor uses its official local `auth.json`. Expired or unsupported sessions show unavailable. Credentials remain in memory only for requests to the owning provider. JetBrains AI requires the JetBrains IDE integration. Local Claude token statistics and Rider games are not included in these editions.
+
+Weekly observations show session-local numeric consumption ranges over the last seven days. They are not a persisted history or a billing total; provider resets may reduce consumption.

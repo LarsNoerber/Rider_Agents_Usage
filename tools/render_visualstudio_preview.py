@@ -75,7 +75,10 @@ def render(name):
         text(566, 418, "Remaining 5-hour and weekly allowance", 21, MUTED)
         text(566, 496, "GitHub Copilot", 23, bold=True)
         text(566, 537, "Consumed quota from Visual Studio's service", 21, MUTED)
-        text(566, 638, "Click the AI icon to open the overview.", 21, MUTED)
+        text(566, 591, "Claude Code  |  Pro", 23, bold=True)
+        text(566, 630, "Session: 76% remaining / Weekly: 62%", 20, GREEN)
+        text(566, 682, "Cursor  |  Pro", 23, bold=True)
+        text(566, 721, "Included plan: 24% used", 20, GREEN)
         box(49, 774, 1182, 41, "#303030")
         text(68, 782, "Ready", 17, MUTED)
         icon(472, 780, 24)
@@ -96,14 +99,14 @@ def render(name):
         text(115, 432, "General", 19)
         text(382, 256, "AgentMeter > General", 23, bold=True)
         rows = [("Agents", None), ("Show GitHub Copilot", "True"), ("Show OpenAI Codex", "True"),
-                ("Display", None), ("Show status bar", "True"), ("Refresh", None),
+                ("Show Claude Code", "True"), ("Show Cursor", "True"), ("Display", None), ("Show status bar", "True"), ("Refresh", None),
                 ("Codex CLI path", "(discover on PATH)"), ("Refresh interval (seconds)", "60")]
         for index, (label, value) in enumerate(rows):
-            y = 313 + index * 44
-            box(381, y, 802, 44, "#303030" if value is None else "#252526", outline="#454545")
-            text(394, y + 8, label, 18, bold=value is None)
+            y = 313 + index * 34
+            box(381, y, 802, 34, "#303030" if value is None else "#252526", outline="#454545")
+            text(394, y + 5, label, 18, bold=value is None)
             if value is not None:
-                text(851, y + 8, value, 18, MUTED)
+                text(851, y + 5, value, 18, MUTED)
         text(382, 696, "Selected providers refresh in the background.", 18, MUTED)
         button(979, 762, 85, "OK")
         button(1083, 762, 100, "Cancel")

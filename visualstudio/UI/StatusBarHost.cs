@@ -66,7 +66,17 @@ namespace AgentsUsage.VisualStudio.UI
                 else AddPercent(text, coordinator.Copilot?.Primary?.PercentUsed, false);
                 row.Children.Add(text);
             }
-            if (!options.CodexEnabled && !options.CopilotEnabled) row.Children.Add(new TextBlock { Text = "AgentMeter" });
+            foreach (var usage in new[] { options.ClaudeEnabled ? coordinator.Claude : null, options.CursorEnabled ? coordinator.Cursor : null })
+            {
+                if (usage == null) continue;
+                var text = new TextBlock { Margin = new Thickness(12, 0, 0, 0), ToolTip = usage.Error ?? ("Plan: " + (usage.Plan ?? "Unknown")) };
+                text.Inlines.Add(new Run(usage.Name + " | "));
+                var remaining = usage.Name == "Claude Code";
+                int? used = usage.Quotas.Count > 0 ? (int?)usage.Quotas[0].PercentUsed : null;
+                AddPercent(text, remaining ? 100 - used : used, remaining);
+                row.Children.Add(text);
+            }
+            if (!options.CodexEnabled && !options.CopilotEnabled && !options.ClaudeEnabled && !options.CursorEnabled) row.Children.Add(new TextBlock { Text = "AgentMeter" });
             button.Content = row;
             button.ToolTip = "Open AgentMeter\nOpenAI plan: " + (coordinator.Codex?.Plan ?? "Unknown")
                 + "\nCopilot plan: " + (coordinator.Copilot?.Plan ?? "Unknown")

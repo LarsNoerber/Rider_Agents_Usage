@@ -1,8 +1,8 @@
 {
   "name": "agents-usage-vscode",
   "displayName": "AgentMeter",
-  "description": "View provider-reported OpenAI Codex and GitHub Copilot usage in Visual Studio Code.",
-  "version": "1.2.2",
+  "description": "View OpenAI Codex, GitHub Copilot, Claude Code and Cursor quotas in Visual Studio Code.",
+  "version": "1.2.4",
   "publisher": "lanoerber",
   "author": "nightevil",
   "icon": "resources/icon.png",
@@ -91,7 +91,7 @@
         "agentsUsage.codexPath": {
           "type": "string",
           "default": "",
-          "order": 3,
+          "order": 5,
           "description": "Path to the Codex CLI executable. Leave empty to find codex on PATH."
         },
         "agentsUsage.refreshIntervalSeconds": {
@@ -99,14 +99,26 @@
           "default": 60,
           "minimum": 10,
           "maximum": 3600,
-          "order": 4,
+          "order": 6,
           "description": "How often to refresh provider-reported usage, in seconds."
         },
         "agentsUsage.showStatusBar": {
           "type": "boolean",
           "default": true,
-          "order": 5,
-          "description": "Show OpenAI Codex and GitHub Copilot usage in the status bar."
+          "order": 7,
+          "description": "Show quota indicators for all enabled providers in the status bar."
+        },
+        "agentsUsage.providers.claude.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show Claude Code quota and enable background reads from its official local session.",
+          "order": 3
+        },
+        "agentsUsage.providers.cursor.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show Cursor quota and enable background reads from its official local session.",
+          "order": 4
         }
       }
     }

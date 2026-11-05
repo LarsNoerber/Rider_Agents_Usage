@@ -1,13 +1,15 @@
 # AgentMeter for Visual Studio
 
 Keep your AI quota in view while you work. AgentMeter displays **provider-reported allowance and consumption**
-for OpenAI Codex and GitHub Copilot in a native Visual Studio tool window and the status bar.
+for OpenAI Codex, GitHub Copilot, Claude Code and Cursor in a native Visual Studio tool window and the status bar.
 
 ![Usage overview and AI status indicators](images/usage.png)
 
 *Illustrated preview with example balances. Actual values depend on the signed-in provider account.*
 
 ## Features
+
+- Claude Code subscription quotas and Cursor included-plan consumption with provider selection, plans and colored bars.
 
 - **OpenAI Codex:** remaining 5-hour and weekly quotas, colored bars, subscription plan, credits and reset times.
 - **GitHub Copilot:** consumed quota, reported subscription plan and reset times from Visual Studio's own Copilot
@@ -30,8 +32,7 @@ for OpenAI Codex and GitHub Copilot in a native Visual Studio tool window and th
 - Copilot quota requires an installed, signed-in GitHub Copilot integration with a quota service. Open Copilot once if
   the service has not loaded yet. Older IDE/Copilot builds may not expose quota data.
 - Copilot uses the installed integration's existing connection. No separate GitHub token is requested.
-- Provider APIs can change. No quotas are estimated from local activity, and credentials and prompt history are not
-  read or logged.
+- Provider APIs can change. No quotas are estimated from local activity, and prompt history is not read. Claude/Cursor credentials are read only from their official local session stores, kept in memory for provider requests, and never logged or forwarded elsewhere.
 - JetBrains AI belongs to the JetBrains edition of this extension; it is not a Visual Studio provider.
 
 ## Getting started
@@ -66,3 +67,8 @@ choosing a package. The Windows-specific provider/icon changes do not add those 
 
 This independent extension is not affiliated with or endorsed by OpenAI, GitHub, Microsoft or JetBrains.
 The extension is free; provider subscriptions and allowances are determined by each provider.
+
+
+Claude Code reports session, weekly, Sonnet and Opus subscription quotas when available. Cursor reports consumed included-plan quota. Sign in with the official Claude Code or Cursor agent first. Claude uses `.claude/.credentials.json` (or absolute `CLAUDE_CONFIG_DIR`); Cursor uses its official local `auth.json`. Expired or unsupported sessions show unavailable. Credentials remain in memory only for requests to the owning provider. JetBrains AI requires the JetBrains IDE integration. Local Claude token statistics and Rider games are not included in these editions.
+
+Weekly observations show session-local numeric consumption ranges over the last seven days. They are not a persisted history or a billing total; provider resets may reduce consumption.

@@ -637,3 +637,9 @@ without a changed file identity cannot be distinguished from an append; the read
 logs. Lines over 4 MiB are skipped. Unreadable files preserve previously read totals with an incomplete notice.
 HTTP quota responses are limited to 2 MiB by a subscriber that cancels reception at the limit, including chunked
 responses; the existing HTTPS, no-redirect, timeout and rate-limit rules are preserved.
+
+## Editor quota parity update
+
+VS Code keeps Claude/Cursor readers under `src/providers/`, quota contracts under `src/core/`, and renders their selected-provider batches in the existing view/status items. Configuration revisions reject stale reads and disposal aborts HTTP requests. Visual Studio keeps the readers in `Providers/Claude` and `Providers/Cursor`, shared quota contracts/HTTP in `Core/`, and uses the existing background coordinator and WPF dispatcher publication. Credentials are transient and redirects are rejected. JetBrains internal APIs are not available in these editors. Both editor editions retain bounded session-local numeric observations for seven days and render observed consumption ranges. These are not billing totals or persisted history. Local Claude token statistics, games and the richer Rider insights/charts remain Rider-specific.
+
+VS Code provider controls accept only the four fixed provider IDs and boolean choices. The webview persists them through VS Code configuration and immediately reapplies visibility before background refresh completion. `tools/render_editor_icons.ps1` generates the shared VS Code/Visual Studio PNG from `windows/Packaging/AgentMeter.svg` using the existing supported-subset WPF reader; arbitrary SVG features are not supported. Activity Bar artwork is a monochrome portal for theme tinting.

@@ -70,6 +70,7 @@
                                 implementation="io.github.larsnoerber.agentsusage.providers.cursor.ui.CursorStatusBarWidgetFactory"
                                 order="last, after ClaudeCodeUsageStatusBar"/>
         <applicationConfigurable parentId="tools"
+                                 displayName="AgentMeter"
                                  instance="io.github.larsnoerber.agentsusage.settings.AgentsUsageConfigurable"/>
     </extensions>
 </idea-plugin>

@@ -1,10 +1,23 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#c5c5c5" stroke-width="1.6"
-     stroke-linecap="round" stroke-linejoin="round">
-    <path d="M7 7.5 12 5l5 2.5M7 8v2m10-2v2M7 13l5 2.5 5-2.5"/>
-    <circle cx="7" cy="6.5" r="2.1"/>
-    <circle cx="17" cy="6.5" r="2.1"/>
-    <circle cx="7" cy="12" r="2.1"/>
-    <circle cx="17" cy="12" r="2.1"/>
-    <path d="M12 10.5v8m-3-2.5h6"/>
-    <path d="M9 21v-2m3 2v-3m3 3v-2"/>
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="portal" x1="3" y1="4" x2="21" y2="21" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#25E8DC"/>
+            <stop offset="0.55" stop-color="#347BFF"/>
+            <stop offset="1" stop-color="#B334F5"/>
+        </linearGradient>
+        <radialGradient id="core" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse"
+                        gradientTransform="translate(8 8) rotate(40) scale(10)">
+            <stop stop-color="#55FFF0"/>
+            <stop offset="0.55" stop-color="#279AFF"/>
+            <stop offset="1" stop-color="#B82FFF"/>
+        </radialGradient>
+    </defs>
+    <circle cx="12" cy="12" r="9.3" stroke="#2251B8" stroke-opacity="0.45" stroke-width="5.2" stroke-dasharray="47 12"
+            transform="rotate(-42 12 12)"/>
+    <circle cx="12" cy="12" r="9.3" stroke="url(#portal)" stroke-width="4.1" stroke-dasharray="47 12"
+            transform="rotate(-42 12 12)"/>
+    <circle cx="12" cy="12" r="3.2" fill="url(#core)"/>
+    <circle cx="12" cy="12" r="3.2" stroke="#84F8FF" stroke-opacity="0.8" stroke-width="0.7"/>
+    <path d="M9.8 8L11 5L12.2 8M10.25 6.9H11.75M13.25 5H14.15M13.7 5V8M13.25 8H14.15"
+          transform="translate(1.6 -3.5)" stroke="white" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

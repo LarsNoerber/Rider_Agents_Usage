@@ -1,6 +1,9 @@
 import * as vscode from "vscode";
 import {CodexUsageReader, CodexUsage} from "./codex";
 import {CopilotUsageReader, CopilotUsage} from "./copilot";
+import {readClaude} from "./providers/claude/reader";
+import {readCursor} from "./providers/cursor/reader";
+import {ProviderUsage} from "./core/quota";
 import {UsageView} from "./usageView";
 
 export function activate(context: vscode.ExtensionContext): void {
@@ -16,8 +19,16 @@ export function activate(context: vscode.ExtensionContext): void {
     copilotStatus.name = "Agents Usage: GitHub Copilot";
     copilotStatus.command = "agentsUsage.openUsage";
 
+    let disposed = false;
+    let revision = 0;
+    let abort: AbortController | undefined;
+    const extraStatus = ["Claude Code", "Cursor"].map(name => {
+        const item = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 98);
+        item.name = name; item.command = "agentsUsage.openUsage"; context.subscriptions.push(item); return item;
+    });
     let refreshInFlight: Promise<void> | undefined;
     let timer: NodeJS.Timeout | undefined;
+    let latestExtras: (ProviderUsage | undefined)[] = [];
     let latestCodex: CodexUsage | undefined;
     let latestCopilot: CopilotUsage | undefined;
 
@@ -39,7 +50,7 @@ export function activate(context: vscode.ExtensionContext): void {
             } else {
                 const five = latestCodex.fiveHourLeft === undefined ? "-" : `${latestCodex.fiveHourLeft}%`;
                 const week = latestCodex.weeklyLeft === undefined ? "-" : `${latestCodex.weeklyLeft}%`;
-                codexStatus.text = `$(pulse) OpenAI D=${five} - W=${week}`;
+                codexStatus.text = `OpenAi | D=${five} - W=${week}`;
                 codexStatus.tooltip = latestCodex.error ?? "Click to open Agents Usage";
                 const lowest = Math.min(latestCodex.fiveHourLeft ?? 100, latestCodex.weeklyLeft ?? 100);
                 codexStatus.color = new vscode.ThemeColor(lowest < 20 ? "charts.red" : lowest < 50 ? "charts.yellow" : "charts.green");
@@ -67,7 +78,7 @@ export function activate(context: vscode.ExtensionContext): void {
                 copilotStatus.tooltip = latestCopilot.error ?? "Copilot quota is unavailable";
                 copilotStatus.color = new vscode.ThemeColor("statusBarItem.warningForeground");
             } else {
-                copilotStatus.text = `$(github) Copilot ${latestCopilot.percentUsed}%`;
+                copilotStatus.text = `Copilot | ${latestCopilot.percentUsed}%`;
                 copilotStatus.tooltip = latestCopilot.error ?? "Provider-reported GitHub Copilot quota consumed";
                 const used = latestCopilot.percentUsed;
                 copilotStatus.color = new vscode.ThemeColor(used >= 90 ? "charts.red" : used >= 70 ? "charts.yellow" : "charts.green");
@@ -76,13 +87,29 @@ export function activate(context: vscode.ExtensionContext): void {
         } else {
             copilotStatus.hide();
         }
+        latestExtras.forEach((usage, i) => {
+                const item = extraStatus[i];
+                if (!usage || !showStatusBar || !config.get<boolean>(`providers.${i === 0 ? "claude" : "cursor"}.enabled`, true)) { item.hide(); return; }
+                const used = usage.quotas[0]?.percentUsed;
+                item.text = `${usage.name} | ${used === undefined ? "?" : Math.round(i === 0 ? 100 - used : used) + "%"}`;
+                item.tooltip = `${usage.name} ? Plan: ${usage.plan ?? "Unknown"}\n${usage.error ?? "Open AgentMeter"}`;
+                item.color = used === undefined ? undefined : new vscode.ThemeColor(used >= 90 ? "charts.red" : used >= 70 ? "charts.yellow" : "charts.green");
+                item.show();
+            });
+
     };
 
     const refresh = (interactiveCopilot = false): Promise<void> => {
         // Commands and polling share one batch so the Codex CLI is never launched twice at once.
+        if (disposed) return Promise.resolve();
         if (refreshInFlight) return refreshInFlight;
+        const completedRevision = revision;
         refreshInFlight = (async () => {
+            const currentRevision = revision;
+            abort = new AbortController();
+            const timeout = setTimeout(() => abort?.abort(), 20000);
             const config = vscode.workspace.getConfiguration("agentsUsage");
+            const extrasPromise = Promise.all(["claude", "cursor"].map((id, i) => config.get<boolean>(`providers.${id}.enabled`, true) ? (i === 0 ? readClaude : readCursor)(abort!.signal) : Promise.resolve(undefined)));
             const codexEnabled = config.get<boolean>("providers.codex.enabled", true);
             const copilotEnabled = config.get<boolean>("providers.copilot.enabled", true);
             const codexPath = config.get<string>("codexPath", "");
@@ -99,12 +126,18 @@ export function activate(context: vscode.ExtensionContext): void {
                     updatedAt: Date.now(), error: "GitHub Copilot usage is disabled in settings",
                 }),
             ]);
+            const extras = await extrasPromise;
+            clearTimeout(timeout);
+            if (disposed || currentRevision !== revision) return;
+            view.setExtraUsage(extras.filter((value): value is ProviderUsage => value !== undefined));
+            latestExtras = extras;
             latestCodex = codex;
             latestCopilot = copilot;
             view.setUsage(codex, copilot, codexEnabled, copilotEnabled);
             renderStatus();
         })().finally(() => {
             refreshInFlight = undefined;
+            if (!disposed && revision !== completedRevision) void refresh();
         });
         return refreshInFlight;
     };
@@ -135,10 +168,12 @@ export function activate(context: vscode.ExtensionContext): void {
         }),
         vscode.workspace.onDidChangeConfiguration((event) => {
             if (event.affectsConfiguration("agentsUsage.refreshIntervalSeconds")) configureTimer();
-            if (event.affectsConfiguration("agentsUsage.showStatusBar")) renderStatus();
-            if (event.affectsConfiguration("agentsUsage.codexPath") || event.affectsConfiguration("agentsUsage.providers")) void refresh();
+            if (event.affectsConfiguration("agentsUsage.showStatusBar")) { renderStatus(); revision++; void refresh(); }
+            if (event.affectsConfiguration("agentsUsage.codexPath") || event.affectsConfiguration("agentsUsage.providers")) { revision++; abort?.abort(); view.applySettings(); renderStatus(); void refresh(); }
         }),
         new vscode.Disposable(() => {
+            disposed = true;
+            abort?.abort();
             if (timer) clearInterval(timer);
             codexReader.dispose();
             copilotReader.dispose();

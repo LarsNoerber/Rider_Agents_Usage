@@ -42,7 +42,7 @@ intellijPlatform {
         }
         changeNotes = """
             <ul>
-              <li>AgentMeter 1.2.2: synchronize all editions; harden browser HTML parsing and update the VS Code packaging dependency.</li>
+              <li>AgentMeter 1.2.4: declare the settings display name in the plugin descriptor to prevent an exception when opening IDE settings.</li>
               <li>Discard results from deselected providers and show refresh progress, last successful readings and explicit stale values.</li>
               <li>Record numeric chart history in background services, including when only status widgets are used.</li>
               <li>Read appended Claude session logs incrementally and bound quota HTTP responses to 2 MiB.</li>

@@ -1,8 +1,8 @@
 # AgentMeter for Visual Studio Code
 
-This edition supports Codex and Copilot. The standalone Windows app's additional providers, tray and floating bar
+This edition supports Codex, Copilot, Claude Code and Cursor. The standalone Windows app's additional providers, tray and floating bar
 belong to a separate executable, not this extension. See [edition comparison](../docs/PROVIDERS.md) and the
-[documentation index](../docs/README.md). The shared source version is 1.2.2.
+[documentation index](../docs/README.md). The package uses the shared repository version.
 
 The VS Code extension reads the provider-reported OpenAI Codex 5-hour and weekly quotas from the locally installed
 Codex CLI app-server. It displays remaining percentages and reset times in the AgentMeter Activity Bar view and an
@@ -46,3 +46,10 @@ For repository setup and the combined Rider and VS Code build, see
 the [development guide](https://github.com/larsnoerber/Rider_Agents_Usage/blob/main/docs/DEVELOPMENT.md).
 
 This independent extension is not affiliated with or endorsed by OpenAI. Codex is a trademark of OpenAI.
+
+
+Claude Code reports session, weekly, Sonnet and Opus subscription quotas when available. Cursor reports consumed included-plan quota. Sign in with the official Claude Code or Cursor agent first. Claude uses `.claude/.credentials.json` (or absolute `CLAUDE_CONFIG_DIR`); Cursor uses its official local `auth.json`. Expired or unsupported sessions show unavailable. Credentials remain in memory only for requests to the owning provider. JetBrains AI requires the JetBrains IDE integration. Local Claude token statistics and Rider games are not included in these editions.
+
+Weekly observations show session-local numeric consumption ranges over the last seven days. They are not a persisted history or a billing total; provider resets may reduce consumption.
+
+All four providers can be switched independently using the Providers checkboxes in Usage or the grouped provider settings. Disabling a provider immediately hides its quota and stops subsequent reads. The Marketplace icon uses the current AgentMeter portal artwork; the Activity Bar uses a monochrome portal.

@@ -198,7 +198,8 @@ The reader owns the active process and its timeout; disposal also stops child pr
 
 `providers/jetbrainsai/JetBrainsAiUsageReader` reads the loaded AI Assistant quota service.
 It handles both direct quota values and the current `Available`/`Reached` wrappers around `JbaiQuota`, as well as
-the `Known` refill wrapper. Credit conversion comes from AI Assistant itself. The reader isolates subscription
+the `Known` refill wrapper. Credit conversion comes from AI Assistant itself; Android Studio's bundled module omits
+the conversion helper, so the reader uses its confirmed 100,000-unit-per-credit scale. The reader isolates subscription
 metadata lookup, mangled Kotlin getters, and module class-loader compatibility. API failures become an unavailable
 balance rather than an invented quota.
 

@@ -74,7 +74,19 @@ namespace AgentsUsage.VisualStudio.UI
             content.Children.Clear();
             if (options.CodexEnabled) content.Children.Add(CodexUsagePanel.Create(coordinator.Codex));
             if (options.CopilotEnabled) content.Children.Add(CopilotUsagePanel.Create(coordinator.Copilot));
-            if (!options.CodexEnabled && !options.CopilotEnabled)
+            if (options.ClaudeEnabled) content.Children.Add(ProviderQuotaPanel.Create("Claude Code", coordinator.Claude, true));
+            if (options.CursorEnabled) content.Children.Add(ProviderQuotaPanel.Create("Cursor", coordinator.Cursor, false));
+            if (options.CodexEnabled || options.CopilotEnabled || options.ClaudeEnabled || options.CursorEnabled)
+            {
+                var history = new StackPanel();
+                history.Children.Add(QuotaElements.Label("Weekly observations", 15, true));
+                history.Children.Add(QuotaElements.Label("Observed consumption ranges over the last seven days in this editor session. Resets can reduce consumption; ranges are not total spend."));
+                foreach (var summary in coordinator.History.Summaries())
+                    if (summary.StartsWith("OpenAI") ? options.CodexEnabled : summary.StartsWith("Copilot") ? options.CopilotEnabled : summary.StartsWith("Claude") ? options.ClaudeEnabled : options.CursorEnabled)
+                        history.Children.Add(QuotaElements.Label(summary));
+                content.Children.Add(QuotaElements.Card(history));
+            }
+            if (!options.CodexEnabled && !options.CopilotEnabled && !options.ClaudeEnabled && !options.CursorEnabled)
                 content.Children.Add(QuotaElements.Label("Enable an agent in Settings to see its quota.", 13));
         }
 

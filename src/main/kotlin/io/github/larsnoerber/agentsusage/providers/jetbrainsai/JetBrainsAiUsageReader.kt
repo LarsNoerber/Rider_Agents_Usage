@@ -40,8 +40,7 @@ internal class JetBrainsAiUsageReader {
                 val maximum = amount(quotaInfo, "getMaximum") ?: error("JetBrains AI quota format is unsupported")
                 val used = if (info.javaClass.simpleName == "Reached") maximum else
                     amount(quotaInfo, "getCurrent") ?: error("JetBrains AI quota format is unsupported")
-                val unitsPerCredit = managerClass.classLoader.loadClass("$QUOTA_PACKAGE.CreditsKt")
-                    .getMethod("getUNITS_IN_CREDIT").invoke(null) as BigDecimal
+                val unitsPerCredit = unitsPerCredit(managerClass)
                 fun quota(remaining: BigDecimal, total: BigDecimal) = JetBrainsAiQuota(
                     remaining.max(BigDecimal.ZERO).divide(unitsPerCredit),
                     total.max(BigDecimal.ZERO).divide(unitsPerCredit)
@@ -80,9 +79,21 @@ internal class JetBrainsAiUsageReader {
             else -> null
         }
 
+    private fun unitsPerCredit(managerClass: Class<*>): BigDecimal {
+        val creditsClass = try {
+            managerClass.classLoader.loadClass("$QUOTA_PACKAGE.CreditsKt")
+        } catch (_: ClassNotFoundException) {
+            // Android Studio's bundled AI Assistant omits CreditsKt but reports the same 100,000-unit credit scale.
+            return ANDROID_STUDIO_UNITS_PER_CREDIT
+        }
+        return creditsClass.getMethod("getUNITS_IN_CREDIT").invoke(null) as? BigDecimal
+            ?: error("JetBrains AI credit unit format is unsupported")
+    }
+
     companion object {
         const val PLUGIN_ID = "com.intellij.ml.llm"
         private const val QUOTA_PACKAGE = "com.intellij.ml.llm.core.quota"
+        private val ANDROID_STUDIO_UNITS_PER_CREDIT = BigDecimal("100000")
         fun isAvailable(): Boolean = loadedPlugin(PLUGIN_ID) != null
     }
 }

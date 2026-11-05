@@ -27,15 +27,15 @@ def render(name):
                                   size * SCALE)
         draw.text((x * SCALE, y * SCALE), value, font=font, fill=color)
 
-    text(48, 32, "AgentMeter", 34, bold=True)
+    text(48, 32, "AgentMeter 1.2.4", 34, bold=True)
     text(48, 82, "Visual Studio Code  /  " + ("Usage overview" if name == "usage" else "Configuration"), 23, MUTED)
     text(48, 837, "Illustrated preview with example balances. No live account data.", 20, MUTED)
     box(48, 139, 1184, 673, "#202020", 9, "#3D3D3D")
     box(49, 140, 1182, 45, "#2B2B2B", 8)
     text(75, 150, "Visual Studio Code", 18)
     box(49, 185, 57, 586, "#181818")
-    box(63, 204, 29, 29, None, 5, TEXT)
-    text(65, 205, "AI", 17, TEXT, True)
+    draw.arc((64*SCALE, 205*SCALE, 91*SCALE, 232*SCALE), start=0, end=280, fill=TEXT, width=4*SCALE)
+    draw.ellipse((73*SCALE, 214*SCALE, 82*SCALE, 223*SCALE), fill=TEXT)
     box(49, 200, 3, 40, TEXT)
     box(49, 771, 1182, 40, "#181818")
 
@@ -74,9 +74,12 @@ def render(name):
         text(618, 388, "Remaining 5-hour and weekly allowance", 21, MUTED)
         text(618, 462, "GitHub Copilot", 23, bold=True)
         text(618, 504, "Consumed quota, plan and reset date", 21, MUTED)
-        text(618, 596, "Click a status indicator to open Usage.", 21, MUTED)
-        text(129, 779, "OpenAI D=94% - W=42%", 19, AMBER)
-        text(468, 779, "Copilot 38%", 19, GREEN)
+        text(618, 570, "Claude Code  |  Pro", 23, bold=True)
+        text(618, 610, "Session: 76% remaining / Weekly: 62%", 20, GREEN)
+        text(618, 665, "Cursor  |  Pro", 23, bold=True)
+        text(618, 705, "Included plan: 24% used", 20, GREEN)
+        text(129, 779, "OpenAi | D=94% - W=42%", 19, AMBER)
+        text(468, 779, "Copilot | 38%", 19, GREEN)
     else:
         text(132, 205, "Settings", 24, bold=True)
         box(132, 253, 1060, 41, "#313131", 3, "#515151")
@@ -85,20 +88,21 @@ def render(name):
 
         def setting(y, title, description, checked=None, value=None):
             text(132, y, title, 21, bold=True)
-            text(132, y + 35, description, 18, MUTED)
+            text(132, y + 27, description, 18, MUTED)
             if checked is not None:
-                box(132, y + 68, 23, 23, "#0E639C", 3)
-                draw.line([(137 * SCALE, (y + 80) * SCALE), (141 * SCALE, (y + 85) * SCALE),
-                           (150 * SCALE, (y + 73) * SCALE)], fill="#FFFFFF", width=2 * SCALE)
-                text(171, y + 66, "Enabled", 18)
+                box(132, y + 52, 23, 23, "#0E639C", 3)
+                draw.line([(137 * SCALE, (y + 64) * SCALE), (141 * SCALE, (y + 69) * SCALE),
+                           (150 * SCALE, (y + 57) * SCALE)], fill="#FFFFFF", width=2 * SCALE)
+                text(171, y + 50, "Enabled", 18)
             if value is not None:
                 box(990, y + 2, 190, 34, "#313131", 2, "#515151")
                 text(1002, y + 4, value, 18)
 
-        setting(379, "Providers: Codex: Enabled", "Show OpenAI Codex usage in the overview and status bar.", True)
-        setting(491, "Providers: Copilot: Enabled", "Show GitHub Copilot usage in the overview and status bar.", True)
-        setting(603, "Codex Path", "Leave empty to find codex on PATH.", value="")
-        setting(683, "Refresh Interval Seconds", "How often to refresh provider-reported usage.", value="60")
+        setting(360, "Providers: Codex: Enabled", "Show OpenAI Codex usage in the overview and status bar.", True)
+        setting(440, "Providers: Copilot: Enabled", "Show GitHub Copilot usage in the overview and status bar.", True)
+        setting(520, "Providers: Claude: Enabled", "Read subscription quotas from the official local session.", True)
+        setting(600, "Providers: Cursor: Enabled", "Read included-plan consumption from the official local session.", True)
+        setting(695, "Refresh Interval Seconds", "How often to refresh provider-reported usage.", value="60")
         text(132, 779, "Show Status Bar: Enabled", 19, GREEN)
 
     OUTPUT.mkdir(parents=True, exist_ok=True)

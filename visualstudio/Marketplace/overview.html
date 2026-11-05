@@ -1,9 +1,9 @@
 <h1>AgentMeter for Visual Studio</h1>
-<p>This VSIX supports Codex and Copilot. The standalone Windows desktop app is a separate executable with additional
+<p>This VSIX supports Codex, Copilot, Claude Code and Cursor. The standalone Windows desktop app is a separate executable with additional
     providers, tray and floating bar. See the
     <a href="https://github.com/larsnoerber/Rider_Agents_Usage/blob/main/docs/PROVIDERS.md">edition comparison</a>
     before choosing a package.</p>
-<p>See provider-reported OpenAI Codex and GitHub Copilot quotas in a native Visual Studio tool window and the status
+<p>See provider-reported OpenAI Codex, GitHub Copilot, Claude Code and Cursor quotas in a native Visual Studio tool window and the status
     bar.</p>
 <p>
     <img src="https://raw.githubusercontent.com/larsnoerber/Rider_Agents_Usage/v@VERSION@/visualstudio/Marketplace/images/usage.png"
@@ -52,8 +52,7 @@
 <p><em>Illustrated configuration preview. Settings use Visual Studio's native Options dialog.</em></p>
 <p>Automatic refresh continues while the status indicator is enabled. With the status indicator disabled, automatic
     reads run only while the Usage window is visible. Copilot uses its existing connection without requesting a separate
-    GitHub token. Credentials and prompt history are not read or logged, and usage is not estimated from local
-    activity.</p>
+    GitHub token. Prompt history is not read. Claude/Cursor sessions are read only from official local stores for requests to the owning provider; credentials are never logged or persisted. Usage is not estimated from local activity.</p>
 <p>Provider APIs can change. The optional colored status indicator depends on Visual Studio's WPF shell layout.
     JetBrains AI is available in the JetBrains package. Choose the download containing <strong>visualstudio</strong> for
     Visual Studio; the <strong>vscode</strong> package is for Visual Studio Code.</p>
@@ -63,3 +62,6 @@
         href="https://github.com/larsnoerber/Rider_Agents_Usage/blob/v@VERSION@/CHANGELOG.md">Release notes</a></p>
 <p>This free, independent extension is not affiliated with or endorsed by OpenAI, GitHub, Microsoft or JetBrains.
     Provider subscriptions and allowances are determined by each provider.</p>
+
+<p>Claude Code reports session, weekly, Sonnet and Opus subscription quotas when available. Cursor reports consumed included-plan quota. Sign in with the official Claude Code or Cursor agent first. Claude uses .claude/.credentials.json (or absolute CLAUDE_CONFIG_DIR); Cursor uses its official local auth.json. Expired or unsupported sessions show unavailable. Credentials remain in memory only for requests to the owning provider. JetBrains AI requires the JetBrains IDE integration. Local Claude token statistics and Rider games are not included in these editions.</p>
+<p>Weekly observations show session-local numeric consumption ranges over the last seven days. They are not a billing total or persisted history; provider resets may reduce consumption.</p>

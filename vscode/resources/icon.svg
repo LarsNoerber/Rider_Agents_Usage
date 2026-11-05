@@ -1,16 +1,24 @@
-<svg width="128" height="128" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
     <defs>
-        <linearGradient id="ai" x1="4" y1="4" x2="36" y2="36" gradientUnits="userSpaceOnUse">
-            <stop stop-color="#5EEAD4"/>
-            <stop offset="1" stop-color="#60A5FA"/>
+        <linearGradient id="portal" x1="4" y1="5" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#25E8DC"/>
+            <stop offset="0.55" stop-color="#347BFF"/>
+            <stop offset="1" stop-color="#B334F5"/>
         </linearGradient>
+        <radialGradient id="core" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse"
+                        gradientTransform="translate(15 14) rotate(52) scale(16)">
+            <stop stop-color="#55FFF0"/>
+            <stop offset="0.55" stop-color="#279AFF"/>
+            <stop offset="1" stop-color="#B82FFF"/>
+        </radialGradient>
     </defs>
-    <path d="M1 13H4M1 20H4M1 27H4M36 13H39M36 20H39M36 27H39"
-          stroke="url(#ai)" stroke-width="2" stroke-linecap="round"/>
-    <rect x="4" y="4" width="32" height="32" rx="8" fill="#111827" stroke="url(#ai)" stroke-width="2"/>
-    <path d="M10 24L15 11L20 24M12 19H18M24 12H29M26.5 12V24M24 24H29"
-          stroke="#F8FAFC" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-    <rect x="11" y="30" width="4" height="2" rx="1" fill="#5EEAD4"/>
-    <rect x="18" y="28" width="4" height="4" rx="1" fill="#5EEAD4"/>
-    <rect x="25" y="27" width="4" height="5" rx="1" fill="#60A5FA"/>
+    <rect width="40" height="40" rx="8" fill="#071126"/>
+    <circle cx="20" cy="20" r="15.2" stroke="#2251B8" stroke-opacity="0.45" stroke-width="8.5" stroke-dasharray="77 19"
+            transform="rotate(-42 20 20)"/>
+    <circle cx="20" cy="20" r="15.2" stroke="url(#portal)" stroke-width="7.2" stroke-dasharray="77 19"
+            transform="rotate(-42 20 20)"/>
+    <circle cx="20" cy="20" r="6.7" fill="url(#core)"/>
+    <circle cx="20" cy="20" r="6.7" stroke="#84F8FF" stroke-opacity="0.8" stroke-width="0.9"/>
+    <path d="M15.39 14.08L18 7.58L20.6 14.08M16.37 11.7H19.62M21.57 7.58H23.52M22.54 7.58V14.08M21.57 14.08H23.52"
+          transform="translate(3 -5)" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

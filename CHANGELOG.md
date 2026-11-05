@@ -1,7 +1,16 @@
 # Changelog
 
+## 1.2.4 - 2026-11-04
+
+- Declare the settings display name in the plugin descriptor to prevent an exception when opening IDE settings.
+
+## 1.2.3 - 2026-10-28
+
+- Support JetBrains AI credit balances in Android Studio's bundled AI Assistant.
+
 ## 1.2.2 - 2026-10-26
 
+- Read JetBrains AI credits in Android Studio when its bundled Assistant omits the credit conversion helper.
 - Publish the comprehensive AgentMeter Wiki and add prominent setup, download and troubleshooting links.
 - Add bug/feature forms, a pull request template, contributor guidance and a Rider build-only GitHub workflow.
 - Align release documentation and checksums with installation assets; keep Marketplace submission bundles local.
@@ -123,3 +132,14 @@ Versions below document development builds before the first stable Marketplace r
 - Monitor OpenAI Codex, JetBrains AI and GitHub Copilot quotas in Rider and IntelliJ IDEA.
 - Show subscription plans, quota bars, reset times and independent status widgets.
 - Support manual refresh, configurable intervals and automatic Codex CLI discovery.
+
+## VS Code and Visual Studio parity update (unreleased)
+
+- Added Claude Code subscription quotas and Cursor plan consumption, provider selection, subscription plans and colored status indicators.
+- Added cancellation/disposal protection for VS Code refresh publication.
+- Updated editor Marketplace descriptions and illustrated previews for the four supported providers.
+
+- Added bounded session-local weekly consumption observations to both editor overviews.
+
+- Fixed VS Code provider selection: added four independent overview checkboxes, grouped settings, and immediate hiding of deselected providers during active refreshes.
+- Replaced legacy editor AI-chip icons with the current AgentMeter portal artwork and refreshed Marketplace illustrations.

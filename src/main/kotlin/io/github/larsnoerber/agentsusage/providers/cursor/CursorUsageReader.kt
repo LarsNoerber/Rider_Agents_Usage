@@ -18,6 +18,8 @@ internal class CursorUsageReader : AutoCloseable {
     private val http = UsageHttp()
 
     companion object {
+        private val userIdPattern = Regex("[A-Za-z0-9._-]+")
+
         private fun agentAuthPath() = when {
             System.getProperty("os.name").startsWith("Windows", true) -> LocalUsageFiles.configRoot("Cursor").resolve("auth.json")
             System.getProperty("os.name").startsWith("Mac", true) -> LocalUsageFiles.home.resolve(".cursor/auth.json")
@@ -40,7 +42,7 @@ internal class CursorUsageReader : AutoCloseable {
         if (parts.size != 3) return CursorUsage(problem = UsageProblem.AUTHENTICATION, error = "Cursor session is unavailable. Sign in again in Cursor.")
         val payload = JsonParser.parseString(String(Base64.getUrlDecoder().decode(parts[1]), Charsets.UTF_8)).asJsonObject
         val user = payload.stringValue("sub")?.substringAfterLast('|')
-            ?.takeIf { it.matches(Regex("[A-Za-z0-9._-]+")) }
+            ?.takeIf { it.matches(userIdPattern) }
             ?: return CursorUsage(error = "Cursor session format is unavailable.")
         val expires = payload.numberValue("exp")
         if (expires == null || expires <= Instant.now().epochSecond + 60)

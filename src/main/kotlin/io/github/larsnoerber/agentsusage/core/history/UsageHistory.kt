@@ -26,7 +26,7 @@ internal class UsageHistory : PersistentStateComponent<UsageHistoryState> {
     @Synchronized override fun loadState(state: UsageHistoryState) { data = state; prune() }
 
     @Synchronized fun record(key: String, value: Double, reset: Long?, at: Long = System.currentTimeMillis()) {
-        if (!value.isFinite() || value < 0 || !key.matches(Regex("[a-zA-Z0-9._-]{1,80}"))) return
+        if (!value.isFinite() || value < 0 || !key.matches(keyPattern)) return
         prune()
         val series = data.series.firstOrNull { it.key == key }
             ?: UsageHistorySeries(key).also { data.series.add(it) }
@@ -55,6 +55,7 @@ internal class UsageHistory : PersistentStateComponent<UsageHistoryState> {
 
     companion object {
         private const val MAX_POINTS = 1800
+        private val keyPattern = Regex("[a-zA-Z0-9._-]{1,80}")
         fun getInstance(): UsageHistory = ApplicationManager.getApplication().getService(UsageHistory::class.java)
     }
 }

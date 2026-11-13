@@ -7,9 +7,11 @@ import java.nio.file.Path
 
 /** Detects ACP registry agents installed by the IDE without reading their authentication data. */
 object AcpAgentInstallation {
+    private val agentIdPattern = Regex("[a-zA-Z0-9._-]+")
+
     /** Resolve a package-owned file, preferring the newest installed version. */
     fun installedFile(agentId: String, relativePath: String): Path? {
-        if (!agentId.matches(Regex("[a-zA-Z0-9._-]+"))) return null
+        if (!agentId.matches(agentIdPattern)) return null
         val root = Path.of(PathManager.getSystemPath(), "acp-agents", agentId)
         return runCatching {
             Files.list(root).use { versions ->
@@ -22,7 +24,7 @@ object AcpAgentInstallation {
     }
 
     fun isInstalled(agentId: String): Boolean {
-        if (!agentId.matches(Regex("[a-zA-Z0-9._-]+"))) return false
+        if (!agentId.matches(agentIdPattern)) return false
         val versions = Path.of(PathManager.getSystemPath(), "acp-agents", agentId)
         if (!Files.isDirectory(versions)) return false
         return runCatching {

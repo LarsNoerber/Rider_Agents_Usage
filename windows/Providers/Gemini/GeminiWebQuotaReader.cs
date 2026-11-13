@@ -123,7 +123,7 @@ internal sealed class GeminiWebQuotaReader : IDisposable
                 if (buffer.Length + count > 2_097_152) throw new InvalidDataException();
                 buffer.Write(chunk, 0, count);
             }
-            return Encoding.UTF8.GetString(buffer.ToArray());
+            return Encoding.UTF8.GetString(buffer.GetBuffer(), 0, (int)buffer.Length);
         }
     }
 

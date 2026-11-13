@@ -54,6 +54,7 @@ internal static class GeminiCookieFile
                 var entrySize = Marshal.SizeOf<HandleEntry>();
                 var offset = 2 * IntPtr.Size;
                 if (count < 0 || count > (size - offset) / entrySize) return null;
+                StringBuilder? name = null;
                 for (var i = 0; i < count; i++)
                 {
                     if (deadline.Elapsed > TimeSpan.FromSeconds(3)) return null;
@@ -63,7 +64,8 @@ internal static class GeminiCookieFile
                     using (file)
                     {
                         if (GetFileType(file) != 1) continue; // Disk files only; never query pipe object names.
-                        var name = new StringBuilder(32768);
+                        name ??= new StringBuilder(32768);
+                        name.Clear();
                         var length = GetFinalPathNameByHandle(file, name, (uint)name.Capacity, 0);
                         if (length == 0 || length >= name.Capacity) continue;
                         var actual = name.ToString();

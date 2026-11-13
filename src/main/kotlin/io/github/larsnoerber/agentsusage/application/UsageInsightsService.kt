@@ -113,8 +113,6 @@ internal class UsageInsightsService : PersistentStateComponent<UsageInsightsStat
     private val cursorListener: (CursorUsage) -> Unit = ::acceptCursor
 
     init {
-        state.days = state.days.filter { it.date.toLocalDateOrNull()?.let { date -> !date.isBefore(LocalDate.now().minusDays(6)) } == true }
-            .toMutableList()
         previousCodex = codexService.current
         codexService.addListener(codexListener)
         previousCodex?.let(::recordCodex)
@@ -195,8 +193,6 @@ internal class UsageInsightsService : PersistentStateComponent<UsageInsightsStat
             reset(old.fiveHourResetsAt, usage.fiveHourResetsAt, old.fiveHourLeft, usage.fiveHourLeft) ||
                 reset(old.weeklyResetsAt, usage.weeklyResetsAt, old.weeklyLeft, usage.weeklyLeft)
         } ?: false
-        val before = previousCodex?.takeIf { it.error == null }?.let(::codexRemaining)
-        val after = usage.takeIf { it.error == null }?.let(::codexRemaining)
         if (didReset) {
             celebrate("Codex")
             addBattleEvent("Codex reset")

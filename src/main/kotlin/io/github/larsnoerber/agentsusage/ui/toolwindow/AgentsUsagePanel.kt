@@ -21,6 +21,7 @@ import io.github.larsnoerber.agentsusage.providers.gemini.GeminiUsageService
 import io.github.larsnoerber.agentsusage.providers.gemini.ui.GeminiUsagePanel
 import io.github.larsnoerber.agentsusage.settings.AgentsUsageSettings
 import io.github.larsnoerber.agentsusage.ui.components.AgentSection
+import io.github.larsnoerber.agentsusage.ui.components.AgentMeterLogo
 import io.github.larsnoerber.agentsusage.ui.components.UsageToolbar
 import io.github.larsnoerber.agentsusage.ui.settings.RefreshSettingsPanel
 import java.awt.BorderLayout
@@ -86,7 +87,11 @@ internal class AgentsUsagePanel : JPanel(BorderLayout()), Disposable {
         border = JBUI.Borders.empty(6)
         overview.add(JPanel(BorderLayout()).apply {
             isOpaque = false
-            add(JBLabel("AgentMeter").apply { font = font.deriveFont(Font.BOLD) }, BorderLayout.WEST)
+            add(JPanel(BorderLayout(JBUI.scale(8), 0)).apply {
+                isOpaque = false
+                add(JBLabel(AgentMeterLogo(JBUI.scale(51))), BorderLayout.WEST)
+                add(JBLabel("AgentMeter").apply { font = font.deriveFont(Font.BOLD, 16f) }, BorderLayout.CENTER)
+            }, BorderLayout.WEST)
             add(toolbar, BorderLayout.EAST)
         }, BorderLayout.NORTH)
         agentOverview.add(agentUsageToggle, BorderLayout.NORTH)

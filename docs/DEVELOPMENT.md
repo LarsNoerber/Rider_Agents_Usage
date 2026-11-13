@@ -1,5 +1,15 @@
 # Local development
 
+## Shared branding
+
+Edit `src/main/resources/icons/agentmeter-logo.svg`, then run
+`powershell -NoProfile -STA -ExecutionPolicy Bypass -File .\tools\render_editor_icons.ps1`.
+This refreshes all platform SVG/PNG icons, the documentation logo, Windows XAML preview and
+`windows/obj/Branding/AgentMeter.ico` without building application packages. Visual Studio uses the VS Code PNG.
+Store artwork scripts read the refreshed `windows/Packaging/AgentMeter.svg`; rerun them when preparing uploads.
+The WPF renderer supports the current paths, gradients and opacity; it does not support general SVG features
+such as filters, masks, groups or gradient transforms.
+
 ## Chrome / Edge browser extension
 
 Use Node.js 22+ and Windows PowerShell. Build only the explicitly requested browser edition:

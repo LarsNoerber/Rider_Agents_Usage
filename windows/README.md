@@ -1,5 +1,7 @@
 # AgentMeter for Windows
 
+<p><img src="../docs/images/agents-usage-logo.png" alt="AgentMeter logo" width="120"/></p>
+
 A standalone .NET 10 WPF window showing provider-reported quotas, balances and recorded local usage without a running
 editor or IDE.
 The self-contained executable includes the .NET runtime. Start `AgentMeter.exe`; no installer or administrator rights

@@ -31,7 +31,7 @@ separate cropped composition. Fictional balances and the illustrated-example not
 full gallery images retain their 1280 x 800 dimensions.
 
 Regenerate with `python tools/render_marketplace_preview.py` (Pillow and Windows Segoe UI required).
-The existing Quota Portal logo is `images/agents-usage-logo.png`; the plugin's SVG logo stays in `META-INF`.
+The shared AgentMeter logo is `images/agents-usage-logo.png`; the plugin's matching SVG logo stays in `META-INF`.
 
 ### Upload preparation
 

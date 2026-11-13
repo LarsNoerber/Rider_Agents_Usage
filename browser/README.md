@@ -1,5 +1,7 @@
 # AgentMeter for Chrome and Edge
 
+<p><img src="../docs/images/agents-usage-logo.png" alt="AgentMeter logo" width="120"/></p>
+
 A standalone Manifest V3 extension with a floating AgentMeter bar, quota details and a compact toolbar badge.
 The bar shows selected, permitted providers together. Click a provider to open its website; use **▾** for quota
 details and **›** to cycle the details provider. **−** collapses the bar. Settings control theme, top/bottom position,

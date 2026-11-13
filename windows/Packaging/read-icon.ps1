@@ -32,22 +32,16 @@ function Read-AgentMeterIcon([string]$Path)
             $brush.Center = [System.Windows.Point]::new([double]$gradient.cx, [double]$gradient.cy)
             $brush.GradientOrigin = $brush.Center
             $brush.RadiusX = [double]$gradient.r; $brush.RadiusY = [double]$gradient.r
-            # SVG applies these transforms from right to left; WPF groups apply them in collection order.
-            $transform = [System.Windows.Media.TransformGroup]::new()
-            $transform.Children.Add([System.Windows.Media.ScaleTransform]::new(16, 16))
-            $transform.Children.Add([System.Windows.Media.RotateTransform]::new(52))
-            $transform.Children.Add([System.Windows.Media.TranslateTransform]::new(15, 14))
-            if ($gradient.gradientTransform -ne 'translate(15 14) rotate(52) scale(16)')
+            if ($gradient.gradientTransform)
             {
                 throw 'Unsupported SVG gradient transform.'
             }
-            $brush.Transform = $transform
         }
         else
         {
             throw 'Unsupported SVG gradient.'
         }
-        foreach ($stop in $gradient.ChildNodes)
+        foreach ($stop in $gradient.SelectNodes("*[local-name()='stop']"))
         {
             $offset = if ( $stop.HasAttribute('offset'))
             {
@@ -57,8 +51,12 @@ function Read-AgentMeterIcon([string]$Path)
             {
                 0
             }
-            $brush.GradientStops.Add([System.Windows.Media.GradientStop]::new(
-                    [System.Windows.Media.ColorConverter]::ConvertFromString($stop.GetAttribute('stop-color')), $offset))
+            $color = [System.Windows.Media.ColorConverter]::ConvertFromString($stop.GetAttribute('stop-color'))
+            if ($stop.HasAttribute('stop-opacity'))
+            {
+                $color.A = [byte][Math]::Round($color.A * [double]$stop.GetAttribute('stop-opacity'))
+            }
+            $brush.GradientStops.Add([System.Windows.Media.GradientStop]::new($color, $offset))
         }
         $svgBrushes[$gradient.id] = $brush
     }
@@ -85,8 +83,12 @@ function Read-AgentMeterIcon([string]$Path)
     }
 
     $drawing = [System.Windows.Media.DrawingGroup]::new()
-    $drawing.ClipGeometry = [System.Windows.Media.RectangleGeometry]::new([System.Windows.Rect]::new(0, 0, 40, 40))
-    foreach ($shape in $svgDocument.DocumentElement.ChildNodes)
+    $bounds = [System.Windows.Rect]::Parse($svgDocument.DocumentElement.GetAttribute('viewBox'))
+    $drawing.ClipGeometry = [System.Windows.Media.RectangleGeometry]::new($bounds)
+    # Preserve transparent viewBox padding when WPF measures the DrawingImage.
+    $drawing.Children.Add([System.Windows.Media.GeometryDrawing]::new(
+        [System.Windows.Media.Brushes]::Transparent, $null, [System.Windows.Media.RectangleGeometry]::new($bounds)))
+    foreach ($shape in $svgDocument.DocumentElement.SelectNodes('*'))
     {
         if ($shape.LocalName -eq 'defs')
         {

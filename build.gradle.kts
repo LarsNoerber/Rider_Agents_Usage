@@ -41,8 +41,10 @@ intellijPlatform {
             url = "https://github.com/larsnoerber/Rider_Agents_Usage"
         }
         changeNotes = """
-            <h3>AgentMeter 1.2.6</h3>
+            <h3>AgentMeter 1.2.13</h3>
             <ul>
+              <li>Use public IconLoader and IconUtil APIs for SVG branding, removing internal SVGLoader usages.</li>
+              <li>Update the Marketplace icon to the finished shaded SVG logo and reduce the overview logo to 51 pixels.</li>
               <li>Use the public IDE product-code API for Android Studio detection, removing the PlatformUtils internal-API usages reported by Marketplace verification.</li>
               <li>Add Gemini in Android Studio: show each reported model's remaining quota and available reset time in the overview.</li>
               <li>Select the matching Gemini quota service for personal, Business and Enterprise accounts.</li>
@@ -51,6 +53,8 @@ intellijPlatform {
               <li>Enable Gemini by default in Android Studio when no selection is stored, while preserving explicit saved choices.</li>
               <li>Label successful Gemini reads as local state reads and show quota measurement age as unknown. Gemini controls quota updates.</li>
               <li>Improve model label readability, preserve full model IDs in tooltips, and group Gemini with the other provider widgets.</li>
+              <li>Render the overview and settings logo from a clean SVG at display size to avoid raster edge artifacts.</li>
+              <li>Use the finished shaded SVG logo in the sidebar and overview.</li>
               <li>Explain in settings when the optional Gemini plugin is unavailable. AgentMeter reads its existing state without accessing credentials.</li>
             </ul>
         """.trimIndent()
@@ -91,6 +95,10 @@ tasks {
     }
 
     processResources {
+        inputs.property("pluginVersion", project.version.toString())
+        filesMatching("agentmeter-version.txt") {
+            expand("pluginVersion" to project.version.toString())
+        }
         from(listOf("LICENSE", "EULA.md")) {
             into("META-INF")
         }

@@ -1,11 +1,13 @@
 # AgentMeter
 
+<p><img src="docs/images/agents-usage-logo.png" alt="AgentMeter logo" width="180"/></p>
+
 [Wiki and setup guides](https://github.com/LarsNoerber/Rider_Agents_Usage/wiki) ·
 [Downloads](https://github.com/LarsNoerber/Rider_Agents_Usage/releases/latest) ·
 [Troubleshooting](https://github.com/LarsNoerber/Rider_Agents_Usage/wiki/Troubleshooting) ·
 [Report a bug](https://github.com/LarsNoerber/Rider_Agents_Usage/issues/new/choose)
 
-The current shared source version is **1.2.2**. Check the version on the
+The current shared source version is **1.2.13**. Check the version on the
 [latest release](https://github.com/LarsNoerber/Rider_Agents_Usage/releases/latest) before downloading;
 source updates and binary publication are separate steps.
 
@@ -15,7 +17,7 @@ integration.
 
 The Windows app also includes OpenRouter, Kilo, Cline, OpenCode and Junie CLI, separate provider configuration pages,
 six bar layouts, five palettes, a refresh progress display and saved usage across restarts. App/window/tray icons
-share the supplied SVG. Existing selections are preserved. All editions share version **1.2.2**.
+share the supplied SVG. Existing selections are preserved. All editions share source/build version **1.2.13**. Published Store and GitHub packages may still use earlier versions.
 
 | Edition                 | Supported providers                                                                                              | Guide                                   |
 |-------------------------|------------------------------------------------------------------------------------------------------------------|-----------------------------------------|
@@ -29,8 +31,6 @@ See the [documentation index](docs/README.md) and [provider/data comparison](doc
 
 For all editions, see [accounts, authentication and review](docs/AUTHENTICATION_AND_REVIEW.md): which provider
 sessions are required, how reviewers can check quota access, and what build/demo evidence does and does not prove.
-
-<p><img src="docs/images/agents-usage-logo.png" alt="AgentMeter Quota Portal logo" width="180"/></p>
 
 AgentMeter, maintained by Lars Nörber, is available for JetBrains IDEs, including IntelliJ IDEA and Rider, and as an
 extension for Visual Studio Code. It displays Codex 5-hour and weekly usage, JetBrains AI credits, and GitHub Copilot

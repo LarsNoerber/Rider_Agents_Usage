@@ -1,28 +1,58 @@
+﻿# Refresh all platform branding from the same SVG; no application packages are built.
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName PresentationCore, PresentationFramework, WindowsBase
 $repository = Split-Path -Parent $PSScriptRoot
 . (Join-Path $repository 'windows/Packaging/read-icon.ps1')
-$source = Join-Path $repository 'windows/Packaging/AgentMeter.svg'
-$resources = Join-Path $repository 'vscode/resources'
-Copy-Item -LiteralPath $source -Destination (Join-Path $resources 'icon.svg') -Force
-Copy-Item -LiteralPath (Join-Path $repository 'src/main/resources/icons/agentsUsage.svg') -Destination (Join-Path $resources 'agents-usage.svg') -Force
-$view = New-Object System.Windows.Controls.Image
-$view.Source = Read-AgentMeterIcon $source
-$view.Width = 256
-$view.Height = 256
-$view.Measure((New-Object System.Windows.Size(256, 256)))
-$view.Arrange((New-Object System.Windows.Rect(0, 0, 256, 256)))
-$view.UpdateLayout()
-$bitmap = New-Object System.Windows.Media.Imaging.RenderTargetBitmap(256, 256, 96, 96, [System.Windows.Media.PixelFormats]::Pbgra32)
-$bitmap.Render($view)
-$encoder = New-Object System.Windows.Media.Imaging.PngBitmapEncoder
-$encoder.Frames.Add([System.Windows.Media.Imaging.BitmapFrame]::Create($bitmap))
-$stream = [System.IO.File]::Create((Join-Path $resources 'icon.png'))
-try
-{
-    $encoder.Save($stream)
+$source = Join-Path $repository 'src/main/resources/icons/agentmeter-logo.svg'
+$svg = [regex]::Replace([IO.File]::ReadAllText($source), '(?s)<!--.*?-->\s*', '').Trim()
+$utf8 = [Text.UTF8Encoding]::new($false)
+$svgTargets = @{
+    'windows/Packaging/AgentMeter.svg' = 64
+    'src/main/resources/META-INF/pluginIcon.svg' = 40
+    'src/main/resources/icons/agentsUsage.svg' = 24
+    'vscode/resources/icon.svg' = 64
+    'vscode/resources/agents-usage.svg' = 24
+    'vscode/resources/activity-icon.svg' = 24
 }
-finally
+foreach ($target in $svgTargets.GetEnumerator())
 {
-    $stream.Dispose()
+    $size = $target.Value
+    $content = $svg.Replace('width="64" height="64"', "width=`"$size`" height=`"$size`"")
+    [IO.File]::WriteAllText((Join-Path $repository $target.Key), $content + "`n", $utf8)
 }
+$artwork = Read-AgentMeterIcon $source
+function Save-BrandingPng([string]$RelativePath, [int]$Size)
+{
+    $view = [System.Windows.Controls.Image]::new()
+    $view.Source = $artwork
+    $view.Width = $Size
+    $view.Height = $Size
+    $view.Measure([System.Windows.Size]::new($Size, $Size))
+    $view.Arrange([System.Windows.Rect]::new(0, 0, $Size, $Size))
+    $view.UpdateLayout()
+    $bitmap = [System.Windows.Media.Imaging.RenderTargetBitmap]::new($Size, $Size, 96, 96, [System.Windows.Media.PixelFormats]::Pbgra32)
+    $bitmap.Render($view)
+    $encoder = [System.Windows.Media.Imaging.PngBitmapEncoder]::new()
+    $encoder.Frames.Add([System.Windows.Media.Imaging.BitmapFrame]::Create($bitmap))
+    $stream = [IO.File]::Create((Join-Path $repository $RelativePath))
+    try { $encoder.Save($stream) } finally { $stream.Dispose() }
+}
+foreach ($target in @('vscode/resources/icon.png', 'browser/resources/icon.png',
+    'docs/images/agents-usage-logo.png', 'windows/Packaging/QuotaPortalTransparent.png',
+    'src/main/resources/icons/agentmeter-logo.png'))
+{
+    Save-BrandingPng $target 256
+}
+foreach ($size in @(16, 32, 48, 128))
+{
+    Save-BrandingPng "browser/resources/icon$size.png" $size
+}
+# Retain the existing standalone XAML preview path with the same new vector artwork.
+$preview = [System.Windows.Controls.Image]::new()
+$preview.Source = $artwork
+$preview.Width = 40
+$preview.Height = 40
+[IO.File]::WriteAllText((Join-Path $repository 'windows/Packaging/Icon.xaml'),
+    [System.Windows.Markup.XamlWriter]::Save($preview) + "`n", $utf8)
+& (Join-Path $repository 'windows/Packaging/render-assets.ps1') -OutputDirectory (Join-Path $repository 'windows/obj/Branding')
+Write-Output 'Updated Rider, VS Code/Visual Studio, Windows, browser and documentation icons.'

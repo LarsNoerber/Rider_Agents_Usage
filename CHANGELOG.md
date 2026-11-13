@@ -1,5 +1,24 @@
 # Changelog
 
+## Unreleased
+
+## 1.2.13 - 2026-11-13
+
+- Embed the shared version in a build resource instead of querying the internal IDE plugin descriptor API.
+- Load and scale Rider's SVG logo through public IconLoader/IconUtil APIs, removing the internal SVGLoader usages.
+- Unify Rider, VS Code, Visual Studio, Windows and Chrome/Edge branding with the current shaded AgentMeter logo,
+  including sidebar, tray, application and Store artwork.
+- Synchronize package source versions at 1.2.13 (Windows MSIX: 1.2.13.0).
+- Replace the older Marketplace icon variant with the current shaded SVG logo.
+- Reduce the overview logo by a further 20%, from 64 to 51 pixels (originally 80 pixels).
+- Refresh the Rider plugin branding with the AgentMeter app logo and matching cyan-to-violet icons; keep provider
+  cards flat for readable text.
+- Render the overview and settings logo from a clean SVG at display size to avoid raster edge artifacts.
+- Smooth the cyan-to-violet logo transition across the full mark.
+- Match the SVG logo's rounded legs and curved lower bridge to the selected app mark.
+- Add subtle surface highlights to the SVG logo while retaining clean edges and the left leg in front.
+- Use the finished shaded SVG logo in the overview and at compact size in the sidebar.
+
 ## 1.2.6 - 2026-11-05
 
 - Detect Android Studio through the public ApplicationInfo build product code instead of internal PlatformUtils,

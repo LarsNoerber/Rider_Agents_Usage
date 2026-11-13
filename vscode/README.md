@@ -1,5 +1,7 @@
 # AgentMeter for Visual Studio Code
 
+<p><img src="../docs/images/agents-usage-logo.png" alt="AgentMeter logo" width="120"/></p>
+
 This edition supports Codex, Copilot, Claude Code and Cursor. The standalone Windows app's additional providers, tray and floating bar
 belong to a separate executable, not this extension. See [edition comparison](../docs/PROVIDERS.md) and the
 [documentation index](../docs/README.md). The package uses the shared repository version.

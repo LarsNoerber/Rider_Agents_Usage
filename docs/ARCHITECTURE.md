@@ -109,6 +109,14 @@ repository.
 See the [documentation index](README.md) and [provider matrix](PROVIDERS.md) for edition availability. The shared
 version and persisted identifiers remain unchanged by the Windows source refactoring.
 
+The JetBrains plugin's `META-INF/pluginIcon.svg`, Tool Window icon and overview/settings headers use the clean,
+ring-free AgentMeter mark from `icons/agentmeter-logo.svg`. Swing headers load and scale the SVG at their requested
+size through the public `IconLoader.getIcon` and `IconUtil.scale` APIs, retaining IDE-managed HiDPI rendering.
+`PluginVersion` reads `agentmeter-version.txt`, expanded from the shared Gradle version during `processResources`.
+Optional provider discovery still needs the descriptor's class loader via `core/reflection/InstalledPlugins.kt`;
+`PluginManagerCore.getPlugin` is internal on newer IDEs and remains a compatibility limitation. The public
+`PluginDetailsService` exposes metadata without a provider class loader, and is absent in the 261 baseline.
+
 The JetBrains plugin's `providers/gemini/` integration reads Android Studio's loaded Gemini chat quota service via
 isolated reflection. It shows model-level remaining quota without reading credentials or substituting Gemini Apps or
 CLI quotas. The reader selects AiCode, UserQuota or Baicode quota services using only Gemini's Consumer, Business or
@@ -157,7 +165,9 @@ The desktop widget stays active for the app lifetime. The persisted dashboard vi
 dashboard window; the bar can reopen it. In hidden-dashboard mode the dashboard starts transparent and outside the
 taskbar before the bar is shown.
 
-`Packaging/AgentMeter.svg` is the user-supplied icon source. `Packaging/read-icon.ps1` translates its supported
+`src/main/resources/icons/agentmeter-logo.svg` is the shared branding source; `tools/render_editor_icons.ps1`
+refreshes its platform SVG copies, PNG icons, XAML preview, documentation logo and Windows ICO frames.
+`windows/Packaging/AgentMeter.svg` is the generated Windows/Store vector copy. `Packaging/read-icon.ps1` translates its supported
 shapes, gradients and transforms into WPF vector geometry. `render-assets.ps1` generates each ICO/PNG size directly
 from this geometry. The EXE, window and tray share the embedded ICO; Store assets use the same source. MSBuild
 tracks both the SVG and renderer scripts so changed artwork regenerates the assets.
@@ -668,6 +678,8 @@ Rider-specific.
 
 VS Code provider controls accept only the four fixed provider IDs and boolean choices. The webview persists them through
 VS Code configuration and immediately reapplies visibility before background refresh completion.
-`tools/render_editor_icons.ps1` generates the shared VS Code/Visual Studio PNG from `windows/Packaging/AgentMeter.svg`
-using the existing supported-subset WPF reader; arbitrary SVG features are not supported. Activity Bar artwork is a
-monochrome portal for theme tinting.
+`tools/render_editor_icons.ps1` generates VS Code/Visual Studio, Rider, Windows and browser branding from
+`src/main/resources/icons/agentmeter-logo.svg`. VS Code's Activity Bar uses the same shaded mark.
+The WPF reader supports paths, rectangles, circles, absolute linear/radial gradients, stop opacity, rounded strokes
+and simple shape rotations/translations. Gradient transforms, groups, filters, masks and arbitrary SVG features
+are unsupported; current artwork requires none of them. The SVG viewBox preserves transparent padding at every size.

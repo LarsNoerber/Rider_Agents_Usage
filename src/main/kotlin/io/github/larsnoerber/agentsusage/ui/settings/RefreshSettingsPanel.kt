@@ -9,6 +9,7 @@ import com.intellij.util.ui.JBUI
 import io.github.larsnoerber.agentsusage.application.UsageRefreshCoordinator
 import io.github.larsnoerber.agentsusage.settings.AgentsUsageSettings
 import io.github.larsnoerber.agentsusage.ui.components.UsageSurface
+import io.github.larsnoerber.agentsusage.ui.components.AgentMeterLogo
 import io.github.larsnoerber.agentsusage.ui.components.secondaryTextColor
 import io.github.larsnoerber.agentsusage.ui.components.usageBarColor
 import io.github.larsnoerber.agentsusage.ui.components.warningColor
@@ -166,17 +167,20 @@ internal class RefreshSettingsPanel(private val onBack: () -> Unit) : JPanel(Bor
             toolTipText = "Back to usage overview"
             addActionListener { onBack() }
         })
-        add(JButton("AgentMeter").apply {
+        add(JButton("AgentMeter", AgentMeterLogo(JBUI.scale(48))).apply {
             isContentAreaFilled = false
             isBorderPainted = false
             isFocusPainted = false
+            horizontalAlignment = JButton.LEFT
+            iconTextGap = JBUI.scale(7)
             margin = Insets(0, 0, 0, 0)
-            val buttonSize = JBUI.size(100, 28)
+            val buttonSize = JBUI.size(160, 48)
             minimumSize = buttonSize
             preferredSize = buttonSize
             maximumSize = buttonSize
             border = JBUI.Borders.empty(2)
-            foreground = secondaryTextColor()
+            foreground = JBColor.foreground()
+            font = font.deriveFont(Font.BOLD, 14f)
             toolTipText = "Back to usage overview"
             addActionListener { onBack() }
         })

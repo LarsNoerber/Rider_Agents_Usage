@@ -1,5 +1,7 @@
 # AgentMeter for Visual Studio
 
+<p><img src="../docs/images/agents-usage-logo.png" alt="AgentMeter logo" width="120"/></p>
+
 This edition supports Codex, Copilot, Claude Code and Cursor. The standalone Windows app's extra providers and floating desktop bar
 are separate from the Visual Studio VSIX. See [edition comparison](../docs/PROVIDERS.md) and
 [documentation index](../docs/README.md). The package uses the shared repository version.

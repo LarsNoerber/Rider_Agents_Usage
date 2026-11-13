@@ -12,6 +12,7 @@ import com.intellij.util.ui.FormBuilder
 import io.github.larsnoerber.agentsusage.application.UsageRefreshCoordinator
 import io.github.larsnoerber.agentsusage.providers.codex.CodexUsageService
 import io.github.larsnoerber.agentsusage.ui.settings.AgentSelectionPanel
+import io.github.larsnoerber.agentsusage.ui.components.AgentMeterLogo
 import java.awt.BorderLayout
 import java.awt.Cursor
 import java.awt.Font
@@ -33,7 +34,8 @@ class AgentsUsageConfigurable : Configurable {
         pathRow.add(pathField, BorderLayout.CENTER)
         pathRow.add(detectButton, BorderLayout.EAST)
         val form = FormBuilder.createFormBuilder()
-            .addComponent(JBLabel("Agent settings"))
+            .addComponent(settingsBranding())
+            .addComponent(JBLabel("Agent settings").apply { font = font.deriveFont(Font.BOLD, 14f) })
             .addComponent(JBLabel("Visible agents (overview and status bar):"))
             .addComponent(agents)
             .addComponent(JBLabel("Overview sections:"))
@@ -61,6 +63,12 @@ class AgentsUsageConfigurable : Configurable {
     override fun getDisplayName(): String = "AgentMeter"
     override fun getPreferredFocusedComponent(): JComponent = intervalField
     override fun createComponent(): JComponent = panel
+
+    private fun settingsBranding(): JPanel = JPanel(BorderLayout(10, 0)).apply {
+        add(JBLabel(AgentMeterLogo(com.intellij.util.ui.JBUI.scale(56))), BorderLayout.WEST)
+        add(JBLabel("AgentMeter").apply { font = font.deriveFont(Font.BOLD, 18f) }, BorderLayout.CENTER)
+        border = com.intellij.util.ui.JBUI.Borders.empty(0, 0, 8, 0)
+    }
 
     override fun disposeUIResources() = agents.dispose()
 

@@ -3,7 +3,7 @@
 The [AgentMeter Wiki](https://github.com/LarsNoerber/Rider_Agents_Usage/wiki) provides installation,
 provider setup, quota explanations, privacy information, troubleshooting and developer navigation.
 
-Source documentation updated for version 1.2.2 on October 26, 2026. Store submission remains separate from
+Source documentation updated for version 1.2.13 on November 13, 2026. Store submission remains separate from
 building and publishing the GitHub release. Generated build/dist folders are not source documentation.
 
 ## User guides

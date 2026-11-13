@@ -1,13 +1,10 @@
 package io.github.larsnoerber.agentsusage
 
-import com.intellij.ide.plugins.PluginManagerCore
-import com.intellij.openapi.extensions.PluginId
-
-/** Reads this plugin's version from the descriptor registered by the running IDE. */
+/** Reads the shared version embedded by processResources, without querying IDE internals. */
 object PluginVersion {
     val current: String by lazy {
-        PluginManagerCore.getPlugin(PluginId.getId(PLUGIN_ID))?.version ?: "Unknown"
+        PluginVersion::class.java.getResourceAsStream("/agentmeter-version.txt")
+            ?.bufferedReader(Charsets.UTF_8)?.use { it.readText().trim() }
+            ?.takeIf { it.isNotEmpty() } ?: "Unknown"
     }
-
-    private const val PLUGIN_ID = "io.github.larsnoerber.agentsusage"
 }
